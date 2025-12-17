@@ -34,7 +34,7 @@ if(!in_array($page, $allowed_pages)){
     $page = 'home';
 }
 
-$page_path = __DIR__ . "/pages/$page.php";
+$page_path = __DIR__. "/pages/$page.php";
 ?>
 
 <!DOCTYPE html>
@@ -85,4 +85,3 @@ $page_path = __DIR__ . "/pages/$page.php";
     <script src="../templates/<?= basename(__DIR__) ?>/script.js"></script>
 </body>
 </html>
-
