@@ -11,8 +11,10 @@
 <!-- <spline-viewer class="model" url="https://prod.spline.design/YWvYFF2tEZVrT0X0/scene.splinecode"></spline-viewer> -->
 
 <body class="adminlogincontainer">
+    <!-- <spline-viewer class="robotmodel" url="https://prod.spline.design/6qRF8rgLp7IgQBCX/scene.splinecode"></spline-viewer>
+-->
     <spline-viewer class="robotmodel"
-        url="https://prod.spline.design/6qRF8rgLp7IgQBCX/scene.splinecode"></spline-viewer>
+        url="https://prod.spline.design/RhUHenI1aUGPujeh/scene.splinecode"></spline-viewer>
 
     <div class="adminloginbox">
         <h1>Admin Login</h1>
