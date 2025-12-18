@@ -85,3 +85,6 @@ body{
     transform: scale(1.2);
     z-index:-1;
 }
+.menu li{
+    font-size: 25px;
+}
