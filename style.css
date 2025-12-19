@@ -111,7 +111,7 @@ footer{
     justify-content: space-evenly;
     padding: 5px 40px;
 }
-footer p{
+.footer p{
     font-size:18px;
     padding:20px;
 }
