@@ -123,12 +123,6 @@ if (!isset($pageTitle)) {
                 <p id="page-subtitle"><?php echo htmlspecialchars($pageSubtitle); ?></p>
             </div>
             <div class="topbar-actions">
-                <div class="search">
-                    <lord-icon class="search-icon" src="https://cdn.lordicon.com/xaekjsls.json" trigger="loop"
-                        delay="2000" colors="primary:#ffffff" style="width:13px;height:13px">
-                    </lord-icon>
-                    <input type="text" placeholder="Search in admin..." />
-                </div>
                 <span class="pill">Online</span>
                 <div class="avatar"><?php echo strtoupper(substr($name, 0, 1)); ?></div>
             </div>

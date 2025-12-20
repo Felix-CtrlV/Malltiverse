@@ -39,7 +39,7 @@ include("partials/nav.php");
                     <tr>
                         <td><?php echo htmlspecialchars($row['name']); ?></td>
                         <td><?php echo htmlspecialchars($row['email']); ?></td>
-                        <td><span class="badge-soft"><?php echo htmlspecialchars($row['role']); ?></span></td>
+                        <td><span class="card-chip badge-soft"><?php echo htmlspecialchars($row['role']); ?></span></td>
                         <td>
                             <?php
                             $status = $row['status'];
@@ -52,7 +52,7 @@ include("partials/nav.php");
                             };
                             ?>
 
-                            <span class="status-pill <?= $statusClass ?>">
+                            <span class="card-chip status-pill <?= $statusClass ?>">
                                 <?= ucfirst(htmlspecialchars($status)) ?>
                             </span>
 

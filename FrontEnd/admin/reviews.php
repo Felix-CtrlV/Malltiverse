@@ -49,13 +49,13 @@ ORDER BY r.created_at DESC;
                         <td><?= htmlspecialchars($row['review']); ?></td>
                         <?php
                         if ($row['rating'] < 3) { ?>
-                            <td><span class="status-pill status-banned">Poor</span></td>
+                            <td><span class="card-chip status-pill status-banned">Poor</span></td>
                             <?php
                         } elseif ($row['rating'] == 5) { ?>
-                            <td><span class="status-pill status-active">Excellent</span></td>
+                            <td><span class="card-chip status-pill status-active">Excellent</span></td>
                             <?php
                         } else { ?>
-                            <td><span class="status-pill status-pending">Average</span></td>
+                            <td><span class="card-chip status-pill status-pending">Average</span></td>
                             <?php
                         }
                         ?>
