@@ -50,7 +50,7 @@ $supplierdiff = $thismonthcount - $lastmonthcount;
 
 // ...................................................................................................................................................
 
-$ratingquery = "SELECT Round(AVG(rating)) AS average_rating FROM reviews;";
+$ratingquery = "SELECT Round(AVG(rating),1) AS average_rating FROM reviews;";
 $ratingresult = mysqli_query($conn, $ratingquery);
 $ratingrow = mysqli_fetch_assoc($ratingresult);
 $average_rating = $ratingrow["average_rating"];
@@ -111,7 +111,7 @@ $rentrow = mysqli_fetch_assoc($rentresult);
             <div class="card-header">
                 <div>
                     <div class="card-title">Average Rating</div>
-                    <div class="card-value"><?= $average_rating ?>.0<span style="color: #eab308;">★</span></div>
+                    <div class="card-value"><?= $average_rating ?><span style="color: #eab308;">★</span></div>
                 </div>
                 <span class="card-chip">Mall-wide</span>
             </div>
