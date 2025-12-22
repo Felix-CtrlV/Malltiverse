@@ -58,6 +58,15 @@ if (!in_array($page, $allowed_pages)) {
 }
 
 $page_path = __DIR__ . "/pages/$page.php";
+
+// Prepare banner URL (use web-relative path from shop/index.php)
+$banner_filename = isset($shop_assets['banner']) ? $shop_assets['banner'] : '';
+$banner_fs = __DIR__ . '/../../uploads/shops/' . $supplier_id . '/' . $banner_filename;
+if ($banner_filename && file_exists($banner_fs)) {
+    $banner_url = '../uploads/shops/' . $supplier_id . '/' . rawurlencode($banner_filename);
+} else {
+    $banner_url = '';
+}
 ?>
 
 <!DOCTYPE html>
@@ -84,36 +93,36 @@ $page_path = __DIR__ . "/pages/$page.php";
     <body>
 
         <?php include(__DIR__ . '/partial/header.php'); ?>
-        <?php include(__DIR__ . '/partial/nav.php'); ?>
 
-        <section class="banner-section">
-            <?php if (!empty($shop_assets['banner'])): ?>
-                <img
-                    src="../../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['banner']) ?>"
-                    alt="Shop Banner"
-                    class="banner-image">
-            <?php endif; ?>
 
-            <div class="banner-overlay">
-                <h1 class="shop-name"><?= htmlspecialchars($supplier['company_name']) ?></h1>
-                <p class="shop-tagline">Welcome to our store</p>
-            </div>
-        </section>
 
-        <main class="main-content">
-            <?php
-            if (file_exists($page_path)) {
-                include($page_path);
-            } else {
-                echo "<p class='not-found'>Page not found.</p>";
-            }
-            ?>
-        </main>
+        <!-- Hero banner inserted here -->
+        <?php if ($banner_url): ?>
+            <section class="hero-banner" style="background-image: url('<?= htmlspecialchars($banner_url) ?>')">
+            <?php else: ?>
+                <section class="hero-banner hero-no-image">
+                <?php endif; ?>
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title"><?= htmlspecialchars($supplier['company_name']) ?></h1>
+                    <p class="hero-sub"><?= htmlspecialchars($supplier['tagline'] ?? ($supplier['company_name'] . ' — Quality products')) ?></p>
+                </div>
+                </section>
 
-        <?php include(__DIR__ . '/partial/footer.php'); ?>
+                <main class="main-content">
+                    <?php
+                    if (file_exists($page_path)) {
+                        include($page_path);
+                    } else {
+                        echo "<p class='not-found'>Page not found.</p>";
+                    }
+                    ?>
+                </main>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="script.js"></script>
+                <?php include(__DIR__ . '/partial/footer.php'); ?>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                <script src="script.js"></script>
 
     </body>
 

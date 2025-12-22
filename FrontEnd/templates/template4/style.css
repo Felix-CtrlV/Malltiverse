@@ -1,117 +1,340 @@
-/* ===== RESET ===== */
-* {
+.smart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 10%;
+  background: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.logo-box {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1b;
+}
+
+.logo-box span {
+  color: #0070f3;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ===== ROOT COLORS ===== */
-:root {
-  --primary: #4a90e2;
-  --secondary: #2c3e50;
-  --bg: #ffffff;
-  --text: #222;
+.nav-menu li {
+  margin: 0 20px;
 }
 
-/* ===== BODY ===== */
-body {
-  background: var(--bg);
-  color: var(--text);
-}
-
-/* ===== BANNER ===== */
-.banner-section {
+.nav-menu a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
   position: relative;
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
+  padding: 5px 0;
+  transition: color 0.3s;
 }
 
-.banner-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.nav-menu a:hover {
+  color: #000;
 }
 
-.banner-overlay {
+/* The Animated Underline */
+.nav-menu a::after {
+  content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 1rem;
-}
-
-.shop-name {
-  color: #fff;
-  font-size: 1.6rem;
-  font-weight: 700;
-}
-
-.shop-tagline {
-  color: #f1f1f1;
-  font-size: 0.9rem;
-  margin-top: 0.3rem;
-}
-
-/* ===== MAIN CONTENT ===== */
-.main-content {
-  padding: 1rem;
-}
-
-.not-found {
-  text-align: center;
-  padding: 2rem;
-  color: #777;
-}
-
-/* ===== NAV (Mobile Bottom Style) ===== */
-.navbar {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  position: fixed;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
   bottom: 0;
   left: 0;
-  right: 0;
-  height: 60px;
-  background: #fff;
-  border-top: 1px solid #ddd;
+  background-color: black;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.nav-menu a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.login-link {
+  background: none;
+  border: 1px solid black;
+  color: black;
+  padding: 8px 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-link:hover {
+  background: black;
+  color: white;
+}
+
+.logo-container {
+  top: 20px;
+  left: 50px;
+  cursor: pointer;
+  position: absolute;
   z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* ADD THESE */
+  width: 50px; /* Match the image height for a square */
+  height: 50px;
+  overflow: hidden; /* Clips the image to the blob shape */
+  border-radius: 5px; /* Initial state */
+  transition: border-radius 0.3s ease-out; /* Animates both ways */
 }
 
-.navbar a {
+.logo-container img {
+  height: 50px;
+  /* Remove border-radius here if you want the container to control the shape */
+  border-radius: inherit;
+}
+
+.logo-container:hover {
+  /* The "blob" shape now applies to the clipped container */
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+@media (max-width: 768px) {
+  .smart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-menu {
+    margin-top: 50px;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-menu li {
+    margin: 10px 0;
+  }
+
+  .login-link {
+    margin-top: 10px;
+  }
+}
+
+/* Footer styles */
+
+.main-footer {
+  background-color: #fafafa;
+  border-top: 1px solid #eaeaea;
+  padding: 60px 6% 24px 6%;
+  color: #1a1a1b;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  flex: 1;
+  min-width: 250px;
+  text-align: left;
+}
+
+.footer-brand p {
+  color: #666;
+  margin: 20px 0;
+  max-width: 300px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
   text-decoration: none;
-  font-size: 0.85rem;
-  color: var(--secondary);
+  color: #000;
+  font-size: 1.2rem;
+  opacity: 0.6;
+  transition: 0.3s;
 }
 
-/* ===== FOOTER ===== */
-footer {
+.social-icons a:hover {
+  opacity: 1;
+  color: #0070f3;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  justify-content: flex-end;
+  flex: 1 1 420px;
+  flex-wrap: wrap;
+}
+
+.link-column {
+  flex: 0 1 180px;
+  min-width: 140px;
   text-align: center;
-  padding: 1rem;
-  font-size: 0.8rem;
-  color: #777;
-  margin-bottom: 60px;
+  justify-content: center;
 }
 
-/* ===== DESKTOP ENHANCEMENT ===== */
-@media (min-width: 768px) {
-  .banner-section {
-    height: 350px;
+.link-column h4 {
+  margin-top: 0;
+  font-size: 0.9rem;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #1a1a1b;
+  text-align: center;
+}
+
+.link-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.link-column li {
+  margin-bottom: 12px;
+}
+
+.link-column a {
+  text-decoration: none;
+  color: #666;
+  font-size: 0.95rem;
+  transition: 0.3s;
+}
+
+.link-column a:hover {
+  color: #0070f3;
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding-top: 18px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 992px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
-  .shop-name {
-    font-size: 2.5rem;
+  .footer-links {
+    width: 100%;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
   }
 
-  .main-content {
-    max-width: 1100px;
-    margin: auto;
-    padding: 2rem;
+  .footer-brand {
+    max-width: 100%;
+    margin-bottom: 20px;
   }
+
+  .link-column {
+    text-align: center;
+    flex: 0 1 45%;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+}
+
+/* Hero banner styles */
+.hero-banner {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45));
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 40px 6%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 2.25rem;
+  margin: 0 0 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 18px;
+  max-width: 720px;
+}
+
+.hero-cta {
+  display: inline-block;
+  background: var(--primary, #0070f3);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    min-height: 260px;
+  }
+  .hero-title {
+    font-size: 1.5rem;
+  }
+  .hero-content {
+    padding: 24px 4%;
+  }
+  .hero-sub {
+    font-size: 0.95rem;
+  }
+}
+
+/* Fallback when there's no banner image */
+.hero-banner.hero-no-image {
+  background: linear-gradient(
+    135deg,
+    var(--primary, #4a90e2) 0%,
+    var(--secondary, #2c3e50) 100%
+  );
+  color: #fff;
+}
+
+.hero-banner.hero-no-image .hero-overlay {
+  background: rgba(0, 0, 0, 0.18);
 }

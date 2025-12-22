@@ -1,20 +1,33 @@
-<header class="site-header">
-    <div class="container">
-        <div class="header-wrapper">
-            <?php if (!empty($shop_assets['logo'])): ?>
-                <div class="logo-container">
-                    <img src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>" 
-                         alt="<?= htmlspecialchars($supplier['company_name']) ?> Logo" 
-                         class="site-logo">
-                </div>
-            <?php endif; ?>
-            <div class="header-text">
-                <h1 class="site-title"><?= htmlspecialchars($supplier['company_name']) ?></h1>
-                <?php if (!empty($supplier['tagline'])): ?>
-                    <p class="site-tagline"><?= htmlspecialchars($supplier['tagline']) ?></p>
-                <?php endif; ?>
-            </div>
-        </div>
+<link rel="stylesheet" href="../templates/template4/style.css">
+<header class="smart-header">
+    <div class="logo-container">
+        <img src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
+            alt="<?= htmlspecialchars($supplier['company_name']) ?> Logo"
+            class="site-logo">
     </div>
-</header>
+    <ul class="nav-menu">
+        <?php
+        $base_url = "?supplier_id=" . $supplier_id;
+        ?>
+        <li class="nav-item">
+            <a class="nav-link <?= $page === 'home' ? 'active' : '' ?>" href="<?= $base_url ?>&page=home">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?= $page === 'products' ? 'active' : '' ?>" href="<?= $base_url ?>&page=products">Products</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?= $page === 'about' ? 'active' : '' ?>" href="<?= $base_url ?>&page=about">About</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?= $page === 'contact' ? 'active' : '' ?>" href="<?= $base_url ?>&page=contact">Contact</a>
+        </li>
+    </ul>
 
+    <div class="auth-buttons">
+        <!-- <button class="login-link">Log In</button> -->
+    </div>
+
+
+
+
+</header>

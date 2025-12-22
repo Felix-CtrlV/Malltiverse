@@ -1,4 +1,4 @@
-<nav class="main-nav navbar navbar-expand-lg">
+<!-- <nav class="main-nav navbar navbar-expand-lg">
     <div class="container">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -23,5 +23,5 @@
             </ul>
         </div>
     </div>
-</nav>
+</nav> -->
 

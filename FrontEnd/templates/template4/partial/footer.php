@@ -1,43 +1,46 @@
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5><?= htmlspecialchars($supplier['company_name']) ?></h5>
-                    <?php if (!empty($supplier['description'])): ?>
-                        <p><?= htmlspecialchars(substr($supplier['description'], 0, 150)) ?>...</p>
-                    <?php endif; ?>
-                </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="footer-links">
-                        <?php
-                        $base_url = "?supplier_id=" . $supplier_id;
-                        ?>
-                        <li><a href="<?= $base_url ?>&page=home">Home</a></li>
-                        <li><a href="<?= $base_url ?>&page=products">Products</a></li>
-                        <li><a href="<?= $base_url ?>&page=about">About</a></li>
-                        <li><a href="<?= $base_url ?>&page=contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact Info</h5>
-                    <?php if (!empty($supplier['email'])): ?>
-                        <p><i class="bi bi-envelope"></i> <a href="mailto:<?= htmlspecialchars($supplier['email']) ?>"><?= htmlspecialchars($supplier['email']) ?></a></p>
-                    <?php endif; ?>
-                    <?php if (!empty($supplier['phone'])): ?>
-                        <p><i class="bi bi-phone"></i> <?= htmlspecialchars($supplier['phone']) ?></p>
-                    <?php endif; ?>
-                    <?php if (!empty($supplier['address'])): ?>
-                        <p><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($supplier['address']) ?></p>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <hr class="footer-divider">
-            <div class="footer-bottom">
-                <p>&copy; <?= date('Y') ?> <?= htmlspecialchars($supplier['company_name']) ?>. All rights reserved.</p>
-            </div>
-        </div>
+<footer class="main-footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="logo-box">MALL<span>TIVERSE</span></div>
+      <p>Making the world’s data accessible and useful for teams everywhere.</p>
+      <div class="social-icons">
+        <a href="#">𝕏</a>
+        <a href="#">in</a>
+        <a href="#">ig</a>
+      </div>
     </div>
-</footer>
 
+    <div class="footer-links">
+      <div class="link-column">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="link-column">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="link-column">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 AKM Inc. All rights reserved.</p>
+  </div>
+</footer>
