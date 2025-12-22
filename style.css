@@ -3,10 +3,13 @@
     padding:0;
     font-family:"Black Ops One","system-ui";
 }
-body,html{
-    height:100%;
-    overflow:hidden;
+body, html {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
 }
+
 body{
     background:rgb(0, 0,0);
     color:white;
@@ -170,58 +173,138 @@ nav a{
     outline: none;
     
 }
-.footer {
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 40px;
-    margin-top: 80px;
-}
 
-.footer-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 30px;
-}
 
-.footer-section h3,
-.footer-section h4 {
-    margin-bottom: 10px;
-    font-weight: 600;
-}
-
-.footer-section ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-section ul li {
-    margin-bottom: 8px;
-}
-
-.footer-section ul li a {
-    color: #ccc;
-    text-decoration: none;
-}
-
-.footer-section ul li a:hover {
-    color: #fff;
-}
-
-.social-icons a {
-    color: #fff;
-    margin-right: 12px;
-    font-size: 18px;
-}
-
-.footer-bottom {
-    text-align: center;
-    margin-top: 30px;
-    border-top: 1px solid #444;
-    padding-top: 10px;
-    font-size: 14px;
-    color: #aaa;
-}
 .home a{
     font-size:25px;
 }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: radial-gradient(circle at top right, #111827, #000);
+    color: #fff;
+    min-height: 100vh;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 100px 20px 60px;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 500;
+    line-height: 1.2;
+    color: #cbd5e1;
+}
+
+.hero h1 span {
+    color: #fff;
+    font-weight: 700;
+}
+
+.hero p {
+    margin-top: 16px;
+    color: #94a3b8;
+    font-size: 16px;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    padding: 40px 80px 80px;
+}
+
+.card {
+    background: #0b0b0b;
+    border-radius: 18px;
+    padding: 14px;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.card h3 {
+    margin-top: 12px;
+    font-size: 16px;
+}
+
+.card span {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    background: #111;
+}
+
+/* Highlighted card */
+.card.active {
+    background: #f5f5f5;
+    color: #000;
+}
+
+.card.active span {
+    color: #555;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .cards {
+        padding: 20px;
+    }
+}
+body {
+    scroll-snap-type: y mandatory;
+}
+
+.coats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    padding: 40px;
+}
+
+.coat-card {
+    background: #111;
+    padding: 15px;
+    border-radius: 16px;
+    text-align: center;
+    transition: 0.3s ease;
+}
+
+.coat-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.coat-card:hover {
+    transform: translateY(-8px);
+}
+
+.coat-card h3 {
+    margin: 12px 0 6px;
+}
+
+.shirt1{
+    color:white;
+}
+
+
