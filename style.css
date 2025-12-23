@@ -400,13 +400,13 @@ footer {
   font-family: 'Roboto', sans-serif;
   padding: 40px 60px;
   box-sizing: border-box;
+ 
 }
 
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  
-}
+  }
 
 /* Logo on the left */
 .footer-logo {
@@ -496,6 +496,7 @@ footer {
   .footer-links {
     flex-direction: column;
     gap: 30px;
+    margin-top:3500px;
   }
 
   .footer-column {
