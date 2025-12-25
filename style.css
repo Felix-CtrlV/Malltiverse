@@ -282,7 +282,7 @@ p {
 
 .layers-placeholder::after {
     content: '';
-    position: absolute;
+    position:absolute;
     top: -15px;
     left: 0;
     width: 80px;
