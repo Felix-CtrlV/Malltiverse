@@ -13,6 +13,7 @@ $admininfo = mysqli_fetch_assoc($adminresult);
 $name = $admininfo['name'];
 
 $currentPage = basename($_SERVER['PHP_SELF']);
+
 if (!isset($active)) {
     $active = '';
     if ($currentPage === 'dashboard.php')
@@ -43,6 +44,7 @@ if (!isset($pageTitle)) {
     <title><?php echo htmlspecialchars($pageTitle); ?> - Malltiverse Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/adminstyle.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.lordicon.com/lordicon.js"></script>
     <script src="https://kit.fontawesome.com/7867607d9e.js" crossorigin="anonymous"></script>
 </head>
@@ -100,7 +102,7 @@ if (!isset($pageTitle)) {
                     state="hover-partial-roll" colors="primary:#ffffff,secondary:#ffffff"
                     style="width:25px;height:25px">
                 </lord-icon>
-                <span class="nav-label-main">Renting</span>
+                <span class="nav-label-main">Rent</span>
             </a>
         </ul>
 

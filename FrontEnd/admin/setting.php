@@ -5,8 +5,7 @@ include("partials/nav.php");
 ?>
 
 <section class="section active">
-    <p></p>
-    <div class="section-actions">
+    <div class="section-actions" style="justify-content: flex-end;">
         <button class="btn-ghost btn">Cancel</button>
         <button class="btn-primary btn">Save Changes</button>
     </div>
@@ -98,11 +97,17 @@ include("partials/nav.php");
                 </p>
                 <div style="display:flex; flex-direction:column; gap:8px;">
                     <label style="display:flex; align-items:center; gap:8px;">
-                        <input type="checkbox" checked />
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
                         <span>Show quick stats on dashboard</span>
                     </label>
                     <label style="display:flex; align-items:center; gap:8px;">
-                        <input type="checkbox" />
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
                         <span>Dark mode (coming soon)</span>
                     </label>
                 </div>

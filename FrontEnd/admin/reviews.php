@@ -8,8 +8,14 @@ include("partials/nav.php");
     <div class="section-header">
         <p></p>
         <div class="section-actions">
-            <button class="btn-ghost btn">Filter</button>
-            <button class="btn-primary btn">Export Reviews</button>
+            <button class="status-pill btn-ghost btn choose" id="pill">ALL</button>
+            <select class="status-select" style="padding: 4px 12px;" id="status-select"
+                onchange="updatereview(this.value)">
+                <option value="All">All Reviews</option>
+                <option value="Excellent">Excellent (5★)</option>
+                <option value="Average">Average (3-4★)</option>
+                <option value="Poor">Poor (1-2★)</option>
+            </select>
         </div>
     </div>
 
@@ -42,13 +48,20 @@ ORDER BY r.created_at DESC;
                 $result = mysqli_query($conn, $reviewquery);
                 while ($row = mysqli_fetch_assoc($result)) {
                     ?>
-                    <tr>
+                    <tr data-rating="<?php
+                    if ($row['rating'] == 5)
+                        echo 'Excellent';
+                    elseif ($row['rating'] < 3)
+                        echo 'Poor';
+                    else
+                        echo 'Average';
+                    ?>">
                         <td><?= htmlspecialchars($row['customer_name']); ?></td>
                         <td><?= htmlspecialchars($row['company_name']); ?></td>
-                        <td>★<?= $row['rating']; ?></td>
+                        <td><?= $row['rating']; ?><span style="color: #eab308;">★</span></td>
                         <td><?= htmlspecialchars($row['review']); ?></td>
                         <?php
-                        if ($row['rating'] < 3) { ?>
+                        if ($row['rating'] < 3) { ?>    
                             <td><span class="card-chip status-pill status-banned">Poor</span></td>
                             <?php
                         } elseif ($row['rating'] == 5) { ?>
@@ -68,6 +81,26 @@ ORDER BY r.created_at DESC;
 </section>
 
 <script src="script.js"></script>
+
+<script>
+    function updatereview(value) {
+        const rows = document.querySelectorAll("tbody tr");
+        const pill = document.getElementById("pill");
+
+        pill.className = "status-pill btn-ghost btn choose";
+
+        if (value === "Excellent") pill.classList.add("status-active");
+        if (value === "Average") pill.classList.add("status-pending");
+        if (value === "Poor") pill.classList.add("status-banned");
+
+        pill.textContent = value;
+
+        rows.forEach(row => {
+            const rowRating = row.dataset.rating;
+            row.style.display = (value === "All" || rowRating === value) ? "" : "none";
+        });
+    }
+</script>
 </body>
 
 </html>
