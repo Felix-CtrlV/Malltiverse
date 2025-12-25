@@ -220,165 +220,11 @@ body {
     font-size: 16px;
 }
 
-/* CARDS */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 24px;
-    padding: 40px 80px 80px;
-}
-
-.card {
-    background: #0b0b0b;
-    border-radius: 18px;
-    padding: 14px;
-    transition: 0.3s ease;
-    cursor: pointer;
-}
-
-.card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 14px;
-}
-
-.card h3 {
-    margin-top: 12px;
-    font-size: 16px;
-}
-
-.card span {
-    font-size: 13px;
-    color: #9ca3af;
-}
-
-.card:hover {
-    transform: translateY(-8px);
-    background: #111;
-}
-
-/* Highlighted card */
-.card.active{
-    background: #f5f5f5;
-    color: #000;
-}
-
-.card.active span {
-    color: #555;
-}
-
-/* RESPONSIVE */
-@media (max-width: 100%) {
-    .cards {
-        padding: 20px;
-    }
-}
-
-
-.coats-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 25px;
-    padding:5px;
-    width:100%;
-    height:20px;
-    
-}
-
-
-
-/* CARD */
-.coat-card {
-    min-width: 300px;
-    /*background: #111;*/
-    padding: 15px;
-    border-radius: 16px;
-    text-align: center;
-    animation: scroll 20s linear infinite;
-}
-
-/* IMAGE */
-.coat-card img {
-    width:100%;
-    height:200px;
-    object-fit: cover;
-    border-radius:10px;
-}
-
-/* PAUSE ON HOVER */
-.coats-container:hover .coat-card {
-    animation-play-state:running;
-}
-/*.coat-card h3{
-    margin-top:15px;
-}*/
-
-/* KEYFRAMES */
-@keyframes scroll {
-    0% {
-        transform: translateX(0)
-    }
-    100% {
-        transform: translateX(calc(-250px * 8));
-    }
-}
-.coats-container{
-    min-height:200px;
-    width:80vw;
-}
-
-/*3D Introduce*/
-.container {
-    display: flex;
-    gap: 24px;
-    max-width: 1200px;
-    padding: 20px;
-    margin-top:200px;
-}
-
-/* Card Styling */
-.card {
-    background-color: #121212;
-    border-radius: 24px;
-    padding: 48px;
-    width: 500px;
-    height: 450px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    /* Grid background effect */
-    background-image: 
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-}
-.card2 {
-    background-color: #121212;
-    border-radius: 24px;
-    padding: 48px;
-    width: 500px;
-    height: 450px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    /* Grid background effect */
-    background-image: 
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    margin-left:400px;
-}
 
 h2 {
     color: #fff;
     font-size: 1.5rem;
-    margin-bottom: 16px;
-    font-weight: 600;
+    margin-bottom: 1
 }
 
 p {
@@ -450,18 +296,19 @@ p {
     padding: 40px;
     max-width: 1200px;
     margin-top:40px;
+    margin-left:150px;
 }
 
 .feature-card {
-    background-color: var(--card-bg);
-    border-radius: 32px;
-    padding: 48px;
+    background-color: #0a0e14;
+    border-radius: 25px;
+    padding: 40px;
     flex: 1;
     position: relative;
     overflow: hidden;
     min-height: 480px;
     /* Isometric Grid Background */
-
+  
 }
 
 .title {
@@ -471,8 +318,9 @@ p {
     margin-bottom: 16px;
 }
 .text-content{
-    margin-left:180px;
+    text-align: center;
 }
+
 
 .description {
     color: var(--text-muted);
@@ -486,6 +334,7 @@ p {
 .check-list {
     list-style: none;
     padding: 0;
+    margin-right:25px;
 }
 
 .check-list li {
@@ -881,47 +730,213 @@ p {
     }
 }
 
-/*Second Section Scroll*/
-/* 1. The Container: Hide the scrollbar and set the stage */
-.coats-container1 {
+
+
+
+/* Container with a "Fade" effect on the edges */
+/*Moving Section*/
+.brand-section {
   display: flex;
-  overflow: hidden;         /* Hide scrollbar for a clean look */
-  width: 100%;              /* Full width of the parent */
-  /*background: #f4f4f4;*/
-  padding: 20px 0;
+  flex-direction: column;
+  gap: 20px; /* Space between the two rows */
 }
 
-/* 2. The Animation Track */
-/* We apply the animation here or to the cards themselves */
-.coat-card1 {
-  flex: 0 0 auto;           /* Keep cards from shrinking */
-  width: 300px;
-  margin: 0 10px;
-  
-  /* Apply the animation */
-  animation: scroll-right 10s linear infinite;
-}
-
-/* 3. The Keyframes */
-@keyframes scroll-right{
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    /* Adjust this value based on the number of cards and their width */
-   transform: translateX(calc(250px * 4));
-  }
-}
-
-/* Pause animation on hover so users can click links */
-.coats-container1:hover .coat-card {
-  animation-play-state: paused;
-}
-
-/* Basic Image Styling */
-.coat-card1 img {
+.logo-grid, .logo-grid1 {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 8px;
+  height:120px;
+  overflow: hidden;
+  position: relative;
+  background-color: #0a0e14;
+  /* Fade edges effect */
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
+
+/* Track 1: Scrolls Right */
+.logo-track2 {
+  display: flex;
+  width: calc(250px * 12);
+  animation: scrollRight 25s linear infinite;
+}
+
+/* Track 2: Scrolls Left */
+.logo-track {
+  display: flex;
+  width: calc(250px * 12);
+  animation: scrollLeft 28s linear infinite;
+
+}
+
+.logo-item, .logo-item1 {
+  width: 250px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* --- Typography Styles --- */
+.nike-text {
+  font-family: 'Impact', sans-serif;
+  font-size: 2rem;
+  font-style: italic;
+  text-transform: uppercase;
+  color: white;
+  letter-spacing: -2px;
+ 
+}
+
+.burger-king {
+  font-family: 'Arial Rounded MT Bold', sans-serif;
+  font-size: 1.4rem;
+  color: #f5ebdc;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.cosmetics {
+  font-family: 'Didot', serif;
+  font-size: 1.2rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.dior {
+  font-family: 'Baskerville', serif;
+  font-size: 2.2rem;
+  color: white;
+}
+
+.sport-text {
+  font-family: 'Helvetica', sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: white;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.SkinCate-text {
+  font-family: 'Garamond', serif;
+  font-size: 1.8rem;
+  font-style: italic;
+  color: white;
+}
+
+/* --- Keyframes --- */
+
+/* Moves logos from Left to Right */
+@keyframes scrollRight {
+  0% { transform: translateX(calc(-250px * 6)); }
+  100% { transform: translateX(0); }
+}
+
+/* Moves logos from Right to Left */
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-250px * 6)); }
+}
+
+/*Future Shopping Malls CSS Code*/
+/* Heading */
+.main-title {
+  font-size:45px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin-bottom: 60px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Grid and Cards */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 100px;
+}
+
+.feature-card {
+  background-color:#0a0e14;
+  padding: 50px 40px;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.feature-card1 {
+  background-color:#0a0e14;
+  padding: 50px 40px;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.feature-card1:hover {
+  background-color:#0a0e14;
+  padding: 50px 40px;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+/* Hover Effect matching image */
+.feature-card:hover {
+  background: linear-gradient(
+        135deg, 
+        rgba(152, 131, 91, 1) 0%,   /* Gold Bronze */
+        rgba(22, 27, 34, 1) 100%    /* Back to Navy */
+    );
+  transform: translateY(-10px);
+  border: 1px solid #5a5441;
+}
+
+.feature-card .icon {
+  font-size: 1.5rem;
+  color: var(--text-sub);
+  margin-bottom: 40px;
+}
+
+.feature-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.feature-card p {
+  color: var(--text-sub);
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+/* Logo Marquee */
+.logo-marquee {
+  overflow: hidden;
+  padding: 40px 0;
+  border-top: 1px solid #1a1f26;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.logo-track {
+  display: flex;
+  width: calc(250px * 12);
+  animation: scrollLeft 30s linear infinite;
+}
+
+.logo-item {
+  width: 250px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  opacity: 0.6;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-250px * 6)); }
+}
+
