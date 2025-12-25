@@ -172,7 +172,7 @@ nav a{
 }
 
 .btn2:hover {
-
+    background:linear-gradient(45deg,#000dff,#ff00e6,#ff7700);
     transform: scale(1.05);
 }
 
