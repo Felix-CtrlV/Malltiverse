@@ -3,8 +3,21 @@
     padding:0;
     font-family:"Black Ops One","system-ui";
 }
+/* To match the gold color in your image */
+.gold-text, .gold-icon {
+  color: #c5a47e;
+ 
+}
 
-
+/* To match the light silver/white color */
+.featured-title {
+  color: #d1d5db;
+  font-family: sans-serif;
+  letter-spacing: 2px;
+   text-align: center;
+   font-size:40px;
+  
+}
 
 body{
     background:rgb(0, 0,0);
