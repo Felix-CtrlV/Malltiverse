@@ -130,52 +130,80 @@ nav a{
     
 }
 
-/* Common button style */
-.button-group .btn1{
-    padding: 10px 25px;
-    font-size: 15px;
-    border-radius: 30px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s ease;
-   
-
-  
-}
-/* Button 1 */
+/* Button 1 Base State */
 .btn1 {
-   
-    color:white;
-    padding:10px 30px;
-    border-radius:18px;
-    border:none;
-    background:linear-gradient(45deg,#000dff,#ff00e6,#ff7700);
+    color: white;
+    padding: 10px 40px;
+    border-radius: 18px;
+    border: none;
     display: flex;
-    font-size:25px;
-}
-
-.btn1:hover {
-    transform: scale(1.10);
-}
-
-
-/* Button 2 */
-.btn2 {
-    color:white;
-    padding:10px 40px;
-    border-radius:18px;
-    border:none;
-    background:linear-gradient(45deg,#000dff,#ff00e6,#ff7700);
-    display: flex;
-    font-size:15px;
-}
-
-.btn2:hover {
-    transform: scale(1.10);
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
     cursor: pointer;
-    transition: 0.3s ease;
+    
+    /* 1. Expand the gradient so we can move it */
+    background: linear-gradient(45deg, #000dff, #ff00e6, #ff7700, #000dff);
+    background-size: 300% 300%;
+    
+    /* 2. Transition everything smoothly */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn1:hover {
+    /* 3. Scale up with a slight "bounce" effect */
+    transform: scale(1.10);
+    
+    /* 4. Shift the gradient background */
+    background-position: 100% 50%;
+    
+    /* 5. Add a glowing shadow that matches your colors */
+    box-shadow: 0 10px 20px rgba(255, 0, 230, 0.3);
 }
 
+/* Button 2 Click State (Active) */
+.btn1:active {
+    transform: scale(0.95); /* Slight shrink when clicked */
+}
+/*btn1 hover end*/
+
+
+/* Button 2 Start Hover*/
+.btn2 {
+    color: white;
+    padding: 10px 40px;
+    border-radius: 18px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+    
+    /* 1. Expand the gradient so we can move it */
+    background: linear-gradient(45deg, #000dff, #ff00e6, #ff7700, #000dff);
+    background-size: 300% 300%;
+    
+    /* 2. Transition everything smoothly */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Button 2 Hover State */
+.btn2:hover {
+    /* 3. Scale up with a slight "bounce" effect */
+    transform: scale(1.10);
+    
+    /* 4. Shift the gradient background */
+    background-position: 100% 50%;
+    
+    /* 5. Add a glowing shadow that matches your colors */
+    box-shadow: 0 10px 20px rgba(255, 0, 230, 0.3);
+}
+
+/* Button 2 Click State (Active) */
+.btn2:active {
+    transform: scale(0.95); /* Slight shrink when clicked */
+}
+/*btn2 hover end*/
 
 
 .home a{
