@@ -155,16 +155,6 @@ body{
     margin-left:10px;
 
 }
-/*.title{
-    color: #000dff;
-    background:linear-gradient(45deg,#000dff,#ff00e6,#ff7700);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color: transparent;
-    margin-top:250px;
-    font-size:25px;
-    align-items: center;
-    margin: 40px;
-}*/
 .background{
     position: fixed;
     top: 0;
@@ -175,12 +165,7 @@ body{
     z-index:-1;
 }
 
-/*.mainarea h1{
-    text-align: center;
-    margin-top: 170px;
-    margin-bottom:60px;
-  
-}*/
+
 
 /* Button wrapper */
 .button-group {
@@ -1079,7 +1064,7 @@ p {
     height: 450px;
     transform: rotateY(-20deg) rotateX(10deg);
     transform-style: preserve-3d;
-    animation: float 7s ease-in-out infinite;
+    animation: float 5s ease-in-out infinite;
    
 }
 
