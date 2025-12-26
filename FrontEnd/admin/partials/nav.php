@@ -52,7 +52,9 @@ if (!isset($pageTitle)) {
 <body>
     <aside class="sidebar">
         <div class="logo">
-            <div class="logo-icon">M</div>
+            <div class="logo-icon">
+                <i class="fas fa-vr-cardboard"></i>
+            </div>
             <div>
                 <div class="logo-text">Malltiverse</div>
                 <div class="logo-sub">Admin Console</div>
