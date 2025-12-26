@@ -95,7 +95,7 @@
     transition: all 0.3s ease;
 }
 
-.loginform input[type="submit"]:hover {
+.login-btn:hover {
     background: #C6A664;
     color: #121212;
 }

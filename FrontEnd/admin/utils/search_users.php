@@ -40,7 +40,12 @@ if ($userresult->num_rows > 0) {
         <?php
     }
 } else {
-    echo "<tr><td colspan='5' style='text-align:center;'>No users found.</td></tr>";
+    echo "
+    <tr>
+        <td colspan='6' style='text-align:center;padding:30px;color:var(--muted);'>
+            No suppliers found.
+        </td>
+    </tr>";
 }
 
 ?>
