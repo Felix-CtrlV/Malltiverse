@@ -1,5 +1,6 @@
 <?php
-include 'dbconfig.php';
+// Ensure correct path to the central DB config
+include '../../../BackEnd/config/dbconfig.php';
 
 $offset = isset($_POST['offset']) ? (int)$_POST['offset'] : 0;
 $supplier_id = isset($_POST['supplier_id']) ? (int)$_POST['supplier_id'] : 0;

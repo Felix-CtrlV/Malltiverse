@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!noResultsEl) {
       noResultsEl = document.createElement("div");
       noResultsEl.className = "no-results text-center mt-4 alert alert-warning";
-      noResultsEl.textContent = "No products found in this category.";
+      // Show a concise "None" message when a category has no products
+      noResultsEl.textContent = "None";
       noResultsEl.style.display = "none";
       // Insert it after the product grid
       itemsContainer.parentNode.insertBefore(
