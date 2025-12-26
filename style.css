@@ -1017,7 +1017,7 @@ p {
 }
 
 
-/*Example*/
+/*Top Page Design*/
 .virtual-mall-hero {
     display: flex;
     align-items: center;
@@ -1064,7 +1064,7 @@ p {
     height: 450px;
     transform: rotateY(-20deg) rotateX(10deg);
     transform-style: preserve-3d;
-    animation: float 5s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
    
 }
 
