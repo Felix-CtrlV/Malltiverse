@@ -48,17 +48,22 @@ a {
     padding: 10px 8px 20px;
 }
 
+.logo-icon:hover {
+    transform: rotate(-10deg) scale(1.1);
+}
+
 .logo-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    background: conic-gradient(from 180deg, #3b82f6, #22c55e, #f97316, #3b82f6);
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(45deg, #000dff, #ff00e6);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0b1120;
-    font-weight: 700;
-    font-size: 18px;
+    color: white;
+    font-size: 22px;
+    box-shadow: 0 4px 15px rgba(0, 13, 255, 0.3);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .logo-text {

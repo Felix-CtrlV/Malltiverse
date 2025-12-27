@@ -21,10 +21,17 @@ $lastweek = mysqli_fetch_assoc($resultlastweek);
 $thisweekcount = $thisweek['this_week'];
 $lastweekcount = $lastweek['last_week'];
 
-$diff = $thisweekcount - $lastweekcount;
-if ($lastweekcount > 0) {
+$thisweekcount = (int) $thisweek['this_week'];
+$lastweekcount = (int) $lastweek['last_week'];
+
+$diff = 0;
+$percent = 0;
+
+if ($thisweekcount > 0 && $lastweekcount > 0) {
+    $diff = $thisweekcount - $lastweekcount;
     $percent = round(($diff / $lastweekcount) * 100, 1);
-} else {
+} elseif ($thisweekcount > 0 && $lastweekcount == 0) {
+    $diff = $thisweekcount;
     $percent = 100;
 }
 
@@ -92,7 +99,7 @@ $rentrow = mysqli_fetch_assoc($rentresult);
                     <div class="card-title">Total Customers</div>
                     <div class="card-value"><?= $totalcustomer ?></div>
                 </div>
-                <span class="card-chip">+<?= $diff ?> new</span>
+                <span class="card-chip"><?= $diff ?>+ new</span>
             </div>
             <div class="card-trend trend-up">+<?= $percent ?>% vs last week</div>
         </div>
