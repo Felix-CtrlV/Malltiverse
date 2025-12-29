@@ -56,31 +56,22 @@
     </div>
 </section>
 
-            <!--Search Collection -->
-            <script>
-  document.addEventListener("DOMContentLoaded", () => {
+    <!--Search Collection-->
+    <script>
     const searchInput = document.getElementById("searchshop");
-    const productGrid = document.getElementById("suppliertable"); 
+    const tableBody = document.getElementById("suppliertable");
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentSupplierId = urlParams.get('supplier_id');
-    // Also get the search term from the URL if it exists
-    const urlSearchQuery = urlParams.get('search_product') || "";
-
-    if (!currentSupplierId) {
-        if (productGrid) productGrid.innerHTML = "<div class='text-center'>Please select a supplier.</div>";
-        return;
+    function fetchSuppliers(query = "text") {
+        fetch("./utils/search_products.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "search=" + encodeURIComponent(query)
+        })
+            .then(res => res.text())
+            .then(data => {
+                tableBody.innerHTML = data;
+            });
     }
 
-    // Set the input box value to match the URL
-    if (searchInput && urlSearchQuery) {
-        searchInput.value = urlSearchQuery;
-    }
-
-    // Pass the URL search query to the initial fetch
-    fetchProducts(urlSearchQuery);
-
-    // ... rest of your event listener code
-});
-</script>
+    fetchSuppliers();
  

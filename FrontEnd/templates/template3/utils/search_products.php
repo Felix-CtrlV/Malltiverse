@@ -1,76 +1,54 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . "/Malltiverse/BackEnd/config/dbconfig.php");
+// 1. Database Connection
+include("../../BackEnd/dbConfig.php");
 
-// Check both POST (AJAX) and GET (URL) for the search term
-$search = $_POST['search'] ?? $_GET['search_product'] ?? '';
-$supplier_id = $_POST['supplier_id'] ?? $_GET['supplier_id'] ?? null;
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connection failed");
+}
 
-if (!$supplier_id) {
-    echo '<div class="col-12 text-center text-danger">Error: Missing Supplier ID.</div>';
+// 2. Capture parameters from the POST request (sent by your JS)
+$searchTerm = isset($_POST['search']) ? trim($_POST['search']) : '';
+
+// 3. IMPORTANT: Get Supplier ID from the URL (Referer) or pass it in JS body
+// For this example, we assume you are passing it in the 'search' body or via GET
+$supplierId = isset($_GET['supplier_id']) ? $_GET['supplier_id'] : null;
+
+if (!$supplierId) {
+    echo "<tr><td colspan='5' class='text-center text-danger'>Invalid Supplier ID. Please select a shop first.</td></tr>";
     exit;
 }
 
-// Search logic (using % for "contains" is usually better than starts with)
-$searchTerm = "%" . $search . "%"; 
+// 4. Build the Query to filter by BOTH Supplier and Search Term
+$query = "SELECT * FROM products WHERE supplier_id = :sid";
 
-$sql = "SELECT * FROM products WHERE supplier_id = ? AND product_name LIKE ? ORDER BY product_name ASC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("is", $supplier_id, $searchTerm);
+if (!empty($searchTerm)) {
+    $query .= " AND (product_name LIKE :search OR category LIKE :search)";
+}
+
+$stmt = $pdo->prepare($query);
+$stmt->bindValue(':sid', $supplierId, PDO::PARAM_INT);
+
+if (!empty($searchTerm)) {
+    $stmt->bindValue(':search', '%' . $searchTerm . '%', PDO::PARAM_STR);
+}
+
 $stmt->execute();
-$result = $stmt->get_result();
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// ... rest of your display code
-?>
-// OPTION A: "Contains" search (RECOMMENDED for search bars)
-// Finds the text anywhere in the product name
-$searchTerm = "%" . $search . "%"; 
-
-// OPTION B: Keep your original "Starts With" logic
-// $searchTerm = $search . "%"; 
-
-$sql = "SELECT * FROM products WHERE supplier_id = ? AND product_name LIKE ? ORDER BY product_name ASC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("is", $supplier_id, $searchTerm);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    while ($product = $result->fetch_assoc()) {
-        // Construct image path
-        $imgName = $product['product_id'] . "_" . $product['image'];
-        $imgPath = "../uploads/products/" . $imgName;
-        
-        // Use a default image if the specific product image doesn't exist
-        // (Optional check, useful if files get deleted)
-        if(empty($product['image'])) {
-             $displayImg = "../uploads/default_product.png";
-        } else {
-             $displayImg = $imgPath;
-        }
-        ?>
-        
-        <div class="col-md-3 col-sm-6 col-12 mb-4">
-            <div class="card-product image h-100 shadow-sm">
-                <img src="<?= htmlspecialchars($displayImg) ?>" 
-                     class="card-img-top" 
-                     alt="<?= htmlspecialchars($product['product_name']) ?>"
-                     style="height: 200px; object-fit: cover;">
-                     
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card_title text-truncate"><?= htmlspecialchars($product['product_name']) ?></h5>
-                    <p class="card-text price fw-bold text-primary">$<?= number_format($product['price'], 2) ?></p>
-                    
-                    <a href="product_detail.php?id=<?= $product['product_id'] ?>" class="btn-black-rounded mt-auto">Shop Now</a>
-                </div>
-            </div>
-        </div>
-        
-        <?php
+// 5. Output results
+if ($products) {
+    foreach ($products as $row) {
+        echo "<tr>
+                <td>" . htmlspecialchars($row['product_name']) . "</td>
+                <td>" . htmlspecialchars($row['category']) . "</td>
+                <td>$" . number_format($row['price'], 2) . "</td>
+                <td><button class='btn btn-primary' onclick='addToCart(" . $row['id'] . ")'>Add</button></td>
+              </tr>";
     }
 } else {
-    // Message adjusted for "Contains" logic
-    echo '<div class="col-12 text-center py-5">';
-    echo '<p class="text-muted">No products found matching "' . htmlspecialchars($search) . '"</p>';
-    echo '</div>';
+    echo "<tr><td colspan='4' class='text-center'>No products found in this shop.</td></tr>";
 }
 ?>
