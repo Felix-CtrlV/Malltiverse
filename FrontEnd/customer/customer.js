@@ -884,13 +884,13 @@ function createOutside() {
   const dGeo = new THREE.BoxGeometry(3.5, 4.6, 0.15); // Thin doors
   
   const ld = new THREE.Mesh(dGeo, dMat);
-ld.position.set(1.85, 2.5, 0.3);
+ld.position.set(1.85, 2.5, 1);
 ld.userData = { kind: 'mallDoor' };
 dGrp.add(ld);
 clickable.push(ld);
 
 const rd = ld.clone();
-rd.position.set(-1.85, 2.5, 0.3);
+rd.position.set(-1.85, 2.5, 1);
 
 // 🔥 MIRROR IT
 rd.scale.x = -1;
