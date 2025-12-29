@@ -233,18 +233,19 @@ nav .container{
     padding: 20px 15px;
 }
 
-.product-card {
+.card-product {
     transition: transform 0.3s, box-shadow 0.3s;
     border: none;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.product-card:hover {
+.card-product:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 20px rgba(0,0,0,0.15);
 }
 
-.product-card .card-img-top {
+.card-product .card-img-top {
+    object-position: center top;
     height: 400px;
     object-fit: cover;
 }
