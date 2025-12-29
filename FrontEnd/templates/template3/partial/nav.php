@@ -16,11 +16,11 @@
                 </li>   
                 <li class="nav-item">
                     <a class="nav-link <?= $page === 'collection' ? 'active' : '' ?>" href="<?= $base_url ?>&page=collection">Collection</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= $page === 'review' ? 'active' : '' ?>" href="<?= $base_url ?>&page=review">Review</a>
                 </li>                
-            </ul>
-    
-    
-                
+            </ul>                
                 <form class="search-bar">
                     <input type="text" name="search_product" placeholder="Search....." required>
                          <i class="fas fa-search"></i>
