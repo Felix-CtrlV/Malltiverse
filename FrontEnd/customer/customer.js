@@ -657,11 +657,11 @@ function createOutside() {
 
   ambient.intensity = 0.6;
   keyLight.intensity = 1.4;
-  keyLight.position.set(30, 50, 40);
+  keyLight.position.set(20, 50, 40);
   keyLight.color.setHex(0xfffaed);
   keyLight.castShadow = true;
   
-  // Shadow settings
+  // Shadow settings for large exterior
   keyLight.shadow.mapSize.width = 2048;
   keyLight.shadow.mapSize.height = 2048;
   keyLight.shadow.camera.near = 0.5;
@@ -676,315 +676,243 @@ function createOutside() {
   fillLight.color.setHex(0xb0c4de);
 
   // --- 2. MATERIALS ---
-
-  const concreteMat = new THREE.MeshStandardMaterial({ 
+  const pavementMat = new THREE.MeshStandardMaterial({ 
     color: 0xdddddd, 
     roughness: 0.9, 
-    metalness: 0.1,
-  });
-
-  const buildingMat = new THREE.MeshStandardMaterial({ 
-    color: 0xf0f0f0, // White stucco/stone
-    roughness: 0.9, 
-    metalness: 0.0 
-  });
-
-  const frameMat = new THREE.MeshStandardMaterial({ 
-    color: 0x1a1a1a, 
-    roughness: 0.4, 
-    metalness: 0.6 
+    metalness: 0.1 
   });
 
   const glassMat = new THREE.MeshPhysicalMaterial({
-    color: 0xaaddff,
-    metalness: 0.1,
-    roughness: 0.0,
-    transmission: 0.2,
+    color: 0x88ccee,
+    metalness: 0.9,
+    roughness: 0.05,
+    transmission: 0.2, // Slight transparency
     reflectivity: 1.0,
     clearcoat: 1.0,
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.7,
     side: THREE.DoubleSide
   });
 
-  // --- 3. PROCEDURAL STONE TEXTURE GENERATOR ---
-  function createStoneTexture() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 1024;
-    const ctx = canvas.getContext('2d');
-
-    // Base Grout Color
-    ctx.fillStyle = '#555555';
-    ctx.fillRect(0, 0, 1024, 1024);
-
-    // Draw Stones
-    const rows = 16;
-    const cols = 8;
-    const tileW = 1024 / cols;
-    const tileH = 1024 / rows;
-    const gap = 8;
-
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        // Offset every other row for running bond pattern
-        const xOff = (y % 2 === 0) ? 0 : tileW / 2;
-        
-        // Random slight color variation
-        const shade = 180 + Math.random() * 50;
-        ctx.fillStyle = `rgb(${shade},${shade},${shade})`;
-
-        // Draw rounded rect (the stone)
-        const stoneX = (x * tileW) + xOff - (y%2!==0 && x===cols-1 ? tileW*cols : 0);
-        const stoneY = y * tileH;
-        
-        ctx.beginPath();
-        ctx.roundRect(stoneX + gap, stoneY + gap, tileW - gap*2, tileH - gap*2, 10);
-        ctx.fill();
-
-        // Add noise/texture to stone
-        ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.1})`;
-        ctx.fill();
-      }
-    }
-
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(4, 8); 
-    tex.anisotropy = 16;
-    return tex;
-  }
-
-  const stoneTexture = createStoneTexture();
-  // Create a bump map from the texture (cheap way: just use same texture)
-  const stoneMat = new THREE.MeshStandardMaterial({
-    map: stoneTexture,
-    bumpMap: stoneTexture,
-    bumpScale: 0.1,
-    roughness: 0.8,
-    color: 0xdddddd
+  const frameMat = new THREE.MeshStandardMaterial({ 
+    color: 0x222222, 
+    roughness: 0.4, 
+    metalness: 0.8 
   });
 
-  // --- 4. GROUND & WALKWAY ---
+  const slabMat = new THREE.MeshStandardMaterial({ 
+    color: 0xfdfdfd, 
+    roughness: 0.2, 
+    metalness: 0.1 
+  });
 
-  // Main Plaza Floor
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), concreteMat);
+  // --- 3. CURVE LOGIC ---
+  // Calculates Z position and rotation (tangent) for any X along the building face
+  function getBuildingLoc(x) {
+    // Cosine wave: z = base + cos(x) * amp
+    // Center (x=0) pushes out towards camera
+    const freq = 0.08;
+    const amp = 6.0;
+    const baseZ = -18.0;
+
+    const z = baseZ + Math.cos(x * freq) * amp;
+    
+    // Derivative (slope) to find rotation: d/dx(cos) = -sin
+    // We rotate the object to face the normal of the curve
+    const slope = -freq * amp * Math.sin(x * freq);
+    const rotY = Math.atan(slope);
+
+    return { z, rotY };
+  }
+
+  // --- 4. GROUND & WALKWAY ---
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(150, 150), pavementMat);
   ground.rotation.x = -Math.PI / 2;
   ground.position.y = 0;
   ground.receiveShadow = true;
   scene.add(ground);
 
-  // Stone Walkway (Leading to door)
-  // Width 8, Length 40 (starts at z=20, ends at z=-20)
-  const walkway = new THREE.Mesh(new THREE.PlaneGeometry(10, 45), stoneMat);
+  // Stone Walkway leading to entrance
+  const walkway = new THREE.Mesh(new THREE.PlaneGeometry(12, 50), new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.8 }));
   walkway.rotation.x = -Math.PI / 2;
-  walkway.position.set(0, 0.02, 5); // Slightly above ground to prevent z-fighting
+  walkway.position.set(0, 0.02, 10);
   walkway.receiveShadow = true;
   scene.add(walkway);
 
-  // --- 5. GRASS (Instanced) ---
+  // Grass Patches
+  function createGrass(x, z, w, d) {
+    const g = new THREE.Mesh(new THREE.BoxGeometry(w, 0.3, d), new THREE.MeshStandardMaterial({ color: 0x55aa55, roughness: 1 }));
+    g.position.set(x, 0.15, z);
+    scene.add(g);
+  }
+  createGrass(-20, 10, 20, 30);
+  createGrass(20, 10, 20, 30);
+
+  // --- 5. MODERN CURVED BUILDING ---
+  const bWidth = 90;
+  const bHeight = 24;
+  const segs = 120; // High segments for smooth curve
+
+  // A. Glass Curtain Wall (Deformed Plane)
+  const wallGeo = new THREE.PlaneGeometry(bWidth, bHeight, segs, 1);
+  const posAttribute = wallGeo.attributes.position;
+
+  for (let i = 0; i < posAttribute.count; i++) {
+    const x = posAttribute.getX(i);
+    const { z } = getBuildingLoc(x);
+    posAttribute.setZ(i, z);
+  }
+  wallGeo.computeVertexNormals();
+
+  const building = new THREE.Mesh(wallGeo, glassMat);
+  building.position.y = bHeight / 2;
+  building.castShadow = true;
+  building.receiveShadow = true;
+  scene.add(building);
+
+  // B. Horizontal Floor Slabs (Ribbons)
+  function createRibbon(yPos, height) {
+    const bandGeo = new THREE.PlaneGeometry(bWidth, height, segs, 1);
+    const pos = bandGeo.attributes.position;
+    
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const loc = getBuildingLoc(x);
+      
+      // Offset slightly forward based on normal so it sits on top of glass
+      const offset = 0.3; 
+      const nx = -Math.sin(loc.rotY);
+      const nz = Math.cos(loc.rotY);
+      
+      pos.setXYZ(i, x + nx * offset, pos.getY(i), loc.z + nz * offset);
+    }
+    bandGeo.computeVertexNormals();
+    
+    const band = new THREE.Mesh(bandGeo, slabMat);
+    band.position.y = yPos;
+    band.castShadow = true;
+    band.receiveShadow = true;
+    scene.add(band);
+  }
+
+  createRibbon(0.5, 1.0);  // Base
+  createRibbon(8.0, 0.8);  // 1st Floor
+  createRibbon(16.0, 0.8); // 2nd Floor
+  createRibbon(23.5, 1.2); // Roof coping
+
+  // C. Vertical Mullions (Frames)
+  const mulGeo = new THREE.BoxGeometry(0.15, bHeight, 0.3);
+  const numMullions = 36;
+  for (let i = 0; i <= numMullions; i++) {
+    const t = i / numMullions;
+    const x = -bWidth / 2 + t * bWidth;
+    const loc = getBuildingLoc(x);
+    
+    const m = new THREE.Mesh(mulGeo, frameMat);
+    m.position.set(x, bHeight / 2, loc.z);
+    m.rotation.y = loc.rotY;
+    scene.add(m);
+  }
+
+  // --- 6. ENTRANCE (Dynamic & Attached) ---
+  const entLoc = getBuildingLoc(0); // Get center position/rotation
   
-  function createGrassPatch(xPos, zPos, width, depth, count) {
-    // Planter Box
-    const borderSize = 0.3;
-    const pHeight = 0.4;
-    const planterGeo = new THREE.BoxGeometry(width + borderSize, pHeight, depth + borderSize);
-    const planter = new THREE.Mesh(planterGeo, new THREE.MeshStandardMaterial({color: 0x888888}));
-    planter.position.set(xPos, pHeight/2, zPos);
-    planter.castShadow = true;
-    planter.receiveShadow = true;
-    scene.add(planter);
-
-    const soil = new THREE.Mesh(new THREE.BoxGeometry(width, 0.1, depth), new THREE.MeshStandardMaterial({color: 0x3d2817}));
-    soil.position.set(xPos, pHeight, zPos);
-    scene.add(soil);
-
-    // Grass Blades
-    const bladeGeo = new THREE.ConeGeometry(0.04, 0.5, 2);
-    bladeGeo.translate(0, 0.25, 0);
-    const bladeMat = new THREE.MeshStandardMaterial({color: 0x4caf50, side: THREE.DoubleSide});
-    const instancedGrass = new THREE.InstancedMesh(bladeGeo, bladeMat, count);
-    
-    const dummy = new THREE.Object3D();
-    const _color = new THREE.Color();
-    for(let i=0; i<count; i++) {
-        dummy.position.set(
-            xPos + (Math.random()-0.5)*width,
-            pHeight,
-            zPos + (Math.random()-0.5)*depth
-        );
-        dummy.rotation.y = Math.random() * Math.PI;
-        dummy.rotation.x = (Math.random()-0.5)*0.3;
-        dummy.scale.setScalar(0.8 + Math.random()*0.5);
-        dummy.updateMatrix();
-        instancedGrass.setMatrixAt(i, dummy.matrix);
-        _color.setHex(0x4caf50);
-        _color.offsetHSL(0, 0, (Math.random()-0.5)*0.1);
-        instancedGrass.setColorAt(i, _color);
-    }
-    instancedGrass.instanceColor.needsUpdate = true; // Use instanceColor
-    instancedGrass.receiveShadow = true;
-    scene.add(instancedGrass);
-  }
-
-  createGrassPatch(-16, 5, 12, 20, 4000);
-  createGrassPatch(16, 5, 12, 20, 4000);
-
-  // --- 6. BUILDING & WINDOWS ---
-
-  const bWidth = 60;
-  const bHeight = 18;
-  const mainBuilding = new THREE.Mesh(new THREE.BoxGeometry(bWidth, bHeight, 20), buildingMat);
-  // Building front face is at Z = -10 (-20 center + 10 half-depth)
-  mainBuilding.position.set(0, bHeight/2, -20); 
-  mainBuilding.castShadow = true;
-  mainBuilding.receiveShadow = true;
-  scene.add(mainBuilding);
-
-  // Roof
-  const roof = new THREE.Mesh(new THREE.BoxGeometry(bWidth+1, 1, 21), new THREE.MeshStandardMaterial({color: 0x333333}));
-  roof.position.set(0, bHeight+0.5, -20);
-  scene.add(roof);
-
-  // Window Generator
-  function createWindowPanel(w, h, divX, divY) {
-    const g = new THREE.Group();
-    // Thicker frame that sticks out
-    const thick = 0.2; 
-    const depth = 0.3; 
-    
-    // Frame Material
-    const fMat = frameMat;
-
-    // Outer Frame
-    const top = new THREE.Mesh(new THREE.BoxGeometry(w, thick, depth), fMat);
-    top.position.set(0, h/2-thick/2, 0); g.add(top);
-    
-    const bot = top.clone();
-    bot.position.set(0, -h/2+thick/2, 0); g.add(bot);
-    
-    const left = new THREE.Mesh(new THREE.BoxGeometry(thick, h, depth), fMat);
-    left.position.set(-w/2+thick/2, 0, 0); g.add(left);
-    
-    const right = left.clone();
-    right.position.set(w/2-thick/2, 0, 0); g.add(right);
-
-    // Mullions
-    for(let i=1; i<divX; i++) {
-        const m = new THREE.Mesh(new THREE.BoxGeometry(0.08, h, depth*0.8), fMat);
-        m.position.set(-w/2 + (w/divX)*i, 0, 0); g.add(m);
-    }
-    for(let i=1; i<divY; i++) {
-        const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.08, depth*0.8), fMat);
-        m.position.set(0, -h/2 + (h/divY)*i, 0); g.add(m);
-    }
-
-    // Glass (Set slightly back from frame, but clearly visible)
-    const glass = new THREE.Mesh(new THREE.PlaneGeometry(w-0.1, h-0.1), glassMat);
-    glass.position.set(0, 0, 0);
-    g.add(glass);
-
-    return g;
-  }
-
-  // FIX: Position windows at Z = -9.85. 
-  // Since building face is at -10, this puts them 0.15 units IN FRONT of the wall.
-  // The frame depth is 0.3, so it will look embedded but sticking out.
-  const winZ = -9.85; 
-
-  // Center Atrium Window
-  const atriumWin = createWindowPanel(14, 11, 4, 3);
-  atriumWin.position.set(0, 11.5, winZ + 0.2); // Stick out a bit more for the atrium
-  scene.add(atriumWin);
-
-  // Left Windows
-  for(let i=0; i<3; i++) {
-    const w = createWindowPanel(4.5, 4, 2, 2);
-    w.position.set(-14 - (i*7), 4, winZ);
-    w.castShadow = true;
-    scene.add(w);
-  }
-  for(let i=0; i<3; i++) {
-    const w = createWindowPanel(4.5, 4, 2, 2);
-    w.position.set(-14 - (i*7), 12, winZ);
-    w.castShadow = true;
-    scene.add(w);
-  }
-
-  // Right Windows
-  for(let i=0; i<3; i++) {
-    const w = createWindowPanel(4.5, 4, 2, 2);
-    w.position.set(14 + (i*7), 4, winZ);
-    w.castShadow = true;
-    scene.add(w);
-  }
-  for(let i=0; i<3; i++) {
-    const w = createWindowPanel(4.5, 4, 2, 2);
-    w.position.set(14 + (i*7), 12, winZ);
-    w.castShadow = true;
-    scene.add(w);
-  }
-
-  // --- 7. ENTRANCE ---
-
-  // Canopy
-  const canopy = new THREE.Mesh(new THREE.BoxGeometry(18, 0.5, 6), frameMat);
-  canopy.position.set(0, 6, -7); // Sticks out to -4
-  canopy.castShadow = true;
-  canopy.receiveShadow = true;
-  scene.add(canopy);
-
-  // Canopy Supports
-  const colGeo = new THREE.CylinderGeometry(0.25, 0.25, 6, 12);
-  const col1 = new THREE.Mesh(colGeo, new THREE.MeshStandardMaterial({color: 0x555555}));
-  col1.position.set(-8, 3, -5); scene.add(col1);
-  const col2 = col1.clone();
-  col2.position.set(8, 3, -5); scene.add(col2);
-
   const doorGroup = new THREE.Group();
-  doorGroup.position.set(0, 0, -10);
+  // Position group exactly on the curve at x=0
+  doorGroup.position.set(0, 0, entLoc.z); 
+  doorGroup.rotation.y = entLoc.rotY;
   scene.add(doorGroup);
 
+  // Large Canopy sticking out
+  const canopy = new THREE.Mesh(new THREE.BoxGeometry(14, 0.4, 10), slabMat);
+  canopy.position.set(0, 6.5, 5);
+  canopy.castShadow = true;
+  doorGroup.add(canopy);
+
+  // Canopy Columns
+  const colGeo = new THREE.CylinderGeometry(0.2, 0.2, 6.5);
+  const c1 = new THREE.Mesh(colGeo, frameMat); c1.position.set(-6, 3.25, 9); doorGroup.add(c1);
+  const c2 = c1.clone(); c2.position.set(6, 3.25, 9); doorGroup.add(c2);
+
   // Door Frame
-  const dFrame = new THREE.Mesh(new THREE.BoxGeometry(6.5, 4.5, 0.4), frameMat);
-  dFrame.position.set(0, 2.25, 0.2);
-  dFrame.castShadow = true;
+  const dFrame = new THREE.Mesh(new THREE.BoxGeometry(8, 5, 0.6), frameMat);
+  dFrame.position.set(0, 2.5, 0.2);
   doorGroup.add(dFrame);
 
-  // Doors (Clickable)
-  const dPanelGeo = new THREE.BoxGeometry(2.8, 4.0, 0.15);
-  const lDoor = new THREE.Mesh(dPanelGeo, glassMat);
-  lDoor.position.set(-1.5, 2.25, 0.25);
+  // Glass Doors (Clickable)
+  const doorGeo = new THREE.BoxGeometry(3.5, 4.6, 0.15);
+  const lDoor = new THREE.Mesh(doorGeo, glassMat);
+  lDoor.position.set(-1.85, 2.5, 0.25);
   lDoor.userData = { kind: 'mallDoor' };
   doorGroup.add(lDoor);
   clickable.push(lDoor);
 
   const rDoor = lDoor.clone();
-  rDoor.position.set(1.5, 2.25, 0.25);
+  rDoor.position.set(1.85, 2.5, 0.25);
   rDoor.userData = { kind: 'mallDoor' };
   doorGroup.add(rDoor);
   clickable.push(rDoor);
 
   // Handles
-  const hGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.2, 8);
-  const hMat = new THREE.MeshStandardMaterial({color: 0xffffff, metalness: 1, roughness: 0.2});
-  const h1 = new THREE.Mesh(hGeo, hMat); h1.position.set(-0.3, 2.25, 0.35); doorGroup.add(h1);
-  const h2 = h1.clone(); h2.position.set(0.3, 2.25, 0.35); doorGroup.add(h2);
+  const hGeo = new THREE.BoxGeometry(0.08, 1.8, 0.08);
+  const h1 = new THREE.Mesh(hGeo, frameMat); h1.position.set(-0.5, 0, 0.15); lDoor.add(h1);
+  const h2 = h1.clone(); h2.position.set(0.5, 0, 0.15); rDoor.add(h2);
 
-  // Signage
+  // 3D Signage on Canopy
   const signTex = makeTextTexture('MALLTIVERSE', {
-    width: 1024, height: 256, bg: 'rgba(0,0,0,0)', color: '#222222', font: 'bold 120px Inter, Arial'
+    width: 1024, height: 256, bg: 'rgba(0,0,0,0)', color: '#111', font: '900 120px Inter, sans-serif'
   });
   const sign = new THREE.Mesh(new THREE.PlaneGeometry(12, 3), new THREE.MeshStandardMaterial({map: signTex, transparent: true}));
-  sign.position.set(0, 7.5, -9.8);
-  scene.add(sign);
+  sign.position.set(0, 8.0, 5); // Sitting on top of canopy
+  doorGroup.add(sign);
+
+  // --- 7. STREET LIGHTS ---
+  function createLightPole(x, z) {
+    const g = new THREE.Group();
+    g.position.set(x, 0, z);
+
+    // Pole
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 7), frameMat);
+    pole.position.y = 3.5;
+    g.add(pole);
+
+    // Arm
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 2), frameMat);
+    arm.position.set(0.8, 6.8, 0);
+    g.add(arm);
+
+    // Lamp Head
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 8, 1, true), frameMat);
+    head.position.set(1.8, 6.6, 0);
+    g.add(head);
+
+    // Bulb Glow
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+    bulb.position.set(1.8, 6.5, 0);
+    g.add(bulb);
+
+    // Real Light
+    const spot = new THREE.SpotLight(0xffaa00, 8, 25, 0.8, 0.5, 1);
+    spot.position.set(1.8, 6.5, 0);
+    spot.target.position.set(1.8, 0, 0);
+    spot.castShadow = true;
+    g.add(spot);
+    g.add(spot.target);
+
+    scene.add(g);
+  }
+
+  // Add poles along the path
+  createLightPole(-7, 10);
+  createLightPole(7, 10);
+  createLightPole(-7, 28);
+  createLightPole(7, 28);
 
   // --- 8. CAMERA ---
-  camera.position.set(0, 2.5, 25);
-  state.cameraTargetPos.set(0, 2.5, 25);
-  state.cameraLookAt.set(0, 4, 0);
-  state.cameraTargetLookAt.set(0, 4, 0);
+  camera.position.set(0, 2.5, 35);
+  state.cameraTargetPos.set(0, 2.5, 35);
+  state.cameraLookAt.set(0, 6, 0);
+  state.cameraTargetLookAt.set(0, 6, -10);
 }
 
 function createHallway() {
