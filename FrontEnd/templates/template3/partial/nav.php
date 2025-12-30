@@ -34,8 +34,4 @@
             <i class="fas fa-search"></i>
         </div>
     </div>
-<<<<<<< HEAD
 </nav>
-=======
-</nav>
->>>>>>> ebac45861dd6a2cd4d6f9033acb156f454a5d0d8
