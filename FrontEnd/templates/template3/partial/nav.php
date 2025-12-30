@@ -54,7 +54,11 @@
                     href="<?= $base_url ?>&page=collection">Collection</a>
             </li>
         </ul>
+<<<<<<< HEAD
 >>>>>>> 20da0d89b5d02c4796792814d73fa12757885793
+=======
+>>>>>>> eb2df2a0486a205b6257d1e4ad15e7395208bc45
+>>>>>>> 8f183c712c93c726f48f06d98f26c9dfd0501b1c
 
         <form class="search-bar">
             <input type="text" name="search_product" id="searchBar" placeholder="Search.....">

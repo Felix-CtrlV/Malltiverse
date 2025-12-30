@@ -3,6 +3,7 @@
         <div class="collectionContainer"></div>
         <h2 class="text-center mb-5">Latest Products</h2>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div class="row g-4">
 
               <?php
@@ -28,11 +29,15 @@
 =======
         <div class="row g-4" id="productResults">
 >>>>>>> 20da0d89b5d02c4796792814d73fa12757885793
+=======
+        <div class="row g-4" id="productResults">
+>>>>>>> 8f183c712c93c726f48f06d98f26c9dfd0501b1c
 
         </div>
     </div>
 </section>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -42,6 +47,8 @@
     
  
 =======
+=======
+>>>>>>> 8f183c712c93c726f48f06d98f26c9dfd0501b1c
 <script>
     const searchInput = document.getElementById("searchBar");
     const resultContainer = document.getElementById("productResults");
@@ -72,5 +79,9 @@
         });
     }
 
+<<<<<<< HEAD
 </script>
 >>>>>>> 20da0d89b5d02c4796792814d73fa12757885793
+=======
+</script>
+>>>>>>> 8f183c712c93c726f48f06d98f26c9dfd0501b1c
