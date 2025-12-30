@@ -1,6 +1,13 @@
+<?php
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <nav class="main-nav navbar navbar-expand-lg">
     <div class="container">
+
         <ul class="navbar-nav me-auto">
             <?php
             $base_url = "?supplier_id=" . $supplier_id;
@@ -22,10 +29,9 @@
             </li>
         </ul>
 
-        <form class="search-bar">
+        <div class="search-bar">
             <input type="text" name="search_product" id="searchBar" placeholder="Search.....">
             <i class="fas fa-search"></i>
-        </form>
+        </div>
     </div>
 </nav>
-
