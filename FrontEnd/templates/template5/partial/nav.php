@@ -1,5 +1,5 @@
 <?php
-  if (session_status() == PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 ?>
@@ -13,25 +13,27 @@
             $base_url = "?supplier_id=" . $supplier_id;
             ?>
             <li class="nav-item">
-                <a class="nav-link <?= $page === 'home' ? 'active' : '' ?>" href="<?= $base_url ?>&page=home">Home</a>
+                <a class="nav-link <?= $page === 'home' ? '' : '' ?>"
+                    href="<?= $base_url ?>&page=home">Home</a>
             </li>
+           
             <li class="nav-item">
                 <a class="nav-link <?= $page === 'products' ? 'active' : '' ?>"
-                    href="<?= $base_url ?>&page=products">Shop</a>
+                    href="<?= $base_url ?>&page=products">Products</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= $page === 'about' ? 'active' : '' ?>" href="<?= $base_url ?>&page=about">About
                     Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?= $page === 'collection' ? 'active' : '' ?>"
-                    href="<?= $base_url ?>&page=collection">Collection</a>
+                <a class="nav-link <?= $page === 'contact' ? 'active' : '' ?>"
+                    href="<?= $base_url ?>&page=contact">Contact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= $page === 'review' ? 'active' : '' ?>"
+                    href="<?= $base_url ?>&page=review">Review</a>
             </li>
         </ul>
 
-        <div class="search-bar">
-            <input type="text" name="search_product" id="searchBar" placeholder="Search.....">
-            <i class="fas fa-search"></i>
-        </div>
-    </div>
+      
 </nav>
