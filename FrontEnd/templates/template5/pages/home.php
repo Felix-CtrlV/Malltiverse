@@ -19,7 +19,8 @@ $current_page = 'home.php';
     <i class="fa-solid fa-clock"></i> Luxury Watch
 </span>
         <h2 class="home" style="width:500px;"><?= $shop_assets['description']?></h2>
-        <p class="hero-description"><b><i>Discover Your Favorite Smart Watch.</b></i></p> 
+       
+       
         <br>
         <a href="?supplier_id=<?= $supplier['supplier_id'] ?>&page=products" class="btn-shop-now">
          SHOP NOW
