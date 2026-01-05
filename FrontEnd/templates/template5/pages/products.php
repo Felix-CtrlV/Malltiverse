@@ -1,63 +1,109 @@
-<section class="page-content product-page">
+<section class="page-content product-page" style="min-height: 80vh;">
     <div class="container">
-        <h2 class="text-center">Our Products</h2>
-        <div class="row g-4">
-        <div class="welcome-section text-center py-1">
-            <?php if (!empty($supplier['description'])): ?>                
-            <?php endif; ?>
-        </div>
+        <h2 class="text-center mb-4"><i>2026 Luxury Watch List</i></h2>
         
-        <div class="featured-section mt-9">
-            <div class="row g-4">
-                <?php
-                $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE supplier_id = ? LIMIT 6");
-                if ($products_stmt) {
-                    mysqli_stmt_bind_param($products_stmt, "i", $supplier_id);
-                    mysqli_stmt_execute($products_stmt);
-                    $products_result = mysqli_stmt_get_result($products_stmt);
-                } else {
-                    $products_result = false; //query fail
-                }
-                
-                $shown_category = [];
-                if ($products_result && mysqli_num_rows($products_result) > 0) {
-                    while ($product = mysqli_fetch_assoc($products_result)) {
-                        $categoryquery = "select * from category where category_id = $product[category_id]";
-                        $category_result = mysqli_query($conn, $categoryquery);
-                        $category_row = mysqli_fetch_assoc($category_result);
-                        if (in_array($category_row['category_name'], $shown_category)) { //one time show category
-                        continue; //if shown skip continue
-                        }
 
-                    $shown_category[] = $category_row['category_name'];
-                ?>
-                    <div class="col-md-4 col-sm-6">           
-                        <div class="card product-card h-100">
-                            <?php if (!empty($product['image'])): ?> 
-                                <img src="../uploads/products/<?= $product['product_id'] ?>_<?= htmlspecialchars($product['image']) ?>" 
-                                     class="card-img-top" 
-                                     alt="<?= htmlspecialchars($category_row['category_name']) ?>">
-                                     <h3 class="category_name"><?= $category_row['category_name'] ?></h3>                
-                                     <a href="?supplier_id=<?= $supplier['supplier_id']?>&category_id=<?= $category_row['category_id'] ?>&page=collection" class="btn btn-primary btn-view">View</a> 
-                                <?php endif; ?>
-                        </div>
-                    </div>                    
-                <?php
-                    }
-                    if (isset($products_stmt)) {
-                        mysqli_stmt_close($products_stmt);
-                    }
-                } else {
-                ?>
-                    <div class="col-12">
-                        <p class="text-center">No featured products available at the moment.</p>
-                    </div>
+        <div class="search-container">
+            <form action="" method="GET" class="d-flex" onsubmit="event.preventDefault();">
+                <input type="hidden" name="supplier_id" value="<?= $supplier_id ?>">
+                <input class="form-control me-2" type="search" name="query" id="searchBar"
+                       placeholder="Search products..." aria-label="Search">
+                <button class="btn btn-outline-primary" type="button" onclick="fetchProduct(document.getElementById('searchBar').value)">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
 
-                <?php } ?>
+        <div class="featured-section mt-4">
+            <div class="row g-4" id="productResults">
+                <div class="col-12 text-center">
+                    <p>Loading products...</p>
+                </div>
             </div>
         </div>
     </div>
 </section>
-    
-         
-    
+
+   
+    <script>
+    const searchInput = document.getElementById("searchBar");
+    const resultContainer = document.getElementById("productResults");
+
+    if (searchInput && resultContainer) {
+        let supplierId = <?= json_encode($supplier_id) ?>;
+
+       
+        function fetchProduct(query = "") {
+            
+            fetch("../templates/template5/utils/search.php?supplier_id=" + supplierId, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "search=" + encodeURIComponent(query)
+            })
+            .then(res => res.text())
+            .then(data => {
+                resultContainer.innerHTML = data;
+            })
+            .catch(err => {
+                console.error("Error fetching products:", err);
+                resultContainer.innerHTML = '<p class="text-danger text-center">Error loading products.</p>';
+            });
+        }
+
+      
+        fetchProduct(""); 
+        
+
+        let debounceTimer;
+        searchInput.addEventListener("keyup", () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                fetchProduct(searchInput.value);
+            }, 300);
+        });
+    }
+</script>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h2 class="footer-logo">LUXURY<span>WATCH</span></h2>
+            <p>Providing high-quality products 2026. Quality you can trust, delivered to your door.</p>
+            <div class="social-links">
+                <a href=""><i class="fab fa-facebook-f"></i></a>
+                <a href=""><i class="fab fa-instagram"></i></a>
+                <a href=""><i class="fab fa-twitter"></i></a>
+                <a href=""><i class="fab fa-viber"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="products.php">Products</a></li>
+                <li><a href="about.php">About Us</a></li>
+                <li><a href="contact.php">Contact Us</a></li>
+                <li><a href="review.php">Review</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Contact Us</h3>
+            <p><i class="fas fa-envelope"></i> kaungpyaesone@gmail.com</p>
+            <p><i class="fas fa-envelope"></i> kaungswanthaw@gmail.com</p>
+            <p><i class="fas fa-phone"></i> +95 123456</p>
+            <p><i class="fas fa-map-marker-alt"></i> Metro IT and Japanese Language Center</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; <?php echo date("Y"); ?> <span>MALLTIVERSE</span>. All rights reserved.</p>
+        
+
+    </div>
+</footer>

@@ -1,4 +1,3 @@
-
 <?php
 $current_page = 'home.php';
 ?>
@@ -19,8 +18,9 @@ $current_page = 'home.php';
        <span class="category-title">
     <i class="fa-solid fa-clock"></i> Luxury Watch
 </span>
-        <h2>New collection<br>for Luxury Watch</h2>
-        <p class="hero-description"><b><i>Discover Your Favorite Smart Watch.</b></i></p> 
+        <h2 class="home" style="width:500px;"><?= $shop_assets['description']?></h2>
+       
+       
         <br>
         <a href="?supplier_id=<?= $supplier['supplier_id'] ?>&page=products" class="btn-shop-now">
          SHOP NOW
@@ -40,10 +40,11 @@ $current_page = 'home.php';
     <!--Contact Section -->
 
 <section class="hero">
-    <div class="hero-content">
+    <div class="hero-content1">
         <span class="subtitle">Handcrafted Excellence</span>
         <h1>Precision in Every Second</h1>
         <p>Discover the art of horology with our limited edition 2025 collection.</p>
+        <br>
         <a href="#" class="btn-primary">Explore Collection</a>
     </div>
 </section>
@@ -65,31 +66,42 @@ $current_page = 'home.php';
 
     <!--Footer Section-->
 
-<footer class="luxury-footer">
-    <div class="footer-grid">
-        <div class="footer-brand">
-            <h2>MALLTIVERSE</h2>
-            <p><i>Every moment is precious.</i></p>
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h2 class="footer-logo">LUXURY<span>WATCH</span></h2>
+            <p>Providing high-quality products 2026. Quality you can trust, delivered to your door.</p>
+            <div class="social-links">
+                <a href=""><i class="fab fa-facebook-f"></i></a>
+                <a href=""><i class="fab fa-instagram"></i></a>
+                <a href=""><i class="fab fa-twitter"></i></a>
+                <a href=""><i class="fab fa-viber"></i></a>
+            </div>
         </div>
-        
-        <div class="footer-links">
-            <h4>Collections</h4>
+
+        <div class="footer-section">
+            <h3>Quick Links</h3>
             <ul>
-                <li class="nav-item"><a href="">Chronograph</a></li>
-                <li class="nav-item"><a href="">Diving</a></li>
-                <li class="nav-item"><a href="">Minimalist</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="products.php">Products</a></li>
+                <li><a href="about.php">About Us</a></li>
+                <li><a href="contact.php">Contact Us</a></li>
+                <li><a href="review.php">Review</a></li>
             </ul>
         </div>
-        <div class="footer-links">
-            <h4>Support</h4>
-            <ul>
-                <li class="nav-item"><a href="">Servicing</a></li>
-                <li class="nav-item"><a href="">Warranty</a></li>
-                <li class="nav-item"><a href="">Contact</a></li>
-            </ul>
+
+        <div class="footer-section">
+            <h3>Contact Us</h3>
+            <p><i class="fas fa-envelope"></i> kaungpyaesone@gmail.com</p>
+            <p><i class="fas fa-envelope"></i> kaungswanthaw@gmail.com</p>
+            <p><i class="fas fa-phone"></i> +95 123456</p>
+            <p><i class="fas fa-map-marker-alt"></i> Metro IT and Japanese Language Center</p>
         </div>
     </div>
+
     <div class="footer-bottom">
-       <b> <p>&copy; 2025 MALLTIVERSE Luxury Watches. All Rights Reserved.</p></b>
+        <p>&copy; <?php echo date("Y"); ?> <span>MALLTIVERSE</span>. All rights reserved.</p>
+        
+
     </div>
 </footer>

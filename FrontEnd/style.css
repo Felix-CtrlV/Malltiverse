@@ -45,6 +45,11 @@ html {
     transition: 0.3s ease;
 }
 
+#message{
+    color: red;
+    font-size: 10px;
+}
+
 .logo-icon {
     width: 42px;
     height: 42px;
@@ -925,7 +930,6 @@ p {
     }
 }
 
-<<<<<<< HEAD
 /*Second Section Scroll*/
 /* 1. The Container: Hide the scrollbar and set the stage */
 .coats-container1 {
@@ -1456,4 +1460,3 @@ p {
     opacity: 1;
     visibility: visible;
 }
-
