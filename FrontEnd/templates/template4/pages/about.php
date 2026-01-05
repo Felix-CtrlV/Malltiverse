@@ -249,6 +249,10 @@ $accent_color = $shop_assets['primary_color'] ?? '#D4AF37'; // Use DB color or G
         box-shadow: 0 0 10px rgba(255, 255, 255, 0.02);
     }
 
+    .orbit-ring img {
+        border-radius: 50%;
+    }
+
     .ring-outer {
         width: 380px;
         height: 380px;
@@ -280,6 +284,8 @@ $accent_color = $shop_assets['primary_color'] ?? '#D4AF37'; // Use DB color or G
         filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
         animation: levitate 5s ease-in-out infinite;
     }
+
+
 
     /* Animation Keyframes */
     @keyframes grid-scroll {
@@ -378,7 +384,7 @@ $accent_color = $shop_assets['primary_color'] ?? '#D4AF37'; // Use DB color or G
                 <div class="orbit-ring ring-inner"></div>
 
                 <img src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
-                    alt="<?= htmlspecialchars($company_name) ?>"
+                    alt="<?= htmlspecialchars($company_name) ?>" style="border-radius: 50%;"
                     class="levitating-logo">
             </div>
         </div>
