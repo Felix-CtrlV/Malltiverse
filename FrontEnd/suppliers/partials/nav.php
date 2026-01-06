@@ -184,7 +184,7 @@ $orders = [
                 <a href="#">Rent Payment</a>
                 <a href="#">Settings</a>
             </nav>
-            <button class="btn-logout" onclick="window.location.href='../utils/signout.php'">Logout</button>
+            <button class="btn-logout" onclick="window.location.href='../index.html'">Logout</button>
         </div>
     </header>
     <div class="container">
