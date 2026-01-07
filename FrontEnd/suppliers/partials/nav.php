@@ -116,7 +116,7 @@ if (!isset($active)) {
         $active = "dashboard";
     elseif ($current_page === "monthlypayment.php")
         $active = "monthlypayment";
-    elseif ($current_page === "setting.php")
+    elseif ($current_page === "setting.php"|| $current_page === "customize.php")
         $active = "setting";
     elseif ($current_page === "inventory.php")
         $active = "inventory";
@@ -179,10 +179,10 @@ $orders = [
         <div class="logo"><?= $row['company_name'] ?></div>
         <div class="navline">
             <nav class="nav-links">
-                <a href="dashboard.php" class="active">Dashboard</a>
-                <a href="inventory.php">Inventory</a>
+                <a href="dashboard.php" <?= $active === "dashboard" ? 'class="active"' : '' ?>>Dashboard</a>
+                <a href="inventory.php" <?= $active === "inventory" ? 'class="active"' : '' ?>>Inventory</a>
                 <a href="#">Rent Payment</a>
-                <a href="setting.php">Settings</a>
+                <a href="setting.php" <?= $active === "setting" ? 'class="active"' : '' ?>>Settings</a>
             </nav>
             <button class="btn-logout" onclick="window.location.href='../index.html'">Logout</button>
         </div>
