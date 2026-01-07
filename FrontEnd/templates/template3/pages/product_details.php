@@ -114,6 +114,7 @@ while ($row = mysqli_fetch_assoc($result2)) {
                 </button>
                 <button type="button" class="wishlist">
                     <i class="far fa-heart"></i> 
+                    <span>Save to Wishlist</span>
                 </button>
             </div>
         </form>
