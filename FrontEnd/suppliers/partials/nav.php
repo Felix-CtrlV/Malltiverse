@@ -117,11 +117,12 @@ if (!isset($active)) {
     elseif ($current_page === "monthlypayment.php")
         $active = "monthlypayment";
     elseif ($current_page === "setting.php")
-        $active = "profile";
+        $active = "setting";
     elseif ($current_page === "inventory.php")
         $active = "inventory";
 }
 
+// echo $supplierid;
 
 $supplierName = $row['name'];
 
@@ -181,7 +182,7 @@ $orders = [
                 <a href="dashboard.php" class="active">Dashboard</a>
                 <a href="inventory.php">Inventory</a>
                 <a href="#">Rent Payment</a>
-                <a href="#">Settings</a>
+                <a href="setting.php">Settings</a>
             </nav>
             <button class="btn-logout" onclick="window.location.href='../index.html'">Logout</button>
         </div>
