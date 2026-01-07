@@ -162,8 +162,7 @@ $orders = [
     <style>
         :root {
             --primary:
-                <?= htmlspecialchars($row['primary_color']) ?>
-            ;
+                <?= htmlspecialchars($row['primary_color']) ?>;
             --secondary:
                 <?= htmlspecialchars($row['secondary_color']) ?>
         }
@@ -175,12 +174,12 @@ $orders = [
   radial-gradient(circle at 90% 90%, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 40%);
 ">
 
-<header>
+    <header>
         <div class="logo"><?= $row['company_name'] ?></div>
         <div class="navline">
             <nav class="nav-links">
-                <a href="#" class="active">Dashboard</a>
-                <a href="#">Inventory</a>
+                <a href="dashboard.php" class="active">Dashboard</a>
+                <a href="inventory.php">Inventory</a>
                 <a href="#">Rent Payment</a>
                 <a href="#">Settings</a>
             </nav>
