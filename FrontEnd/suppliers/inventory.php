@@ -3,7 +3,7 @@ session_start();
 include("partials/nav.php");
 
 // --- CONFIGURATION ---
-$items_per_page = 10;
+$items_per_page = 6;
 $supplier_id = $_SESSION['supplier_id'] ?? 6; // Default to 6 if session not set (for demo)
 
 // --- MOCK DATABASE (Populated from your product.csv) ---
