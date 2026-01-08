@@ -10,7 +10,8 @@ $msg = "";
 $msg_type = "";
 
 // Helper to determine if a file is video based on extension
-function isVideoFile($filename) {
+function isVideoFile($filename)
+{
     $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
     return in_array($ext, ['mp4', 'webm', 'ogg', 'mov']);
 }
@@ -28,15 +29,25 @@ $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
+$banner_string = $user["banner"];
+$banners = explode(",", $banner_string);
+$banner_count = count($banners);
+
+for ($i = 0; $i < $banner_count; $i++) {
+    ${"banner" . ($i + 1)} = $banners[$i];
+}
+
 // Fetch Available Templates
 $templates = [];
 $templatesResult = $conn->query("SELECT * FROM templates");
 if ($templatesResult->num_rows > 0) {
-    while($t = $templatesResult->fetch_assoc()) { $templates[] = $t; }
+    while ($t = $templatesResult->fetch_assoc()) {
+        $templates[] = $t;
+    }
 }
 
 // Define paths for banner display logic
-$bannerPathRel = '../uploads/shops/' . $supplierid . '/' . ($user['banner'] ?? '');
+$bannerPathRel = '../uploads/shops/' . $supplierid . '/' . $banner1 ?? '';
 // Check if file actually exists on server to avoid broken links
 $bannerExists = !empty($user['banner']) && file_exists($_SERVER['DOCUMENT_ROOT'] . dirname($_SERVER['PHP_SELF']) . '/' . $bannerPathRel);
 
@@ -46,28 +57,41 @@ $bannerExists = !empty($user['banner']) && file_exists($_SERVER['DOCUMENT_ROOT']
 // =========================================
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
+
     // --- A. UPDATE PROFILE ---
     if (isset($_POST['save_profile'])) {
-        $name = $_POST['name']; $email = $_POST['email']; $phone = $_POST['phone']; $address = $_POST['address'];
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $address = $_POST['address'];
         $upd = $conn->prepare("UPDATE suppliers SET name=?, email=?, phone=?, address=? WHERE supplier_id=?");
         $upd->bind_param("ssssi", $name, $email, $phone, $address, $supplierid);
         if ($upd->execute()) {
-            $msg = "Profile updated successfully."; $msg_type = "success";
-            $user['name'] = $name; $user['email'] = $email; $user['phone'] = $phone; $user['address'] = $address;
+            $msg = "Profile updated successfully.";
+            $msg_type = "success";
+            $user['name'] = $name;
+            $user['email'] = $email;
+            $user['phone'] = $phone;
+            $user['address'] = $address;
         } else {
-            $msg = "Error updating profile."; $msg_type = "error";
+            $msg = "Error updating profile.";
+            $msg_type = "error";
         }
     }
 
     // --- B. UPDATE COMPANY ---
     if (isset($_POST['save_company'])) {
-        $c_name = $_POST['company_name']; $tags = $_POST['tags']; $desc = $_POST['description'];
+        $c_name = $_POST['company_name'];
+        $tags = $_POST['tags'];
+        $desc = $_POST['description'];
         $upd = $conn->prepare("UPDATE suppliers SET company_name=?, tags=?, description=? WHERE supplier_id=?");
         $upd->bind_param("sssi", $c_name, $tags, $desc, $supplierid);
         if ($upd->execute()) {
-            $msg = "Company details updated."; $msg_type = "success";
-            $user['company_name'] = $c_name; $user['tags'] = $tags; $user['description'] = $desc;
+            $msg = "Company details updated.";
+            $msg_type = "success";
+            $user['company_name'] = $c_name;
+            $user['tags'] = $tags;
+            $user['description'] = $desc;
         }
     }
 
@@ -93,29 +117,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $new_hashed = password_hash($new_pass, PASSWORD_BCRYPT);
                 $upd = $conn->prepare("UPDATE suppliers SET password=? WHERE supplier_id=?");
                 $upd->bind_param("si", $new_hashed, $supplierid);
-                if($upd->execute()) {
-                    $msg = "Password changed successfully."; $msg_type = "success";
+                if ($upd->execute()) {
+                    $msg = "Password changed successfully.";
+                    $msg_type = "success";
                 } else {
-                     $msg = "Database error during update."; $msg_type = "error";
+                    $msg = "Database error during update.";
+                    $msg_type = "error";
                 }
             } else {
-                $msg = "New passwords do not match or cannot be empty."; $msg_type = "error";
+                $msg = "New passwords do not match or cannot be empty.";
+                $msg_type = "error";
             }
         } else {
-            $msg = "Current password is incorrect."; $msg_type = "error";
+            $msg = "Current password is incorrect.";
+            $msg_type = "error";
         }
     }
 
     // --- D. CUSTOMIZE (Visuals & Assets) ---
     if (isset($_POST['save_customize'])) {
         // Basic inputs
-        $p_color = $_POST['primary_color']; $s_color = $_POST['secondary_color'];
-        $shop_about = $_POST['shop_about']; $shop_desc = $_POST['shop_description'];
+        $p_color = $_POST['primary_color'];
+        $s_color = $_POST['secondary_color'];
+        $shop_about = $_POST['shop_about'];
+        $shop_desc = $_POST['shop_description'];
         $media_mode = $_POST['media_mode']; // 'image' or 'video' from segmented control
         $selected_template = $_POST['template_id'] ?? $user['template_id'];
 
         $target_dir = "../uploads/shops/" . $supplierid . "/";
-        if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+        if (!is_dir($target_dir))
+            mkdir($target_dir, 0777, true);
 
         // Handle Logo Upload
         $logo_sql = "";
@@ -135,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $user['banner'] = $banner_name; // Update local var
             // Re-evaluate banner existence for display
             $bannerPathRel = '../uploads/shops/' . $supplierid . '/' . $banner_name;
-            $bannerExists = true; 
+            $bannerExists = true;
         }
 
         // Update shop_assets table (Using prepared statement for safe inputs, injected SQL for file names)
@@ -152,45 +183,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt3->execute();
         $stmt3->close();
 
-        $msg = "Shop customization saved!"; $msg_type = "success";
-        
+        $msg = "Shop customization saved!";
+        $msg_type = "success";
+
         // Refresh local variables for immediate UI update
-        $user['primary_color'] = $p_color; $user['secondary_color'] = $s_color;
-        $user['shop_about'] = $shop_about; $user['shop_description'] = $shop_desc;
-        $user['template_type'] = $media_mode; $user['template_id'] = $selected_template;
+        $user['primary_color'] = $p_color;
+        $user['secondary_color'] = $s_color;
+        $user['shop_about'] = $shop_about;
+        $user['shop_description'] = $shop_desc;
+        $user['template_type'] = $media_mode;
+        $user['template_id'] = $selected_template;
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Channel Settings</title>
-    <link rel="stylesheet" href="supplierCss.css"> 
+
     <style>
         /* --- SCOPED CSS FOR SETTINGS PAGE --- */
         :root {
             --glass-bg: rgba(255, 255, 255, 0.95);
-            --accent: <?= $user['primary_color'] ?? '#333' ?>;
+            --accent:
+                <?= $user['primary_color'] ?? '#333' ?>
+            ;
             --accent-hover: color-mix(in srgb, var(--accent) 80%, black);
             --pill-bg: #e0e0e0;
         }
 
         body {
-            background-color: #f4f7f6; /* Light neutral background */
+            background-color: #f4f7f6;
+            /* Light neutral background */
         }
 
         /* 1. Main Container - WIDER Layout */
         .settings-wrapper {
-            width: 95%; /* occupy most of screen width */
-            max-width: 1400px; /* capped at 1400px for very large screens */
-            margin: 30px auto;
-            background: var(--glass-bg);
-            border-radius: 24px;
+            width: 100%;
+            /* occupy most of screen width */
+            margin: 0px;
+            background-image: radial-gradient(circle at 5% 10%, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 35%), radial-gradient(circle at 90% 90%, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 40%);
             overflow: hidden;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
             backdrop-filter: blur(20px);
             min-height: 85vh;
         }
@@ -203,7 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         .banner-area {
             width: 100%;
-            height: 280px; /* Slightly taller banner */
+            height: 280px;
+            /* Slightly taller banner */
             background-color: #ddd;
             position: relative;
             overflow: hidden;
@@ -215,7 +249,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             height: 100%;
             object-fit: cover;
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             z-index: 0;
         }
 
@@ -223,7 +258,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             display: flex;
             align-items: flex-end;
             padding: 0 50px;
-            margin-top: -75px; /* Overlap banner */
+            margin-top: -75px;
+            /* Overlap banner */
             position: relative;
             z-index: 2;
             margin-bottom: 25px;
@@ -236,21 +272,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border: 6px solid #fff;
             background: #fff;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             flex-shrink: 0;
         }
 
-        .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .channel-info {
             margin-left: 30px;
             margin-bottom: 20px;
             color: #222;
-            text-shadow: 2px 2px 4px rgba(255,255,255,0.8); /* Ensure readability against banner overlap */
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+            /* Ensure readability against banner overlap */
         }
 
-        .channel-info h1 { font-size: 2.2rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
-        .channel-info span { color: #555; font-size: 1rem; font-weight: 500; }
+        .channel-info h1 {
+            font-size: 2.2rem;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .channel-info span {
+            color: #555;
+            font-size: 1rem;
+            font-weight: 500;
+        }
 
         /* 3. NAVIGATION TABS */
         .tabs-nav {
@@ -261,57 +312,169 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .tab-btn {
-            background: none; border: none;
+            background: none;
+            border: none;
             padding: 15px 5px;
-            font-size: 1.05rem; font-weight: 600; color: #777;
-            cursor: pointer; position: relative; transition: 0.3s;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #777;
+            cursor: pointer;
+            position: relative;
+            transition: 0.3s;
         }
-        .tab-btn:hover { color: #000; }
-        .tab-btn.active { color: var(--accent); }
+
+        .tab-btn:hover {
+            color: #000;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+        }
+
         .tab-btn.active::after {
-            content: ''; position: absolute; bottom: -2px; left: 0;
-            width: 100%; height: 4px;
-            background: var(--accent); border-radius: 4px 4px 0 0;
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 4px 4px 0 0;
         }
 
         /* 4. CONTENT AREA & FORMS */
         .tab-content {
-            padding: 50px; display: none; animation: fadeIn 0.3s ease;
+            padding: 50px;
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; }
-        .full-width { grid-column: 1 / -1; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 0.95rem; }
-        .input-field {
-            width: 100%; padding: 14px 18px;
-            border: 2px solid #eee; border-radius: 12px;
-            font-size: 1rem; transition: 0.3s; background: #fcfcfc; color: #333;
+        .tab-content.active {
+            display: block;
         }
-        .input-field:focus { border-color: var(--accent); background: #fff; outline: none; box-shadow: 0 0 0 4px rgba(0,0,0,0.03); }
-        textarea.input-field { resize: vertical; min-height: 120px; font-family: inherit; }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            /* margin-bottom: 10px; */
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: 0.3s;
+            background: #fcfcfc;
+            color: #333;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent);
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.03);
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
 
         /* Customization Specifics */
-        .color-picker-row { display: flex; gap: 30px; align-items: center; }
-        .color-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        input[type="color"] {
-            -webkit-appearance: none; border: none; width: 60px; height: 60px;
-            border-radius: 18px; cursor: pointer; padding: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .color-picker-row {
+            display: flex;
+            gap: 30px;
+            align-items: center;
         }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 18px; }
 
-        .upload-row { display: flex; gap: 30px; flex-wrap: wrap; }
-        .upload-box {
-            flex: 1; min-width: 300px;
-            border: 3px dashed #ddd; border-radius: 16px;
-            padding: 30px; text-align: center; cursor: pointer;
-            background: #fdfdfd; transition: 0.3s;
+        .color-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
-        .upload-box:hover { border-color: var(--accent); background: #fff; transform: translateY(-3px); }
-        .upload-icon { font-size: 2rem; color: #ccc; margin-bottom: 10px; display: block; }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            cursor: pointer;
+            padding: 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 18px;
+        }
+
+        .upload-row {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .upload-box {
+            flex: 1;
+            min-width: 300px;
+            border: 3px dashed #ddd;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            background: #fdfdfd;
+            transition: 0.3s;
+        }
+
+        .upload-box:hover {
+            border-color: var(--accent);
+            background: #fff;
+            transform: translateY(-3px);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: #ccc;
+            margin-bottom: 10px;
+            display: block;
+        }
 
         /* --- NEW: Segmented Control (Animated Toggle) --- */
         .segmented-control {
@@ -322,68 +485,152 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 50px;
             position: relative;
             user-select: none;
-            width: 300px; /* Fixed width for the control */
+            width: 300px;
+            /* Fixed width for the control */
         }
+
         /* Hide actual radio inputs */
-        .segmented-control input[type="radio"] { display: none; }
-        
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+
         /* The clickable labels */
         .seg-label {
-            text-align: center; padding: 10px 20px;
-            z-index: 2; font-weight: 600; color: #666;
-            cursor: pointer; transition: color 0.3s ease;
+            text-align: center;
+            padding: 10px 20px;
+            z-index: 2;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
             border-radius: 50px;
         }
-        
+
         /* The sliding highlight pill */
         .seg-pill {
-            position: absolute; top: 5px; left: 5px;
-            width: calc(50% - 5px); height: calc(100% - 10px);
-            background: #fff; border-radius: 50px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); /* Smooth cubic bezier */
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: calc(50% - 5px);
+            height: calc(100% - 10px);
+            background: #fff;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+            /* Smooth cubic bezier */
             z-index: 1;
         }
 
         /* Logic: Move pill based on checked radio */
         /* If first radio checked, pill stays left. If second checked, move right. */
-        #mode-video:checked ~ .seg-pill { transform: translateX(100%); }
+        #mode-video:checked~.seg-pill {
+            transform: translateX(100%);
+        }
+
         /* Change label color when active */
-        #mode-image:checked + .seg-label, #mode-video:checked + .seg-label { color: var(--accent); }
+        #mode-image:checked+.seg-label,
+        #mode-video:checked+.seg-label {
+            color: var(--accent);
+        }
 
         /* Template Grid */
         .template-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px; margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 15px;
         }
+
         .template-card {
-            border: 3px solid #eee; border-radius: 16px; overflow: hidden;
-            cursor: pointer; transition: 0.3s; position: relative; background: #fff;
+            border: 3px solid #eee;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            background: #fff;
         }
-        .template-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .template-card.selected { border-color: var(--accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent); }
-        .template-card img { width: 100%; height: 160px; object-fit: cover; display: block; border-bottom: 1px solid #eee; }
-        .template-info { padding: 12px; text-align: center; font-weight: 700; color: #444; }
-        .template-radio { display: none; }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .template-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent);
+        }
+
+        .template-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #eee;
+        }
+
+        .template-info {
+            padding: 12px;
+            text-align: center;
+            font-weight: 700;
+            color: #444;
+        }
+
+        .template-radio {
+            display: none;
+        }
 
         /* Action Buttons & Alerts */
-        .action-bar { margin-top: 40px; text-align: right; border-top: 2px solid #f0f0f0; padding-top: 25px; }
-        .btn-save {
-            background: var(--accent); color: #fff;
-            padding: 14px 40px; border: none; border-radius: 50px;
-            font-size: 1.1rem; cursor: pointer; font-weight: 700;
-            transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        .action-bar {
+            margin-top: 40px;
+            text-align: right;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 25px;
         }
-        .btn-save:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
-        .alert { padding: 15px 25px; margin: 30px 50px 0 50px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; }
-        .success { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
-        .error { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
-    </style>
-</head>
-<body>
 
+        .btn-save {
+            background: var(--accent);
+            color: #fff;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-save:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .alert {
+            padding: 15px 25px;
+            margin: 30px 50px 0 50px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+    </style>
+    
     <div class="settings-wrapper">
-        
+
         <div class="channel-header">
             <div class="banner-area">
                 <?php if ($bannerExists): ?>
@@ -393,15 +640,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <img src="<?= $bannerPathRel ?>" alt="Shop Banner" class="banner-media">
                     <?php endif; ?>
                 <?php else: ?>
-                    <img src="https://via.placeholder.com/1400x400?text=Upload+Your+Banner" alt="Placeholder Banner" class="banner-media" style="opacity:0.3">
+                    <img src="https://via.placeholder.com/1400x400?text=Upload+Your+Banner" alt="Placeholder Banner"
+                        class="banner-media" style="opacity:0.3">
                 <?php endif; ?>
             </div>
-            
+
             <div class="profile-section">
                 <div class="profile-img-container">
-                    <img src="<?= !empty($user['logo']) ? '../uploads/shops/'.$supplierid.'/'.$user['logo'] : 'https://via.placeholder.com/160?text=Logo' ?>" alt="Profile">
+                    <img src="<?= !empty($user['logo']) ? '../uploads/shops/' . $supplierid . '/' . $user['logo'] : 'https://via.placeholder.com/160?text=Logo' ?>"
+                        alt="Profile">
                 </div>
-                
+
                 <div class="channel-info">
                     <h1><?= htmlspecialchars($user['company_name'] ?? 'My Shop') ?></h1>
                     <span>@<?= htmlspecialchars($user['name']) ?> • #<?= $supplierid ?></span>
@@ -409,7 +658,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
 
-        <?php if(!empty($msg)): ?>
+        <?php if (!empty($msg)): ?>
             <div class="alert <?= $msg_type ?>">
                 <span style="margin-right:10px; font-size:1.2rem;"><?= $msg_type == 'success' ? '✅' : '⚠️' ?></span>
                 <?= $msg ?>
@@ -425,25 +674,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div id="profile" class="tab-content active">
             <h3>Personal Information</h3>
-            <p style="color:#777; margin-bottom:30px;">Manage your personal contact details used for account recovery and notifications.</p>
-            
+            <p style="color:#777; margin-bottom:30px;">Manage your personal contact details used for account recovery
+                and notifications.</p>
+
             <form method="POST">
                 <div class="form-grid">
                     <div class="input-group">
                         <label>Username (Name)</label>
-                        <input type="text" name="name" class="input-field" value="<?= htmlspecialchars($user['name']) ?>" required>
+                        <input type="text" name="name" class="input-field"
+                            value="<?= htmlspecialchars($user['name']) ?>" required>
                     </div>
                     <div class="input-group">
                         <label>Email Address</label>
-                        <input type="email" name="email" class="input-field" value="<?= htmlspecialchars($user['email']) ?>" required>
+                        <input type="email" name="email" class="input-field"
+                            value="<?= htmlspecialchars($user['email']) ?>" required>
                     </div>
                     <div class="input-group">
                         <label>Phone Number</label>
-                        <input type="text" name="phone" class="input-field" value="<?= htmlspecialchars($user['phone']) ?>">
+                        <input type="text" name="phone" class="input-field"
+                            value="<?= htmlspecialchars($user['phone']) ?>">
                     </div>
                     <div class="input-group">
                         <label>Address</label>
-                        <input type="text" name="address" class="input-field" value="<?= htmlspecialchars($user['address']) ?>">
+                        <input type="text" name="address" class="input-field"
+                            value="<?= htmlspecialchars($user['address']) ?>">
                     </div>
                 </div>
                 <div class="action-bar">
@@ -460,15 +714,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="form-grid">
                     <div class="input-group full-width">
                         <label>Company Name</label>
-                        <input type="text" name="company_name" class="input-field" value="<?= htmlspecialchars($user['company_name']) ?>" required style="font-size: 1.2rem; font-weight: bold;">
+                        <input type="text" name="company_name" class="input-field"
+                            value="<?= htmlspecialchars($user['company_name']) ?>" required
+                            style="font-size: 1.2rem; font-weight: bold;">
                     </div>
                     <div class="input-group full-width">
                         <label>Tags (Categories)</label>
-                        <input type="text" name="tags" class="input-field" placeholder="e.g., Clothing, Electronics, Handmade" value="<?= htmlspecialchars($user['tags']) ?>">
+                        <input type="text" name="tags" class="input-field"
+                            placeholder="e.g., Clothing, Electronics, Handmade"
+                            value="<?= htmlspecialchars($user['tags']) ?>">
                     </div>
                     <div class="input-group full-width">
                         <label>Internal Description / Notes</label>
-                        <textarea name="description" class="input-field" placeholder="Brief overview of your business model..."><?= htmlspecialchars($user['description']) ?></textarea>
+                        <textarea name="description" class="input-field"
+                            placeholder="Brief overview of your business model..."><?= htmlspecialchars($user['description']) ?></textarea>
                     </div>
                 </div>
                 <div class="action-bar">
@@ -482,23 +741,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <p style="color:#777; margin-bottom:30px;">Protect your account by updating your password regularly.</p>
 
             <form method="POST" autocomplete="off">
-                <div class="form-grid" style="max-width: 800px;">
-                    <div class="input-group full-width" style="background: #fff3cd; padding: 20px; border-radius: 12px; border: 1px solid #ffeeba;">
+                <div class="form-grid" style="max-width: 500px;">
+                    <div class="input-group full-width"
+                        style="background: #fff3cd; padding: 20px; border-radius: 12px; border: 1px solid #ffeeba;">
                         <label style="color: #856404;">Current Password (Required)</label>
-                        <input type="password" name="current_password" class="input-field" required placeholder="Enter current password to authorize changes">
+                        <input type="password" name="current_password" class="input-field" required
+                            placeholder="Enter current password to authorize changes">
                     </div>
 
-                    <div class="input-group">
-                        <label>New Password</label>
-                        <input type="password" name="new_password" class="input-field" placeholder="Min 8 characters">
-                    </div>
-                    <div class="input-group">
-                        <label>Confirm New Password</label>
-                        <input type="password" name="confirm_password" class="input-field" placeholder="Re-enter new password">
+                    <div class="input-group" style="display: flex; justify-content: space-between;">
+                        <div>
+                            <label>New Password</label>
+                            <input type="password" name="new_password" class="input-field" placeholder="Min 8 characters">
+                        </div>
+                        <div>
+                            <label>Confirm New Password</label>
+                            <input type="password" name="confirm_password" class="input-field"
+                            placeholder="Re-enter new password">
+                        </div>
                     </div>
                 </div>
                 <div class="action-bar">
-                    <button type="submit" name="save_security" class="btn-save" style="background-color: #d9534f;">Update Password</button>
+                    <button type="submit" name="save_security" class="btn-save"
+                        style="background-color: #d9534f;">Update Password</button>
                 </div>
             </form>
         </div>
@@ -508,16 +773,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <p style="color:#777; margin-bottom:30px;">Design the look and feel of your public shop page.</p>
 
             <form method="POST" enctype="multipart/form-data">
-                
+
                 <div class="input-group">
                     <label>Brand Theme Colors</label>
                     <div class="color-picker-row">
                         <div class="color-wrapper">
-                            <input type="color" name="primary_color" value="<?= htmlspecialchars($user['primary_color'] ?? '#333333') ?>">
+                            <input type="color" name="primary_color"
+                                value="<?= htmlspecialchars($user['primary_color'] ?? '#333333') ?>">
                             <small>Primary</small>
                         </div>
                         <div class="color-wrapper">
-                            <input type="color" name="secondary_color" value="<?= htmlspecialchars($user['secondary_color'] ?? '#FFD55A') ?>">
+                            <input type="color" name="secondary_color"
+                                value="<?= htmlspecialchars($user['secondary_color'] ?? '#FFD55A') ?>">
                             <small>Secondary</small>
                         </div>
                     </div>
@@ -544,25 +811,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="form-grid">
                     <div class="input-group full-width">
-                         <label style="margin-bottom:15px; display:block;">Default Banner Display Mode</label>
-                         <div class="segmented-control">
-                             <input type="radio" name="media_mode" value="image" id="mode-image" <?= ($user['template_type'] ?? 'image') == 'image' ? 'checked' : '' ?>>
-                             <label for="mode-image" class="seg-label">Image Mode</label>
+                        <label style="margin-bottom:15px; display:block;">Default Banner Display Mode</label>
+                        <div class="segmented-control">
+                            <input type="radio" name="media_mode" value="image" id="mode-image"
+                                <?= ($user['template_type'] ?? 'image') == 'image' ? 'checked' : '' ?>>
+                            <label for="mode-image" class="seg-label">Image Mode</label>
 
-                             <input type="radio" name="media_mode" value="video" id="mode-video" <?= ($user['template_type'] ?? '') == 'video' ? 'checked' : '' ?>>
-                             <label for="mode-video" class="seg-label">Video Mode</label>
+                            <input type="radio" name="media_mode" value="video" id="mode-video"
+                                <?= ($user['template_type'] ?? '') == 'video' ? 'checked' : '' ?>>
+                            <label for="mode-video" class="seg-label">Video Mode</label>
 
-                             <div class="seg-pill"></div> </div>
-                        <small style="display:block; margin-top:10px; color:#888;">This determines how your banner loads initially on your storefront.</small>
+                            <div class="seg-pill"></div>
+                        </div>
+                        <small style="display:block; margin-top:10px; color:#888;">This determines how your banner loads
+                            initially on your storefront.</small>
                     </div>
 
                     <div class="input-group">
                         <label>Public 'About' Headline</label>
-                        <textarea name="shop_about" class="input-field" style="height:100px;" placeholder="e.g., Wear The Confidence"><?= htmlspecialchars($user['shop_about'] ?? '') ?></textarea>
+                        <textarea name="shop_about" class="input-field" style="height:100px;"
+                            placeholder="e.g., Wear The Confidence"><?= htmlspecialchars($user['shop_about'] ?? '') ?></textarea>
                     </div>
                     <div class="input-group">
                         <label>Public Shop Description</label>
-                        <textarea name="shop_description" class="input-field" style="height:100px;" placeholder="Detailed description visible to customers..."><?= htmlspecialchars($user['shop_description'] ?? '') ?></textarea>
+                        <textarea name="shop_description" class="input-field" style="height:100px;"
+                            placeholder="Detailed description visible to customers..."><?= htmlspecialchars($user['shop_description'] ?? '') ?></textarea>
                     </div>
                 </div>
 
@@ -571,10 +844,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="input-group full-width">
                     <label>Select Store Template Layout</label>
                     <div class="template-grid">
-                        <?php foreach($templates as $tpl): ?>
-                            <label class="template-card <?= ($user['template_id'] == $tpl['template_id']) ? 'selected' : '' ?>" onclick="selectTemplate(this)">
-                                <input type="radio" name="template_id" value="<?= $tpl['template_id'] ?>" class="template-radio" <?= ($user['template_id'] == $tpl['template_id']) ? 'checked' : '' ?>>
-                                <img src="../frontend/assets/template_preview/<?= htmlspecialchars($tpl['preview_image']) ?>" alt="<?= $tpl['template_name'] ?>">
+                        <?php foreach ($templates as $tpl): ?>
+                            <label
+                                class="template-card <?= ($user['template_id'] == $tpl['template_id']) ? 'selected' : '' ?>"
+                                onclick="selectTemplate(this)">
+                                <input type="radio" name="template_id" value="<?= $tpl['template_id'] ?>"
+                                    class="template-radio" <?= ($user['template_id'] == $tpl['template_id']) ? 'checked' : '' ?>>
+                                <img src="../assets/template_preview/<?= htmlspecialchars($tpl['preview_image']) ?>"
+                                    alt="<?= $tpl['template_name'] ?>">
                                 <div class="template-info">
                                     <?= htmlspecialchars($tpl['template_name']) ?>
                                 </div>
@@ -607,9 +884,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Show current tab (with slight delay for smooth animation trigger)
             setTimeout(() => {
-               document.getElementById(tabName).classList.add("active");
+                document.getElementById(tabName).classList.add("active");
             }, 50);
-            
+
             evt.currentTarget.classList.add("active");
         }
 
@@ -630,4 +907,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     </script>
 </body>
+
 </html>
