@@ -29,6 +29,7 @@ $shop_assets = mysqli_fetch_assoc($result);
     </div>
 </section>
 
+
 <script>
     const searchInput = document.getElementById("searchBar");
     const resultContainer = document.getElementById("productResults");
