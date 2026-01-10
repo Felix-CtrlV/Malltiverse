@@ -5,7 +5,7 @@
         <a class="navbar-brand d-flex align-items-center gap-2" href="<?= $base_url ?>&page=home">
             <?php if (!empty($shop_assets['logo'])): ?>
                 <div class="logo-container">
-                    <img src="../uploads/supplier_shop_id/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
+                    <img src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
                         alt="<?= htmlspecialchars($supplier['company_name']) ?> Logo" class="site-logo">
                 </div>
             <?php endif; ?>
