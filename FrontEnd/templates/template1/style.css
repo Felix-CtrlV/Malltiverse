@@ -104,6 +104,8 @@
     line-height: 1.1;
 }
 
+
+
 .site-tagline {
     margin: 5px 0 0;
     opacity: 0.9;
@@ -821,9 +823,16 @@
     background-color: #cecdcdff;
 }
 
-.productDetail * {
-    box-sizing: border-box;
-}
+ .productDetail * {
+            box-sizing: border-box;
+        }
+
+       body.productDetail {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: #2b2b2b;
+            background: #cecdcdff;
+        }
 
 body.productDetail {
     margin: 0;
@@ -1377,6 +1386,6 @@ body.productDetail {
 }
 
 .review-form .btn-warning:hover {
-    background-color: #e5ac00;
-    color: #000;
+  background-color: #e5ac00;
+  color: #000;
 }

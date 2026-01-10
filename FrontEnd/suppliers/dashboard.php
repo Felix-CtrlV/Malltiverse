@@ -2,7 +2,7 @@
 include("partials/nav.php");
 ?>
 
-<section class="welcome-section">
+<section class="welcome-section" style="margin-left: 45px;">
     <h1>Welcome back, <b><?= $supplierName; ?></b></h1>
     <div class="stats-row">
         <div class="stat-item">
@@ -34,7 +34,7 @@ include("partials/nav.php");
             </div>
             <ul class="menu-list">
                 <?php foreach ($bestsellers as $item) { ?>
-            <li> <?= htmlspecialchars($item['product_name']) ?> <span>&rsaquo;</span></li>
+                    <li> <?= htmlspecialchars($item['product_name']) ?> <span>&rsaquo;</span></li>
                 <?php } ?>
             </ul>
 
