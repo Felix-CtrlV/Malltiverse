@@ -1,11 +1,21 @@
 <?php
 // 1. Redirect if not logged in
+<<<<<<< HEAD
 if (!isset($_SESSION['customer_id'])) {
     echo "<div class='container mt-5'><div class='alert alert-warning'>Please login to view your cart.</div></div>";
     return;
 }
 
 $customer_id = $_SESSION['customer_id'];
+=======
+// if (!isset($_SESSION['customer_id'])) {
+//     echo "<div class='container mt-5'><div class='alert alert-warning'>Please login to view your cart.</div></div>"; //customer login
+//     return;
+// }
+
+// $customer_id = $_SESSION['customer_id'];
+$customer_id = 1; //testing 
+>>>>>>> 47aee0813afd68f2982d8b1b2ae1b6b29a374ca2
 
 // 2. Fetch cart items with product details
 $cart_query = "SELECT c.cart_id, c.quantity, p.product_name, p.price, p.image, p.product_id, v.color, v.size 
