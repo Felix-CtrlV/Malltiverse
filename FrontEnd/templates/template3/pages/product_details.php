@@ -109,7 +109,7 @@ while ($row = mysqli_fetch_assoc($result2)) {
                 </div>
             </div>
             <div class="actions">
-                <button type="submit" class="add-cart">
+                <button type="submit" class="add-cart" id="addToCartBtn">
                     <i class="fas fa-cart-plus"></i> Add to Cart
                 </button>
                 <button type="button" class="wishlist">
@@ -122,7 +122,125 @@ while ($row = mysqli_fetch_assoc($result2)) {
         <p class="shipping">
             Standard delivery in 2–4 days or Premium delivery in 2–4 hours
         </p>
+    </div>    
+</div>
+
+        <div id="basket-container" class="detail_card"
+            style="width: 380px; margin: 0; display: flex; flex-direction: column; min-height: 520px; padding: 25px;">
+            <div class="related-section-header">
+                <h2 style="margin: 0; font-weight: 600;">Your Bag</h2>
+                <div class="related-section-line" style="height: 2px; background: rgba(0,0,0,0.05); margin: 12px 0;"></div>
+            </div>
+
+            <div id="cartItemsContainer" style="flex: 1; overflow-y: auto; max-height: 400px;">
+                <p style="text-align: center; color: #888; margin-top: 50px;">Loading your bag...</p>
+            </div>
+
+            <div id="cartFooter" style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 20px; margin-top: 10px;">
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+    // 1. VARIANT SELECTION LOGIC
+    const colorEls = document.querySelectorAll('.color');
+    const sizeButtons = document.getElementById('size-buttons');
+    let selectedSize = null;
+    let selectedColor = null;
+
+    colorEls.forEach(colorEl => {
+        colorEl.addEventListener('click', () => {
+            colorEls.forEach(c => c.classList.remove('active'));
+            colorEl.classList.add('active');
+            selectedColor = colorEl.dataset.color;
+
+            const filteredVariants = variants.filter(v => v.color === selectedColor);
+            const uniqueSizes = [...new Set(filteredVariants.map(v => v.size))];
+
+            sizeButtons.innerHTML = '';
+            uniqueSizes.forEach(size => {
+                const btn = document.createElement('button');
+                btn.className = 'size-btn';
+                btn.textContent = size;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.sizes button').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedSize = size;
+                });
+                sizeButtons.appendChild(btn);
+            });
+        });
+    });
+
+    // 2. QUANTITY LOGIC
+    const qtySpan = document.getElementById('qty');
+    document.getElementById('increase').addEventListener('click', () => {
+        qtySpan.textContent = parseInt(qtySpan.textContent) + 1;
+    });
+    document.getElementById('decrease').addEventListener('click', () => {
+        let val = parseInt(qtySpan.textContent);
+        if (val > 1) qtySpan.textContent = val - 1;
+    });
+
+    // 3. AJAX BAG UPDATE LOGIC
+    function refreshBag() {
+        const container = document.getElementById('cartItemsContainer');
+        const footer = document.getElementById('cartFooter');
+        const supplierId = <?= $supplier_id ?>;
+
+        fetch(`../utils/fetch_cart_drawer.php?supplier_id=${supplierId}`)
+            .then(res => res.json())
+            .then(data => {
+                container.innerHTML = data.html;
+                footer.innerHTML = data.footer;
+            })
+            .catch(err => {
+                console.error('Error fetching bag:', err);
+                container.innerHTML = '<p style="text-align:center;">Failed to load bag.</p>';
+            });
+    }
+
+    // 4. ADD TO BAG CLICK HANDLER
+    document.getElementById('addToCartBtn').addEventListener('click', function () {
+        const qty = parseInt(qtySpan.textContent);
+        const selection = variants.find(v => v.color === selectedColor && v.size === selectedSize);
+
+        if (!selection) {
+            alert("Please select a color and size first.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('variant_id', selection.variant_id);
+        formData.append('supplier_id', <?= $supplier_id ?>);
+        formData.append('quantity', qty);
+
+        fetch('../utils/add_to_cart.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    // location.reload();
+                    refreshBag(); // Update sidebar without page reload
+                } else {
+                    alert("Error: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Check console: add_to_cart.php was not found or failed.");
+            });
+    });
+
+    // Initialize bag on page load
+    window.onload = refreshBag;
+</script>
 </body>
 </html>
