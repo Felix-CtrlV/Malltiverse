@@ -1,4 +1,5 @@
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <?php
 // product_details.php - Logic Header
 $product_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -112,14 +113,21 @@ $sizes = array_unique($sizes);
 
     // 1. Add to Cart Logic
     document.getElementById('addToCartBtn').addEventListener('click', function () {
+        
         const selectedSize = document.getElementById('sizeSelect').value;
         const qty = parseInt(document.getElementById('qtyInput').value) || 1;
         const supplierId = document.getElementById('supplier_id').value;
 
         const variant = allVariants.find(v => v.size === selectedSize);
 
+        // --- Alert if Size not selected ---
         if (!selectedSize || !variant) {
-            alert("Please select a size first!");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Choose a Size',
+                text: 'Please Choose a Size',
+                confirmButtonColor: '#212529'
+            });
             return;
         }
 
@@ -135,9 +143,21 @@ $sizes = array_unique($sizes);
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Items added to the cart',
+                        showConfirmButton: false,
+                        timer: 1500 
+                    });
                     refreshBag();
                 } else {
-                    alert("Error: " + data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message
+                    });
                 }
             })
             .catch(error => {
@@ -145,66 +165,92 @@ $sizes = array_unique($sizes);
             });
     });
 
-
- function refreshBag() {
+   function refreshBag() {
     const supplierId = document.getElementById('supplier_id').value;
+    const cartContainer = document.getElementById('cartitem');
+
+   
+    cartContainer.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-secondary" role="status"></div>
+            <p class="mt-2 small text-muted">Checking your bag...</p>
+        </div>`;
 
     fetch(`../utils/fetch_cart_drawer.php?supplier_id=${supplierId}&t=${new Date().getTime()}`)
         .then(res => res.json())
         .then(data => {
-          
-            if (data.drawer_html) {
-                document.getElementById('cartitem').innerHTML = data.drawer_html;
-            } else if (data.html) {
-                document.getElementById('cartitem').innerHTML = data.html;
+           
+            
+            if (data.drawer_html && data.drawer_html.trim() !== "") {
+                cartContainer.innerHTML = data.drawer_html;
+            } else {
+            
+                cartContainer.innerHTML = `
+                    <div class="text-center py-5 animated fadeIn">
+                        <i class="fas fa-shopping-bag mb-3" style="font-size: 3rem; color: #dee2e6;"></i>
+                        <p class="text-muted mb-0">Your selection is empty</p>
+                        <small class="text-muted">Start adding items to your bag.</small>
+                    </div>`;
             }
 
-           
+            
             const totalElement = document.getElementById('cart-subtotal');
-            if (totalElement && data.total !== undefined) {
-                totalElement.textContent = parseFloat(data.total).toLocaleString('en-US', {
+            if (totalElement) {
+                const total = parseFloat(data.total) || 0;
+                totalElement.textContent = total.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
             }
         })
-        .catch(err => console.error("Error fetching cart:", err));
+        .catch(err => {
+            console.error("Error fetching cart:", err);
+            cartContainer.innerHTML = `<p class="text-center text-danger py-3 small">Failed to load cart.</p>`;
+        });
 }
-
-
     window.onload = refreshBag;
 
-</script>
+    // 2. Remove from Cart Logic with SweetAlert2
+    function handleRemove(cartId) {
+        Swal.fire({
+            title: 'Are You Sure?',
+            text: "Are you Sure to Delete this item?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#212529',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const supplierId = document.getElementById('supplier_id').value;
+                const formData = new FormData();
+                formData.append('cart_id', cartId);
+                formData.append('supplier_id', supplierId);
 
-
- <script>
- function handleRemove(cartId) {
-    if (!confirm('Are you Sure Delete this items?')) return;
-
-    const supplierId = document.getElementById('supplier_id').value;
-    const formData = new FormData();
-    formData.append('cart_id', cartId);
-    formData.append('supplier_id', supplierId);
-
-    
-    fetch('../utils/removeFromCart.php', { 
-        method: 'POST',
-        body: formData
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("File not found (404)"); 
-        return res.json();
-    })
-    .then(data => {
-        if (data.status === 'success') {
-            refreshBag(); 
-        } else {
-            alert("Error: " + data.message);
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Path Error: " + err.message);
-    });
-}
+                fetch('../utils/removeFromCart.php', { 
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Deleted Successfully!',
+                            icon: 'success',
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                        refreshBag(); 
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire('Path Error', err.message, 'error');
+                });
+            }
+        });
+    }
 </script>
