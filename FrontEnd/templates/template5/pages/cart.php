@@ -1,13 +1,18 @@
 <?php
 // 1. Redirect if not logged in
-$customer_id = 1; //testing 
+if (!isset($_SESSION['customer_id'])) {
+    echo "<div class='container mt-5'><div class='alert alert-warning'>Please login to view your cart.</div></div>";
+    return;
+}
+
+$customer_id = $_SESSION['customer_id'];
 
 // 2. Fetch cart items with product details
 $cart_query = "SELECT c.cart_id, c.quantity, p.product_name, p.price, p.image, p.product_id, v.color, v.size 
                FROM cart c 
                JOIN product_variant v ON c.variant_id = v.variant_id 
                JOIN products p ON v.product_id = p.product_id 
-               WHERE c.customer_id = ? AND c.supplier_id = ?"; 
+               WHERE c.customer_id = ? AND c.supplier_id = ?";
 
 $stmt = mysqli_prepare($conn, $cart_query);
 mysqli_stmt_bind_param($stmt, "ii", $customer_id, $supplier_id);
@@ -15,8 +20,6 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $cart_count = mysqli_num_rows($result);
 $total_price = 0;
-
-
 ?>
 
 <div class="container mt-5 mb-5">
@@ -41,30 +44,17 @@ $total_price = 0;
                                 <?php while ($item = mysqli_fetch_assoc($result)):
                                     $subtotal = $item['price'] * $item['quantity'];
                                     $total_price += $subtotal;
-                                ?>
+                                    ?>
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <img src="../uploads/products/<?= $item['product_id'] ?>_<?= $item['image'] ?>"
                                                     alt="<?= $item['product_name'] ?>"
-                                                    style="width: 100px; height: 100px; object-fit: contain; margin-right: 15px;">
+                                                    style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
                                                 <span>
-                                                    <strong><?= htmlspecialchars($item['product_name']) ?></strong>
-                                                    <br>
-                                                    <small class="text-muted d-flex align-items-center">
-                                                        Color: 
-                                                        <span style="
-                                                            display: inline-block;
-                                                            width: 20px;
-                                                            height: 20px;
-                                                            background-color: <?= $item['color'] ?>; 
-                                                            border-radius: 50%;
-                                                            border: 1px solid #ddd;
-                                                            margin: 0 5px;
-                                                            vertical-align: middle;">
-                                                        </span>
-                                                        (Size: <?= htmlspecialchars($item['size']) ?>)
-                                                    </small>
+                                                    <?= htmlspecialchars($item['product_name']) ?>
+                                                    <small class="text-muted">(Color: <?= htmlspecialchars($item['color']) ?>,
+                                                        Size: <?= htmlspecialchars($item['size']) ?>)</small>
                                                 </span>
                                             </div>
                                         </td>
@@ -74,7 +64,7 @@ $total_price = 0;
                                         <td>
                                             <button class="btn btn-sm btn-outline-danger"
                                                 onclick="removeFromCart(<?= $item['cart_id'] ?>)">
-                                                <i class="fas fa-trash-alt"></i>
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -102,7 +92,7 @@ $total_price = 0;
                             style="background-color: var(--primary); border: none;">
                             PROCEED TO CHECKOUT
                         </button>
-                        <a href="?supplier_id=<?= $supplier_id ?>&page=collection"
+                        <a href="?supplier_id=<?= $supplier_id ?>&page=products"
                             class="btn btn-link w-100 text-center mt-2">
                             Continue Shopping
                         </a>
@@ -123,30 +113,24 @@ $total_price = 0;
 </div>
 
 <script>
-function removeFromCart(cartId) {
-    if (confirm('Are you sure you want to remove this item?')) {        
-        const rootPath = window.location.origin + '/malltiverse/frontend/utils/removeFromCart.php';
-
-        fetch(rootPath, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ 'cart_id': cartId })
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('HTTP error ' + response.status);
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'success') {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error Details:', error);
-            alert('Cannot connect to server. Check: ' + rootPath);
-        });
+    function removeFromCart(cartId) {
+        if (confirm('Remove this item?')) {
+            // Go up 3 levels to FrontEnd root, then into utils
+            fetch('../../../utils/removeFromCart.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ 'cart_id': cartId })
+            })
+                // ... rest of code
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload(); // Refresh to update list and total
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(err => console.error('Error:', err));
+        }
     }
-}
 </script>

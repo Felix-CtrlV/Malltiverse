@@ -4,10 +4,14 @@
             <?php if (!empty($shop_assets['logo'])): ?>
                 <div class="logo-container">
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <img src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
                         alt="<?= htmlspecialchars($supplier['company_name']) ?> Logo" class="site-logo">
 =======
                     <img src="/knp/FrontEnd/uploads/supplier_shop_id/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
+=======
+                    <img src="../uploads/supplier_shop_id/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
+>>>>>>> 7c13018236d1ebcc71bf6ded1384f174751bccfd
                         alt="Logo" class="site-logo">
 >>>>>>> a805d3f99cddd4430df07090df8d04b65439d682
                 </div>
