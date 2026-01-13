@@ -9,7 +9,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 
-
 if (!isset($conn)) {
 
     include '../../../BackEnd/config/dbconfig.php';
