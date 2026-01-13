@@ -3,7 +3,7 @@
         <a class="navbar-brand d-flex align-items-center gap-2" href="?supplier_id=<?= $supplier_id ?>&page=home">
             <?php if (!empty($shop_assets['logo'])): ?>
                 <div class="logo-container">
-                    <img src="/knp/FrontEnd/uploads/supplier_shop_id/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
+                    <img src="../uploads/supplier_shop_id/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
                         alt="Logo" class="site-logo">
                 </div>
             <?php endif; ?>
