@@ -53,13 +53,8 @@ $total_price = 0;
                                                     style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
                                                 <span>
                                                     <?= htmlspecialchars($item['product_name']) ?>
-                                                    <small class="text-muted">Size:
-                                                        <?= htmlspecialchars($item['size']) ?></small>
-                                                    <div class="selected-color-container">
-                                                        <small class="text-muted">Color: </small>
-                                                        <span class="color-preview"
-                                                            style="background-color: <?= htmlspecialchars($item['color']) ?>;"></span>
-                                                    </div>
+                                                    <small class="text-muted">(Color: <?= htmlspecialchars($item['color']) ?>,
+                                                        Size: <?= htmlspecialchars($item['size']) ?>)</small>
                                                 </span>
                                             </div>
                                         </td>
