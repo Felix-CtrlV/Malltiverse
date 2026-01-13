@@ -1,8 +1,21 @@
-<section class="banner">
-    <div class="banner-content">
-        <h1>Elevate Your Style</h1>
-        <p>Premium streetwear made for everyday confidence</p>
+<section class="hero-section">
+  <?php if ($shop_assets['template_type'] === 'video'): ?>
+    <video class="hero-media" autoplay muted loop playsinline
+      src="../uploads/shops/<?= $supplier_id ?>/<?= $shop_assets['banner'] ?>">
+    </video>
+  <?php else: ?>
+    <img class="hero-media" src="../uploads/shops/<?= $supplier_id ?>/<?= $shop_assets['banner'] ?>"
+      alt="Hero Banner">
+  <?php endif; ?>
+
+  <div class="hero-overlay">
+    <div class="hero-title">
+      <span>Heavy</span>
+      <span>Lodes</span>
     </div>
+
+    <p class="hero-tagline">Built heavy. Worn louder.</p>
+  </div>
 </section>
 
 <section class="featured-section">
