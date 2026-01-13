@@ -120,7 +120,7 @@ body {
 
 .navlink:hover {
     color: #5F2119;
-    transform: translateY(-3px);
+   
 }
 
 .navlink.active {
