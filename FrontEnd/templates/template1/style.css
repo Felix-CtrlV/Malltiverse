@@ -3218,7 +3218,7 @@ body.productDetail {
     z-index: 999;
     /* Higher than overlay */
     transition: 0.3s ease;
-    background: rgb(219, 217, 217);
+    background: rgb(233, 231, 231);
 }
 
 #cartDrawer.open {
