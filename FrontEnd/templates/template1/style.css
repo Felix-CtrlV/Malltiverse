@@ -1911,41 +1911,27 @@ body.productDetail {
 }
 
 
-
 .addtobag_btn {
-
     flex: 1;
-
+    width: 100%; /* Added to ensure it fills the drawer width */
     padding: 12px;
-
     font-size: 16px;
-
+    font-weight: 600;
+    color: #333;
     background: #e0e0e0;
-
     box-shadow:
-
         4px 4px 8px #c8c8c8,
-
         -4px -4px 8px #f8f8f8;
-
     transition: all 0.2s ease;
-
     cursor: pointer;
-
     border-radius: 12px;
-
     border: none;
-
+    text-align: center;
 }
 
-
-
 .addtobag_btn:active {
-
-    box-shadow: inset 5px 5px 15px #bebebe, inset -5px -5px 15px #ffffff;
-
-
-
+    box-shadow: inset 5px 5px 15px #fcfbfb, inset -5px -5px 15px #ffffff;
+    transform: scale(0.98);
 }
 
 
@@ -2690,9 +2676,9 @@ body.productDetail {
 
     box-shadow:
 
-        4px 4px 8px #c8c8c8,
+        4px 4px 8px #b7b6b6,
 
-        -4px -4px 8px #f8f8f8;
+        -4px -4px 8px #eae9e9;
 
     transition: all 0.2s ease;
 
@@ -3232,7 +3218,7 @@ body.productDetail {
     z-index: 999;
     /* Higher than overlay */
     transition: 0.3s ease;
-    background: white;
+    background: rgb(219, 217, 217);
 }
 
 #cartDrawer.open {
