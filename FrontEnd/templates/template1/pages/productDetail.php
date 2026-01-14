@@ -24,10 +24,11 @@ if (!$product) {
     echo "<p>Product not found.</p>";
     exit;
 }
+
 $variant_stmt = mysqli_prepare(
     $conn,
-    "SELECT variant_id, color, size 
-     FROM product_variant 
+    "SELECT variant_id, color, size
+     FROM product_variant
      WHERE product_id = ?"
 );
 mysqli_stmt_bind_param($variant_stmt, "i", $product_id);
@@ -49,16 +50,14 @@ mysqli_stmt_close($variant_stmt);
 <script>
     const variants = <?= json_encode($variants) ?>;
 </script>
+
 <div class="page">
-    <div class="product-detail-wrapper"
-        style="display: flex; gap: 30px; align-items: flex-start; justify-content: center; width: 100%; max-width: 1300px; margin: 0 auto; padding: 20px; flex-wrap: wrap;">
+    <div class="product-detail-wrapper" style="display: flex; gap: 30px; align-items: flex-start; justify-content: center; width: 100%; max-width: 1000px; margin: 0 auto; padding: 20px; flex-wrap: wrap;">
         <div class="detail_card" style="margin: 0; flex: 1; min-width: 400px;">
             <div class="img_border">
                 <div class="detail_product_image">
-
                     <?php if (!empty($product['image'])): ?>
-                        <img src="../uploads/products/<?= $product['product_id'] ?>_<?= htmlspecialchars($product['image']) ?>"
-                            alt="<?= htmlspecialchars($product['product_name']) ?>">
+                        <img src="../uploads/products/<?= $product['product_id'] ?>_<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
                     <?php endif; ?>
                 </div>
             </div>
@@ -67,16 +66,13 @@ mysqli_stmt_close($variant_stmt);
                 <div class="detail_product_category"><?= htmlspecialchars($product['category_name'] ?? ' ') ?></div>
                 <h1 class="detail_product_name"><?= htmlspecialchars($product['product_name']) ?></h1>
                 <div class="detail_price">$<?= number_format($product['price'], 2) ?></div>
-                <p class="detail_desc"><?= htmlspecialchars($product['description'] ?? 'No description available.') ?>
-                </p>
+                <p class="detail_desc"><?= htmlspecialchars($product['description'] ?? 'No description available.') ?></p>
 
                 <div class="options">
                     <label>Color</label>
                     <div class="colors" id="color-options">
                         <?php foreach ($colors as $color): ?>
-
-                            <div class="color" data-color="<?= htmlspecialchars($color) ?>"
-                                style="background-color: <?= htmlspecialchars($color) ?>;"></div>
+                            <div class="color" data-color="<?= htmlspecialchars($color) ?>" style="background-color: <?= htmlspecialchars($color) ?>;"></div>
                         <?php endforeach; ?>
                     </div>
                 </div>
@@ -98,25 +94,7 @@ mysqli_stmt_close($variant_stmt);
                 </div>
             </div>
         </div>
-
-        <div id="basket-container" class="detail_card"
-            style="width: 380px; margin: 0; display: flex; flex-direction: column; min-height: 520px; padding: 25px;">
-            <div class="related-section-header">
-                <h2 style="margin: 0; font-weight: 600;">Your Bag</h2>
-                <div class="related-section-line" style="height: 2px; background: rgba(0,0,0,0.05); margin: 12px 0;">
-                </div>
-            </div>
-
-            <div id="cartItemsContainer" style="flex: 1; overflow-y: auto; max-height: 400px;">
-                <p style="text-align: center; color: #888; margin-top: 50px;">Loading your bag...</p>
-            </div>
-
-            <div id="cartFooter" style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 20px; margin-top: 10px;">
-            </div>
-        </div>
-
     </div>
-
 </div>
 
 <script>
@@ -160,31 +138,18 @@ mysqli_stmt_close($variant_stmt);
         if (val > 1) qtySpan.textContent = val - 1;
     });
 
-    // 3. AJAX BAG UPDATE LOGIC
-    function refreshBag() {
-        const container = document.getElementById('cartItemsContainer');
-        const footer = document.getElementById('cartFooter');
-        const supplierId = <?= $supplier_id ?>;
-
-        fetch(`../utils/fetch_cart_drawer.php?supplier_id=${supplierId}`)
-            .then(res => res.json())
-            .then(data => {
-                container.innerHTML = data.html;
-                footer.innerHTML = data.footer;
-            })
-            .catch(err => {
-                console.error('Error fetching bag:', err);
-                container.innerHTML = '<p style="text-align:center;">Failed to load bag.</p>';
-            });
-    }
-
-    // 4. ADD TO BAG CLICK HANDLER
+    // 3. ADD TO BAG CLICK HANDLER
     document.getElementById('addToCartBtn').addEventListener('click', function () {
         const qty = parseInt(qtySpan.textContent);
         const selection = variants.find(v => v.color === selectedColor && v.size === selectedSize);
 
         if (!selection) {
-            alert("Please select a color and size first.");
+            // Using the new global notification function
+            if (typeof showNotification === "function") {
+                showNotification("Please select a color and size first.", "error");
+            } else {
+                alert("Please select a color and size first.");
+            }
             return;
         }
 
@@ -197,28 +162,125 @@ mysqli_stmt_close($variant_stmt);
             method: 'POST',
             body: formData
         })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    alert(data.message);
-                    // location.reload();
-                    refreshBag(); // Update sidebar without page reload
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // 1. Show the nice notification
+                if (typeof showNotification === "function") {
+                    showNotification(data.message, "success");
+                }
+
+                // 2. Refresh the bag drawer UI using global function
+                if (typeof refreshCartDrawer === "function") {
+                    refreshCartDrawer(<?= $supplier_id ?>);
+                }
+                
+                // 3. Open the side bag automatically
+                const drawer = document.getElementById('cartDrawer');
+                const overlay = document.getElementById('cartOverlay');
+                if (drawer) {
+                    drawer.classList.add('open');
+                    overlay.classList.add('active');
+                }
+            } else {
+                if (typeof showNotification === "function") {
+                    showNotification("Error: " + data.message, "error");
                 } else {
                     alert("Error: " + data.message);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Check console: add_to_cart.php was not found or failed.");
-            });
+            }
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            if (typeof showNotification === "function") {
+                showNotification("Something went wrong. Please try again.", "error");
+            }
+        });
     });
 
-    // Initialize bag on page load
-    window.onload = refreshBag;
+    // Initialize bag badge/data on page load
+    window.onload = function() {
+        if (typeof refreshCartDrawer === "function") {
+            refreshCartDrawer(<?= $supplier_id ?>);
+        }
+    };
 </script>
-</body>
 
-</html>
+ <section class="related-section">
+        <div class="related-section-header">
+            <h2>Related Products</h2>
+            <span class="related-section-line"></span>
+        </div>
+    </section>
+
+    
+    <section class="related-products-page">
+        <div class="container">
+
+            <div class="related_product_list_grid">
+                <?php
+
+                if (!isset($_GET['category_id'])) {
+                    $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE supplier_id = ? ORDER BY created_at DESC");
+                    if ($products_stmt) {
+                        mysqli_stmt_bind_param($products_stmt, "i", $supplier_id);
+                        mysqli_stmt_execute($products_stmt);
+                        $products_result = mysqli_stmt_get_result($products_stmt);
+                    } else {
+                        $products_result = false;
+                    }
+                } else {
+                    $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE supplier_id = ? and category_id = ? ORDER BY created_at DESC");
+                    if ($products_stmt) {
+                        mysqli_stmt_bind_param($products_stmt, "ii", $supplier_id, $_GET['category_id']);
+                        mysqli_stmt_execute($products_stmt);
+                        $products_result = mysqli_stmt_get_result($products_stmt);
+                    } else {
+                        $products_result = false;
+                    }
+                }
+
+                if ($products_result && mysqli_num_rows($products_result) > 0) {
+                    while ($product = mysqli_fetch_assoc($products_result)) {
+
+                        ?>
+                        <div class="related_product">
+                            <div class="related_product_image">
+                                <?php if (!empty($product['image'])): ?>
+                                    <img
+                                        src="../uploads/products/<?= $product['product_id'] ?>_<?= htmlspecialchars($product['image']) ?>">
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="related_product_card-body">
+                                <div class="related_product-info">
+                                    <span
+                                        class="related_product_card_title"><?= htmlspecialchars($product['product_name']) ?></span>
+                                    <span class="related_product_price">$<?= number_format($product['price'], 2) ?></span>
+                                </div>
+
+                                <button class="related_product_add-to-cart" title="Add to cart">+</button>
+                            </div>
+                            <a class="detail-link"
+                                href="?supplier_id=<?= $supplier_id ?>&page=productDetail&product_id=<?= $product['product_id'] ?>">
+                                <button class="detail-btn">VIEW DETAILS</button>
+                            </a>
+                        </div>
+
+
+                        <?php
+                    }
+                    if (isset($products_stmt)) {
+                        mysqli_stmt_close($products_stmt);
+                    }
+                } else {
+                    ?>
+                    <div class="col-12">
+                        <p class="text-center">No products available at the moment.</p>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+
+    </section>
+</body>

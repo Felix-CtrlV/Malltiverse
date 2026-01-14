@@ -315,7 +315,7 @@ function getColorHex($colorName) {
     </div>
 
     <div class="load-more-container">
-        <button id="load-more-btn" class="magnet-btn-dark" data-offset="9" data-supplier="<?= $supplier_id ?>">View More</button>
+        <button id="load-more-btn" class="magnet-btn-dark" data-offset="9" data-supplier="<?= $supplier_id ?>" data-category="<?= $category_filter ?>">View More</button>
     </div>
 </section>
 
@@ -339,6 +339,89 @@ function getColorHex($colorName) {
         }
         function resetCard() {
             this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        }
+    });
+
+    // View More Button Functionality
+    document.addEventListener("DOMContentLoaded", function() {
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const productGrid = document.getElementById('product-grid');
+        
+        if (loadMoreBtn && productGrid) {
+            loadMoreBtn.addEventListener('click', async function() {
+                const offset = parseInt(loadMoreBtn.dataset.offset || 9);
+                const supplierId = loadMoreBtn.dataset.supplier;
+                const categoryFilter = loadMoreBtn.dataset.category || 'all';
+                
+                // Disable button and show loading state
+                loadMoreBtn.disabled = true;
+                const originalText = loadMoreBtn.textContent;
+                loadMoreBtn.textContent = 'Loading...';
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('offset', offset);
+                    formData.append('supplier_id', supplierId);
+                    if (categoryFilter !== 'all') {
+                        formData.append('category_id', categoryFilter);
+                    }
+                    
+                    const response = await fetch('../templates/template4/fetch_products.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const html = await response.text();
+                    
+                    if (html.trim() === 'NO_MORE') {
+                        loadMoreBtn.textContent = 'No More Products';
+                        loadMoreBtn.disabled = true;
+                        if (typeof window.showMinimalAlert === 'function') {
+                            window.showMinimalAlert('No more products to load', 'info');
+                        }
+                    } else {
+                        // Create temporary container to parse HTML
+                        const temp = document.createElement('div');
+                        temp.innerHTML = html;
+                        
+                        // Append new products to grid
+                        while (temp.firstChild) {
+                            productGrid.appendChild(temp.firstChild);
+                        }
+                        
+                        // Update offset
+                        loadMoreBtn.dataset.offset = offset + 9;
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.textContent = originalText;
+                        
+                        // Re-attach tilt effect to new cards
+                        const newCards = productGrid.querySelectorAll('.tilt-element:not([data-tilt-attached])');
+                        newCards.forEach(card => {
+                            card.setAttribute('data-tilt-attached', 'true');
+                            card.addEventListener('mousemove', function(e) {
+                                const rect = this.getBoundingClientRect();
+                                const x = e.clientX - rect.left;
+                                const y = e.clientY - rect.top;
+                                const centerX = rect.width / 2;
+                                const centerY = rect.height / 2;
+                                const rotateX = ((y - centerY) / centerY) * -5;
+                                const rotateY = ((x - centerX) / centerX) * 5;
+                                this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                            });
+                            card.addEventListener('mouseleave', function() {
+                                this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                            });
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading more products:', error);
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.textContent = originalText;
+                    if (typeof window.showMinimalAlert === 'function') {
+                        window.showMinimalAlert('Error loading products. Please try again.', 'error');
+                    }
+                }
+            });
         }
     });
 </script>

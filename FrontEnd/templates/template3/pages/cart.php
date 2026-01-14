@@ -7,7 +7,7 @@ $cart_query = "SELECT c.cart_id, c.quantity, p.product_name, p.price, p.image, p
                FROM cart c 
                JOIN product_variant v ON c.variant_id = v.variant_id 
                JOIN products p ON v.product_id = p.product_id 
-               WHERE c.customer_id = ? AND c.supplier_id = ?";
+               WHERE c.customer_id = ? AND c.supplier_id = ?"; 
 
 $stmt = mysqli_prepare($conn, $cart_query);
 mysqli_stmt_bind_param($stmt, "ii", $customer_id, $supplier_id);
@@ -15,6 +15,8 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $cart_count = mysqli_num_rows($result);
 $total_price = 0;
+
+
 ?>
 
 <div class="container mt-5 mb-5">

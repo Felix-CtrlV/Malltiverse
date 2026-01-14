@@ -322,6 +322,7 @@ $main_image = "../uploads/products/" . $product['product_id'] . "_" . htmlspecia
 
             <form id="cart-form">
                 <input type="hidden" name="variant_id" id="selected-variant-id" value="">
+                <input type="hidden" name="supplier_id" id="supplier_id" value="<?= $supplier_id ?>">
                 <button type="button" class="btn-submit" id="add-btn" onclick="handleAddToCart()">Add to Bag</button>
                 <div id="error-msg">Please select a size.</div>
             </form>
@@ -417,12 +418,65 @@ $main_image = "../uploads/products/" . $product['product_id'] . "_" . htmlspecia
         }
 
         const btn = document.getElementById('add-btn');
+        const originalText = btn.innerText;
+        btn.disabled = true;
         btn.innerText = "Adding...";
 
-        // Simulate AJAX / Database update
-        setTimeout(() => {
-            alert("Success! Variant ID " + selectedVariantId + " added to cart.");
-            btn.innerText = "Add to Bag";
-        }, 800);
+        // Get supplier_id from URL or page
+        const urlParams = new URLSearchParams(window.location.search);
+        const supplierId = urlParams.get('supplier_id') || <?= $supplier_id ?? 'null' ?>;
+
+        const formData = new FormData();
+        formData.append('variant_id', selectedVariantId);
+        formData.append('supplier_id', supplierId);
+        formData.append('quantity', 1);
+
+        fetch('../utils/add_to_cart.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                if (typeof window.showMinimalAlert === 'function') {
+                    window.showMinimalAlert('Item added to cart!', 'success');
+                } else {
+                    setTimeout(() => {
+                        if (typeof window.showMinimalAlert === 'function') {
+                            window.showMinimalAlert('Item added to cart!', 'success');
+                        }
+                    }, 100);
+                }
+                if (typeof window.refreshCart === 'function') {
+                    window.refreshCart(supplierId);
+                }
+            } else {
+                if (typeof window.showMinimalAlert === 'function') {
+                    window.showMinimalAlert(data.message || 'Error adding item', 'error');
+                } else {
+                    setTimeout(() => {
+                        if (typeof window.showMinimalAlert === 'function') {
+                            window.showMinimalAlert(data.message || 'Error adding item', 'error');
+                        }
+                    }, 100);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (typeof window.showMinimalAlert === 'function') {
+                window.showMinimalAlert('Network error. Please try again.', 'error');
+            } else {
+                setTimeout(() => {
+                    if (typeof window.showMinimalAlert === 'function') {
+                        window.showMinimalAlert('Network error. Please try again.', 'error');
+                    }
+                }, 100);
+            }
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerText = originalText;
+        });
     }
 </script>

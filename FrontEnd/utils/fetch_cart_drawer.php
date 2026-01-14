@@ -3,8 +3,10 @@
 session_start();
 include '../../BackEnd/config/dbconfig.php';
 
+
 $customer_id = $_SESSION['customer_id'] ?? 1; 
 $supplier_id = (int)$_GET['supplier_id'];
+
 
 
 $query = "SELECT c.cart_id, c.quantity, p.product_name, p.price, p.image, p.product_id, v.color, v.size 
@@ -27,7 +29,12 @@ $total_quantity = 0; /*Shopping cart sum(KPS)*/
 while ($item = mysqli_fetch_assoc($result)) {
     $subtotal = $item['price'] * $item['quantity'];
     $total += $subtotal;
+
     $total_quantity += (int)$item['quantity'];/* Shopping cart sum(KPS)*/
+
+
+    
+
 
      $html .= "
     <div class='cart-item'> 
@@ -52,6 +59,7 @@ while ($item = mysqli_fetch_assoc($result)) {
             </h6>
             <small style='color: #666; font-size: 0.65rem; display: block;'>Qty: {$item['quantity']} | Size: {$item['size']}</small>
             <div style='font-weight: bold; font-size: 0.8rem; color: #bf953f; margin-top: 2px;'>$" . number_format($subtotal, 2) . "</div>
+
         </div>
     </div>
 
