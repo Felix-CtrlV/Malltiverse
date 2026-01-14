@@ -1,5 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 <?php
 // product_details.php - Logic Header
 $product_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -84,7 +85,7 @@ $sizes = array_unique($sizes);
                             
           <div class="rolex-cart shadow-lg">
     
-    <div class="cart-header d-flex justify-content-between align-items-center">
+    <!-- <div class="cart-header d-flex justify-content-between align-items-center">
         <span class="header-title">My Selection</span>
         <i class="fas fa-shopping-bag" style="color: var(--gold-dark);"></i>
     </div>
@@ -106,21 +107,18 @@ $sizes = array_unique($sizes);
         </button>
     </div>
 
-</div>
-
+</div> -->
+                       
 <script>
     const allVariants = <?= json_encode($variants_data) ?>;
 
     // 1. Add to Cart Logic
     document.getElementById('addToCartBtn').addEventListener('click', function () {
-        
         const selectedSize = document.getElementById('sizeSelect').value;
         const qty = parseInt(document.getElementById('qtyInput').value) || 1;
         const supplierId = document.getElementById('supplier_id').value;
-
         const variant = allVariants.find(v => v.size === selectedSize);
 
-        // --- Alert if Size not selected ---
         if (!selectedSize || !variant) {
             Swal.fire({
                 icon: 'warning',
@@ -140,87 +138,74 @@ $sizes = array_unique($sizes);
             method: 'POST',
             body: formData
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Items added to the cart',
-                        showConfirmButton: false,
-                        timer: 1500 
-                    });
-                    refreshBag();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: data.message
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    });
-
-   function refreshBag() {
-    const supplierId = document.getElementById('supplier_id').value;
-    const cartContainer = document.getElementById('cartitem');
-
-   
-    cartContainer.innerHTML = `
-        <div class="text-center py-5">
-            <div class="spinner-border text-secondary" role="status"></div>
-            <p class="mt-2 small text-muted">Checking your bag...</p>
-        </div>`;
-
-    fetch(`../utils/fetch_cart_drawer.php?supplier_id=${supplierId}&t=${new Date().getTime()}`)
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
-           
-            
-            if (data.drawer_html && data.drawer_html.trim() !== "") {
-                cartContainer.innerHTML = data.drawer_html;
-            } else {
-            
-                cartContainer.innerHTML = `
-                    <div class="text-center py-5 animated fadeIn">
-                        <i class="fas fa-shopping-bag mb-3" style="font-size: 3rem; color: #dee2e6;"></i>
-                        <p class="text-muted mb-0">Your selection is empty</p>
-                        <small class="text-muted">Start adding items to your bag.</small>
-                    </div>`;
-            }
-
-            
-            const totalElement = document.getElementById('cart-subtotal');
-            if (totalElement) {
-                const total = parseFloat(data.total) || 0;
-                totalElement.textContent = total.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Items added to the cart',
+                    showConfirmButton: false,
+                    timer: 1500 
                 });
+                // Cart Drawer နဲ့ Navbar Badge နှစ်ခုလုံးကို update လုပ်မယ်
+                refreshBag();
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: data.message });
             }
         })
-        .catch(err => {
-            console.error("Error fetching cart:", err);
-            cartContainer.innerHTML = `<p class="text-center text-danger py-3 small">Failed to load cart.</p>`;
-        });
-}
-    window.onload = refreshBag;
+        .catch(error => console.error('Error:', error));
+    });
 
-    // 2. Remove from Cart Logic with SweetAlert2
+    // 2. Refresh Cart UI (Drawer + Badge)
+    function refreshBag() {
+        const supplierId = document.getElementById('supplier_id').value;
+        const cartContainer = document.getElementById('cartitem');
+
+        // Drawer ရှိရင် loading ပြမယ်
+        if (cartContainer) {
+            cartContainer.innerHTML = `<div class="text-center py-5"><div class="spinner-border text-warning" role="status"></div></div>`;
+        }
+
+        fetch(`../utils/fetch_cart_drawer.php?supplier_id=${supplierId}&t=${new Date().getTime()}`)
+            .then(res => res.json())
+            .then(data => {
+                // Navbar Badge Update လုပ်ခြင်း
+                const cartBadge = document.getElementById('cart-badge-count');
+                if (cartBadge) {
+                    const count = parseInt(data.total_count) || 0;
+                    cartBadge.innerText = count;
+                    cartBadge.style.display = count > 0 ? 'inline-block' : 'none';
+                }
+
+                // Drawer (My Selection) Update လုပ်ခြင်း
+                if (cartContainer) {
+                    if (data.drawer_html && data.drawer_html.trim() !== "") {
+                        cartContainer.innerHTML = data.drawer_html;
+                    } else {
+                        cartContainer.innerHTML = `<div class="text-center py-5"><p class="text-muted">Your selection is empty</p></div>`;
+                    }
+                }
+
+                // Subtotal Update လုပ်ခြင်း
+                const totalElement = document.getElementById('cart-subtotal');
+                if (totalElement) {
+                    const total = parseFloat(data.total) || 0;
+                    totalElement.textContent = total.toLocaleString('en-US', { minimumFractionDigits: 2 });
+                }
+            })
+            .catch(err => console.error("Error fetching cart:", err));
+    }
+
+    // 3. Remove Item Logic
     function handleRemove(cartId) {
         Swal.fire({
             title: 'Are You Sure?',
-            text: "Are you Sure to Delete this item?",
+            text: "Delete this item from your selection?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#212529',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Delete',
-            cancelButtonText: 'Cancel'
+            confirmButtonText: 'Delete'
         }).then((result) => {
             if (result.isConfirmed) {
                 const supplierId = document.getElementById('supplier_id').value;
@@ -228,29 +213,17 @@ $sizes = array_unique($sizes);
                 formData.append('cart_id', cartId);
                 formData.append('supplier_id', supplierId);
 
-                fetch('../utils/removeFromCart.php', { 
-                    method: 'POST',
-                    body: formData
-                })
+                fetch('../utils/removeFromCart.php', { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        Swal.fire({
-                            title: 'Deleted Successfully!',
-                            icon: 'success',
-                            timer: 1000,
-                            showConfirmButton: false
-                        });
-                        refreshBag(); 
-                    } else {
-                        Swal.fire('Error', data.message, 'error');
+                        refreshBag(); // Update Badge & Drawer
                     }
-                })
-                .catch(err => {
-                    console.error(err);
-                    Swal.fire('Path Error', err.message, 'error');
                 });
             }
         });
     }
+
+    // Page load ဖြစ်ချိန်မှာ တစ်ခါ ခေါ်ထားမယ်
+    window.addEventListener('DOMContentLoaded', refreshBag);
 </script>

@@ -749,35 +749,114 @@ h1 {
     }
 }
 
-/* 5. Order Now Button Style (Luxury Refined) */
 .btn-order-now {
-    display: inline-block;
-    background-color: #000; /* Deep black background */
-    color: #ffC30b;          /* Luxury gold text */
-    padding: 12px 30px;
-    border-radius: 50px;     /* Rounded pill shape */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 40px;
     text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    text-align: center;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    border: 1px solid #000;
+    
+    
+    /* Vintage gold leather look */
+    background: linear-gradient(145deg, 
+        #8b7355 0%, 
+        #a9906d 25%, 
+        #8b7355 50%, 
+        #6d5c47 75%, 
+        #8b7355 100%);
+    color: #2a2118;
+    
+    border: none;
+    border-radius: 30px;
+    width:80%;
+    
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    
+    /* Leather texture */
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, rgba(0,0,0,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    
+    /* Roman numeral borders */
+    box-shadow: 
+        inset 0 0 0 1px rgba(42, 33, 24, 0.3),
+        inset 0 0 0 2px rgba(139, 115, 85, 0.2),
+        inset 0 0 0 3px rgba(42, 33, 24, 0.1);
 }
 
-/* Hover State for Interactivity */
+/* Roman numeral corner accents */
+.btn-order-now::before,
+.btn-order-now::after {
+    content: 'XII';
+    position: absolute;
+    font-size: 8px;
+    color: rgba(42, 33, 24, 0.5);
+    font-weight: 900;
+}
+
+.btn-order-now::before {
+    top: 5px;
+    left: 5px;
+}
+
+.btn-order-now::after {
+    bottom: 5px;
+    right: 5px;
+    transform: rotate(180deg);
+}
+
 .btn-order-now:hover {
-    background-color: #ffC30b;
-    color:white;
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    color: #000;
+    background: linear-gradient(145deg, 
+        #a9906d 0%, 
+        #c0a062 25%, 
+        #a9906d 50%, 
+        #8b7355 75%, 
+        #a9906d 100%);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        inset 0 0 0 1px rgba(42, 33, 24, 0.4),
+        inset 0 0 0 2px rgba(192, 160, 98, 0.3),
+        inset 0 0 0 3px rgba(42, 33, 24, 0.2);
 }
 
-/* Active State for Click Feel */
-.btn-order-now:active {
-    transform: translateY(0);
+/* Adding a watch strap effect on sides */
+.btn-order-now span {
+    position: relative;
+    z-index: 2;
 }
+
+.btn-order-now span::before,
+.btn-order-now span::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 2px;
+    background: #2a2118;
+    opacity: 0.5;
+}
+
+.btn-order-now span::before {
+    right: -15px;
+}
+
+.btn-order-now span::after {
+    left: -15px;
+}
+
+
+
 
 
 
@@ -831,7 +910,7 @@ h1 {
 
 
 
-/* Footer အောက်ခံ Background နှင့် စာလုံးအရောင် */
+
 .site-footer {
     background-color: #1a1d20; /* Dark Grey/Black */
     color: #ced4da;
@@ -839,7 +918,7 @@ h1 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* ခေါင်းစဉ်များ (Company Name, Quick Links, etc.) */
+
 .site-footer h5 {
     color: #ffffff;
     font-weight: 600;

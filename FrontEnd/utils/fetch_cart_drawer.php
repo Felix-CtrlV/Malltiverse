@@ -21,11 +21,13 @@ $result = mysqli_stmt_get_result($stmt);
 $html = "";         
 $drawer_html = "";  
 $total = 0;
+$total_quantity = 0; /*Shopping cart sum(KPS)*/
 
 
 while ($item = mysqli_fetch_assoc($result)) {
     $subtotal = $item['price'] * $item['quantity'];
     $total += $subtotal;
+    $total_quantity += (int)$item['quantity'];/* Shopping cart sum(KPS)*/
 
      $html .= "
     <div class='cart-item'> 
@@ -65,13 +67,6 @@ while ($item = mysqli_fetch_assoc($result)) {
 </div>";
 }
 
-
- 
-
-
-
-
-
 // ... (Rest of the code)
 
 $footer = "<h5>Total: $" . number_format($total, 2) . "</h5><button class='checkout-btn'>Checkout</button>";
@@ -81,6 +76,7 @@ echo json_encode([
     'html' => $html,
     'drawer_html' => $drawer_html,
     'footer' => $footer,
-    'total' => $total
+    'total' => $total,
+    'total_count' => $total_quantity /*Shopping_cart sum(KPS)*/
 ]);
 ?>
