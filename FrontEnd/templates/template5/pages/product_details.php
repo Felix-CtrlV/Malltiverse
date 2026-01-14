@@ -90,8 +90,6 @@ $sizes = array_unique($sizes);
     <button id="addToCartBtn" class="btn btn-dark btn-lg w-100 shadow-sm border-0 py-3 mt-2">
         <i class="fas fa-shopping-bag me-2"></i> ADD TO CART
     </button>
-
-   
 </div>
        
                             
