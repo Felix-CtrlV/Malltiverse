@@ -118,7 +118,7 @@ if ($banner_filename && file_exists($banner_fs)) {
     <?php include(__DIR__ . '/partial/footer.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script src="../templates/template4/script.js"></script>
 
 </body>
 

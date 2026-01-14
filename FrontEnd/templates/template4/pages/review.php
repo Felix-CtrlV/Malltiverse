@@ -52,18 +52,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bind_param("iisi", $supplier_id, $cid, $review_text, $rating);
 
                 if ($stmt->execute()) {
-                    echo "<script>alert('Review submitted successfully!'); window.location.href='?supplier_id=$supplier_id&page=review';</script>";
+                    echo "<script>
+                        if (typeof window.showMinimalAlert === 'function') {
+                            window.showMinimalAlert('Review submitted successfully!', 'success');
+                            setTimeout(() => window.location.href='?supplier_id=$supplier_id&page=review', 1500);
+                        } else {
+                            alert('Review submitted successfully!');
+                            window.location.href='?supplier_id=$supplier_id&page=review';
+                        }
+                    </script>";
                 } else {
-                    echo "<script>alert('Error submitting review.');</script>";
+                    echo "<script>
+                        if (typeof window.showMinimalAlert === 'function') {
+                            window.showMinimalAlert('Error submitting review.', 'error');
+                        } else {
+                            alert('Error submitting review.');
+                        }
+                    </script>";
                 }
             } else {
-                echo "<script>alert('Email not found. Please register first.');</script>";
+                echo "<script>
+                    if (typeof window.showMinimalAlert === 'function') {
+                        window.showMinimalAlert('Email not found. Please register first.', 'error');
+                    } else {
+                        alert('Email not found. Please register first.');
+                    }
+                </script>";
             }
         } else {
-            echo "<script>alert('Email is required.');</script>";
+            echo "<script>
+                if (typeof window.showMinimalAlert === 'function') {
+                    window.showMinimalAlert('Email is required.', 'error');
+                } else {
+                    alert('Email is required.');
+                }
+            </script>";
         }
     } else {
-        echo "<script>alert('Please select a star rating and write a review.');</script>";
+        echo "<script>
+            if (typeof window.showMinimalAlert === 'function') {
+                window.showMinimalAlert('Please select a star rating and write a review.', 'error');
+            } else {
+                alert('Please select a star rating and write a review.');
+            }
+        </script>";
     }
 }
 
