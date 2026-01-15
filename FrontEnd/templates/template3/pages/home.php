@@ -13,21 +13,7 @@ $current_page = 'home.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../templates/<?= basename(__DIR__) ?>/style.css">
 
-    <style>
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 2rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-        }
-
-        .nav-link {
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #000;
-        }
-
+    <style>        
         /* Hero Section Styling */
         .hero {
             height: 85vh;
@@ -41,15 +27,41 @@ $current_page = 'home.php';
 </head>
 
 <body>
-    <section class="hero">
+<section class="hero" style="margin: 0; padding: 0; min-width: 98.95vw;">
         <?php if ($shop_assets['template_type'] == 'video'): ?>
-        <video class="hero-media" autoplay muted loop playsinline src="../uploads/shops/<?= $supplier_id?>/<?= $banner1?>"></video>
-        
+            <video class="hero-media" autoplay muted loop playsinline src="../uploads/shops/<?= $supplier_id?>/<?= $banner1?>"></video>
+        <?php else: ?>
+            <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>" alt="Hero Banner" class="hero-media">
+        <?php endif; ?>
+</section>
+<style>
+    .hero {
+        width: 100%;
+        margin-top: 30px; 
+        margin-bottom: 20px;
+        overflow: hidden;
+        position: relative;
+    }
 
-    <?php else: ?>
-        <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>" alt="Hero Banner" class="hero-media" style="transform: scale(1.1);">
-    <?php endif; ?>
-    </section>
+    .hero-inner {
+        min-width: 100vw;
+        width: 100%;
+        aspect-ratio: 16 / 9; 
+        max-height: 95vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-media {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.05); 
+        display: block;
+    }
+</style>
 
     <section class="page-content product-page">
         <div class="container">
