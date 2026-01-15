@@ -2643,11 +2643,11 @@ footer css
     .page-title {
         font-family: var(--font-serif);
         font-size: clamp(3rem, 6vw, 4.5rem);
-        font-weight: 400; /* Luxury brands typically use lighter weight fonts */
+        font-weight: 300; 
         letter-spacing: 4px;
         text-transform: uppercase;
-        color: var(--watch-silver);
-        margin: 0;
+        color: var(--gold-primary);
+       margin: 0;
         background: linear-gradient(to bottom, #ffffff 0%, #a2a2a2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -2659,7 +2659,7 @@ footer css
         font-size: 15px;
         letter-spacing: 8px;
         text-transform: uppercase;
-        color:whitesmoke;
+        color:var(--gold-primary);
         margin-top: 15px;
         font-weight: 300;
         
@@ -3023,6 +3023,7 @@ footer {
 }
 .hud-value{
     color: var(--gray);
+    font-size:1.5rem;
 }
 
 .hud-fill {
