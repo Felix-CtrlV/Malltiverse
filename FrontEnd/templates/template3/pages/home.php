@@ -41,14 +41,10 @@ $current_page = 'home.php';
 </head>
 
 <body>
-    <section class="hero">
-        <?php if ($shop_assets['template_type'] == 'video'): ?>
-        <video class="hero-media" autoplay muted loop playsinline src="../uploads/shops/<?= $supplier_id?>/<?= $banner1?>"></video>
-        
-
-    <?php else: ?>
-        <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>" alt="Hero Banner" class="hero-media" style="transform: scale(1.1);">
-    <?php endif; ?>
+    <section class="hero mb-5"> <?php if ($shop_assets['template_type'] == 'video'): ?>
+        <video class="hero-media" autoplay muted loop playsinline src="../uploads/shops/<?= $supplier_id?>/<?= $banner1?>"></video>        <?php else: ?>
+            <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>" alt="Hero Banner" class="hero-media" style="transform: scale(1.1);">
+        <?php endif; ?>
     </section>
 
     <section class="page-content product-page">
