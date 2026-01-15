@@ -813,8 +813,8 @@ h1 {
 
 .site-footer {
     background-color: #1a1d20; /* Dark Grey/Black */
-    color: #ced4da;
-    padding: 60px 0 30px;
+    color: #1a1d20;
+    padding:60px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
