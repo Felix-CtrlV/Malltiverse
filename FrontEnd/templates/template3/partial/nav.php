@@ -48,9 +48,6 @@ while ($row = $result->fetch_assoc()) {
                 <a class="navlink <?= $page === 'home' ? 'active' : '' ?>" href="<?= $base_url ?>&page=home">Home</a>
             </li>
             <li class="nav-item">
-                <a class="navlink <?= $page === 'products' ? 'active' : '' ?>" href="<?= $base_url ?>&page=products">Shop</a>
-            </li>
-            <li class="nav-item">
                 <a class="navlink <?= $page === 'about' ? 'active' : '' ?>" href="<?= $base_url ?>&page=about">About Us</a>
             </li>
             <li class="nav-item">
