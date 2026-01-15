@@ -33,10 +33,7 @@ while ($item = mysqli_fetch_assoc($result)) {
     $total_quantity += (int)$item['quantity'];/* Shopping cart sum(KPS)*/
 
 
-    
-
-
-     $html .= "
+    $html .= "
     <div class='cart-item'> 
         <img src='../uploads/products/{$item['product_id']}_{$item['image']}' width='50'>
         <div>
