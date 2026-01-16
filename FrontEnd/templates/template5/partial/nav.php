@@ -26,7 +26,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav mx-auto">
+           <ul class="navbar-nav mx-auto gap-5">
                 <?php
                 $base_url = "?supplier_id=" . $supplier_id;
                 $nav_items = [
