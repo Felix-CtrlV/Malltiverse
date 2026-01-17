@@ -213,12 +213,15 @@ $item_count = mysqli_num_rows($result);
                     <span class="h5 fw-bold mb-0">Total</span>
                     <span class="h4 fw-bold text-primary mb-0">$<?= number_format($grand_total, 2) ?></span>
                 </div>
-                
-                <button class="checkout-btn mb-2" 
-                        onclick="location.href='checkout.php?supplier_id=<?= $supplier_id ?>'"
-                        <?= $grand_total == 0 ? 'disabled' : '' ?>>
-                    <i class="fas fa-shield-alt"></i>CheckOut
-                </button>
+
+            <!--accesscheckout.php code -->
+               <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" style="text-decoration: none;">
+             <button class="checkout-btn mb-2" 
+            onclick="location.href='checkout.php?supplier_id=<?= $supplier_id ?>'"
+            <?= $grand_total == 0 ? 'disabled' : '' ?>>
+            <i class="fas fa-shield-alt"></i>CheckOut
+            </button>
+            </a>
                 
             </div>
         </div>
