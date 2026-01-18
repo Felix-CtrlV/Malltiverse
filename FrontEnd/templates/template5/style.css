@@ -885,11 +885,6 @@ h1 {
 }
 
 
-.footer-divider {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 40px 0 20px;
-}
-
 .footer-bottom {
     text-align: center;
     font-size: 0.85rem;
@@ -2195,8 +2190,6 @@ footer css
 .footer-bottom {
     max-width: 1400px;
     margin: 0 auto;
-    padding-top: 3rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
     text-align: center;
     position: relative;
     z-index: 1;
