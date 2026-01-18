@@ -108,12 +108,14 @@
                 <br>
                   <div class="row">
                     <div class="col-sm-6">
+                        <br>
                         <div class="stat-box">
                             <span class="stat-number"><?= htmlspecialchars($supplier['tags']) ?></span>
                             <span class="stat-text"></span>
                         </div>
                     </div>
                     <div class="col-sm-6">
+                        <br>
                         <div class="stat-box">
                             <span class="stat-number"><?= htmlspecialchars($supplier['description']) ?></span>
                             
