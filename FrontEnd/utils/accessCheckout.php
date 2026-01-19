@@ -1,9 +1,13 @@
 <?php
 include '../../BackEnd/config/dbconfig.php';
 
+
 $customer_id = $_SESSION['customer_id'] ?? 1;
 
+
 $supplier_id = isset($_GET['supplier_id']) ? intval($_GET['supplier_id']) : 0;
+
+
 
 if ($supplier_id > 0) {
 
@@ -35,7 +39,8 @@ if ($supplier_id > 0) {
     $bank_url = "https://crediverse.base44.app/payment?" . http_build_query([
         'amount'     => $total_price,
         'merchant'   => $my_store_name,
-        'return_url' => $callback_url
+        'return_url' => $callback_url,
+        
     ]);
 
     header("Location: " . $bank_url);

@@ -3523,7 +3523,7 @@ input[name="qty"] {
     }
 
 
-    /* Continue Shopping CSS*/
+/* Continue Shopping CSS*/
 .shopping {
   display: inline-flex;
   align-items: center;
@@ -3554,6 +3554,8 @@ input[name="qty"] {
 .shopping:hover i {
   transform: translateX(-4px);
 }
+
+
 .qty-container {
     display: flex;
     align-items: center;
