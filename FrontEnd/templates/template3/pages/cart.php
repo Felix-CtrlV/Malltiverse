@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../utils/Ordered.php'; 
 
-$customer_id = 1; // Testing 
+$customer_id = 1;
 $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
 
 if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success') {    
