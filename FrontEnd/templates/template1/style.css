@@ -1484,8 +1484,6 @@ body.productDetail {
 
     flex-direction: column;
 
-    justify-content: space-between;
-
     box-shadow:
 
         inset 4px 4px 8px #bebebe,
