@@ -117,7 +117,7 @@ $total_price = 0;
                         </a>
 
                         <a href="?supplier_id=<?= $supplier_id ?>&page=collection"
-                            class="btn btn-link w-100 text-center mt-2" style="color: rgba(71, 78, 111, 0.6));">
+                           class="btn btn-link w-100 text-center mt-2" style="color: rgba(71, 78, 111, 0.6));">
                             Continue Shopping
                         </a>
                     </div>
