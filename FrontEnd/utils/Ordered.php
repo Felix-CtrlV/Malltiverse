@@ -70,28 +70,7 @@ function placeOrder($conn, $customer_id, $supplier_id) {
  
         mysqli_rollback($conn);
         return false;
-    }
-}
-
-if (isset($_GET['payment_status']) && $_GET['payment_status'] == 'success') {
-    
-    if (isset($customer_id) && isset($supplier_id)) {
-        
-        $status = placeOrder($conn, $customer_id, $supplier_id);
-
-        if ($status === true) {
-            echo "<script>
-                    alert('Order Placed Successfully!');
-                    window.location.href = '?supplier_id=$supplier_id&page=cart';
-                  </script>";
-            exit();
-        } else {
-            echo "<script>
-                    alert('Order process failed or Cart is empty.');
-                    window.location.href = '?supplier_id=$supplier_id&page=cart';
-                  </script>";
-            exit();
-        }
-    }
+    }    
 }
 ?>
+
