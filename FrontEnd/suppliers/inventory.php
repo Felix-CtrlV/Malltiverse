@@ -349,6 +349,7 @@ ob_end_flush();
 
         .btn-main:hover {
             background: #333;
+            color: white;
             transform: translateY(-1px);
         }
 
@@ -461,14 +462,13 @@ ob_end_flush();
         }
 
         .modal-sidebar {
-            width: 35%;
+            /* width: 35%; */
             background: #f8fafc;
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px;
         }
 
         .modal-content-area {
@@ -733,9 +733,11 @@ ob_end_flush();
         }
 
         .modal-big-img {
-            max-width: 100%;
-            max-height: 400px;
-            object-fit: contain;
+            /* max-width: 100%; */
+            width: 100%;
+            height: 100%;
+            /* max-height: 400px; */
+            object-fit: cover;
             filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
         }
 
@@ -1001,7 +1003,7 @@ ob_end_flush();
 
         <div id="variantModal" class="modal-overlay">
             <div class="modal-box">
-                <div class="modal-sidebar" style="background:#000;">
+                <div class="modal-sidebar"  >
                     <img id="varModalImg" class="modal-big-img" src="">
                 </div>
 
