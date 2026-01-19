@@ -759,10 +759,6 @@ while ($item = mysqli_fetch_assoc($result)) {
             text-decoration: none;
         }
         
-        .fab:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 12px 35px rgba(242, 5, 133, 0.4);
-        }
     </style>
 </head>
 <body>
