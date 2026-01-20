@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php
 include '../../BackEnd/config/dbconfig.php';
 require_once __DIR__ . '/../../../utils/Ordered.php'; 
@@ -8,10 +9,27 @@ $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 10;
 if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success') {    
     $is_ordered = placeOrder($conn, $customer_id, $supplier_id);
     
-    if ($is_ordered) {
-        echo "<script>alert('Your Orders Items Successfully!'); window.location.href='?supplier_id=$supplier_id&page=cart';</script>";
-        exit();
-    }
+  if ($is_ordered) {
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Ordered successfully!'
+        }).then(() => {
+            window.location.href = '?supplier_id=$supplier_id&page=cart';
+        });
+    </script>";
+    exit();
+}
 }
 
 
@@ -33,6 +51,7 @@ $cart_items = [];
 while ($item = mysqli_fetch_assoc($result)) {
     $cart_items[] = $item;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -497,7 +516,6 @@ while ($item = mysqli_fetch_assoc($result)) {
         .remove-btn:hover {
             background: var(--danger);
             color: white;
-            transform: rotate(90deg);
         }
         
         /* Order Summary */
@@ -913,13 +931,12 @@ while ($item = mysqli_fetch_assoc($result)) {
                         <span class="total-amount">$<?= number_format($grand_total * 1.08, 2) ?></span>
                     </div>
                     
+                    <!--Account number url -->
                     <div class="checkout-action">
-                        <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" style="text-decoration: none;">
-                            <button class="checkout-btn">
-                                <i class="fas fa-lock"></i>
-                               Secure Checkout
-                            </button>
-                        </a>
+                <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>&account_number=VB403687042537" style="text-decoration: none;">
+                <button type="button" class="checkout-btn"> <i class="fas fa-lock"></i> Secure Checkout
+                </button>
+                </a>
                         
                         <div class="security-badge">
                             <i class="fas fa-shield-alt"></i>
