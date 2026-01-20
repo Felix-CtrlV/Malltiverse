@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php
 include '../../BackEnd/config/dbconfig.php';
 require_once __DIR__ . '/../../../utils/Ordered.php'; 
@@ -8,10 +9,27 @@ $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 10;
 if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success') {    
     $is_ordered = placeOrder($conn, $customer_id, $supplier_id);
     
-    if ($is_ordered) {
-        echo "<script>alert('Your Orders Items Successfully!'); window.location.href='?supplier_id=$supplier_id&page=cart';</script>";
-        exit();
-    }
+  if ($is_ordered) {
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Ordered successfully!'
+        }).then(() => {
+            window.location.href = '?supplier_id=$supplier_id&page=cart';
+        });
+    </script>";
+    exit();
+}
 }
 
 
@@ -498,7 +516,6 @@ while ($item = mysqli_fetch_assoc($result)) {
         .remove-btn:hover {
             background: var(--danger);
             color: white;
-            transform: rotate(90deg);
         }
         
         /* Order Summary */
