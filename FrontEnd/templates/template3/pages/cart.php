@@ -10,9 +10,26 @@ if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success') {
     $is_ordered = placeOrder($conn, $customer_id, $supplier_id);
     
     if ($is_ordered) {
-        echo "<script>alert('Order Placed Successfully!'); window.location.href='?supplier_id=$supplier_id&page=cart';</script>";
-        exit();
-    }
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Ordered successfully!'
+        }).then(() => {
+            window.location.href = '?supplier_id=$supplier_id&page=cart';
+        });
+    </script>";
+    exit();
+}
 }
 
 $cart_query = "SELECT c.cart_id, c.quantity, p.product_name, p.price, p.image, p.product_id, v.color, v.size 
