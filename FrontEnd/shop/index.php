@@ -43,6 +43,8 @@ if (file_exists($template_path)) {
 $page_content = ob_get_clean();
 
 // 3. Define the Loader HTML, CSS, and JS
+
+// HTML STRUCTURE (Unchanged)
 $loader_html = '
 <div id="global-loading-screen">
     <div class="spinner-wrapper">
@@ -55,6 +57,7 @@ $loader_html = '
     </div>
 </div>';
 
+// CSS STYLING (Unchanged)
 $loader_css = '
 <style>
     /* Full Screen Overlay */
@@ -64,7 +67,7 @@ $loader_css = '
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #1a1a1a; /* Dark background to make spinners pop */
+        background-color: #1a1a1a;
         z-index: 9999999;
         display: flex;
         justify-content: center;
@@ -79,22 +82,21 @@ $loader_css = '
         pointer-events: none;
     }
 
-    /* Center wrapper for the absolute spinners */
     .spinner-wrapper {
         position: relative;
         width: 0;
         height: 0;
     }
 
-    /* YOUR ORIGINAL CSS */
+    /* SPINNER ANIMATIONS */
     .spinner {
         width: 16px;
         height: 16px;
         animation: spinner-y0fdc1 15s forwards infinite ease;
         position: absolute;
         top: 50%; left: 50%;
-        margin-left: -8px; /* Center offset */
-        margin-top: -8px;  /* Center offset */
+        margin-left: -8px; 
+        margin-top: -8px; 
         transform-style: preserve-3d;
     }
 
@@ -103,15 +105,36 @@ $loader_css = '
         position: absolute;
         width: 100%;
         border: 1px solid #f8c828;
-        background: rgba(248, 200, 40, 0.1); /* Slight fill for better visuals */
+        // background: rgba(248, 200, 40, 0.1);
     }
 
-    .spinner div:nth-of-type(1) { transform: translateZ(-8px) rotateY(180deg); }
-    .spinner div:nth-of-type(2) { transform: rotateY(-270deg) translateX(50%); transform-origin: top right; }
-    .spinner div:nth-of-type(3) { transform: rotateY(270deg) translateX(-50%); transform-origin: center left; }
-    .spinner div:nth-of-type(4) { transform: rotateX(90deg) translateY(-50%); transform-origin: top center; }
-    .spinner div:nth-of-type(5) { transform: rotateX(-90deg) translateY(50%); transform-origin: bottom center; }
-    .spinner div:nth-of-type(6) { transform: translateZ(8px); }
+.spinner div:nth-of-type(1) {
+  transform: translateZ(-8px) rotateY(180deg);
+}
+
+.spinner div:nth-of-type(2) {
+  transform: rotateY(-270deg) translateX(50%);
+  transform-origin: top right;
+}
+
+.spinner div:nth-of-type(3) {
+  transform: rotateY(270deg) translateX(-50%);
+  transform-origin: center left;
+}
+
+.spinner div:nth-of-type(4) {
+  transform: rotateX(90deg) translateY(-50%);
+  transform-origin: top center;
+}
+
+.spinner div:nth-of-type(5) {
+  transform: rotateX(-90deg) translateY(50%);
+  transform-origin: bottom center;
+}
+
+.spinner div:nth-of-type(6) {
+  transform: translateZ(8px);
+}
 
     .spinner2 {
         width: 32px;
@@ -128,60 +151,172 @@ $loader_css = '
         height: 100%;
         position: absolute;
         width: 100%;
-        border: 1px solid #ffffff; /* Changed to white for contrast against dark bg */
+        border: 1px solid #ffffff;
     }
 
-    .spinner2 div:nth-of-type(1) { transform: translateZ(-16px) rotateY(180deg); }
-    .spinner2 div:nth-of-type(2) { transform: rotateY(-270deg) translateX(50%); transform-origin: top right; }
-    .spinner2 div:nth-of-type(3) { transform: rotateY(270deg) translateX(-50%); transform-origin: center left; }
-    .spinner2 div:nth-of-type(4) { transform: rotateX(90deg) translateY(-50%); transform-origin: top center; }
-    .spinner2 div:nth-of-type(5) { transform: rotateX(-90deg) translateY(50%); transform-origin: bottom center; }
-    .spinner2 div:nth-of-type(6) { transform: translateZ(16px); }
+   .spinner2 div:nth-of-type(1) {
+  transform: translateZ(-16px) rotateY(180deg);
+}
 
-    @keyframes spinner-y0fdc1 {
-        0% { transform: rotate(0deg) rotateX(0deg) rotateY(0deg); }
-        24% { transform: rotate(0deg) rotateX(360deg) rotateY(360deg); width: 16px; height: 16px; }
-        25% { transform: rotate(0deg) rotateX(360deg) rotateY(360deg); width: 48px; height: 48px; }
-        50% { transform: rotate(225deg) rotateX(360deg) rotateY(360deg); width: 48px; height: 48px; }
-        75% { transform: rotate(0deg) rotateX(360deg) rotateY(360deg); width: 48px; height: 48px; }
-        76% { transform: rotate(0deg) rotateX(360deg) rotateY(360deg); width: 16px; height: 16px; }
-        96% { transform: rotate(0deg) rotateX(0deg) rotateY(0deg); }
-        100% { transform: rotate(0deg) rotateX(0deg) rotateY(0deg); }
-    }
+.spinner2 div:nth-of-type(2) {
+  transform: rotateY(-270deg) translateX(50%);
+  transform-origin: top right;
+}
 
-    @keyframes spinner-y0fdc2 {
-        0% { transform: rotate(45deg) rotateX(0deg) rotateY(0deg); }
-        24% { transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg); width: 32px; height: 32px; }
-        25% { transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg); width: 48px; height: 48px; }
-        50% { transform: rotate(-180deg) rotateX(-360deg) rotateY(-360deg); width: 48px; height: 48px; }
-        75% { transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg); width: 48px; height: 48px; }
-        76% { transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg); width: 32px; height: 32px; }
-        96% { transform: rotate(45deg) rotateX(0deg) rotateY(0deg); }
-        100% { transform: rotate(45deg) rotateX(0deg) rotateY(0deg); }
-    }
+.spinner2 div:nth-of-type(3) {
+  transform: rotateY(270deg) translateX(-50%);
+  transform-origin: center left;
+}
+
+.spinner2 div:nth-of-type(4) {
+  transform: rotateX(90deg) translateY(-50%);
+  transform-origin: top center;
+}
+
+.spinner2 div:nth-of-type(5) {
+  transform: rotateX(-90deg) translateY(50%);
+  transform-origin: bottom center;
+}
+
+.spinner2 div:nth-of-type(6) {
+  transform: translateZ(16px);
+}
+
+   @keyframes spinner-y0fdc1 {
+  0% {
+    transform: rotate(0deg) rotateX(0deg) rotateY(0deg);
+  }
+  24% {
+    transform: rotate(0deg) rotateX(360deg) rotateY(360deg);
+    // width: 16px;
+    // height: 16px;
+  }
+  25% {
+    transform: rotate(0deg) rotateX(360deg) rotateY(360deg);
+    // width: 48px;
+    // height: 48px;
+  }
+  50% {
+    transform: rotate(225deg) rotateX(360deg) rotateY(360deg);
+    // width: 48px;
+    // height: 48px;
+  }
+  75% {
+    transform: rotate(0deg) rotateX(360deg) rotateY(360deg);
+    // width: 48px;
+    // height: 48px;
+  }
+  76% {
+    transform: rotate(0deg) rotateX(360deg) rotateY(360deg);
+    // width: 16px;
+    // height: 16px;
+  }
+  96% {
+    transform: rotate(0deg) rotateX(0deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotate(0deg) rotateX(0deg) rotateY(0deg);
+  }
+}
+
+@keyframes spinner-y0fdc2 {
+  0% {
+    transform: rotate(45deg) rotateX(0deg) rotateY(0deg);
+  }
+  24% {
+    transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg);
+    // width: 32px;
+    // height: 32px;
+  }
+  25% {
+    transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg);
+    // width: 48px;
+    // height: 48px;
+  }
+  50% {
+    transform: rotate(-180deg) rotateX(-360deg) rotateY(-360deg);
+    // width: 48px;
+    // height: 48px;
+  }
+  75% {
+    transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg);
+    // width: 48px;
+    // height: 48px;
+  }
+  76% {
+    transform: rotate(45deg) rotateX(-360deg) rotateY(-360deg);
+    // width: 32px;
+    // height: 32px;
+  }
+  96% {
+    transform: rotate(45deg) rotateX(0deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotate(45deg) rotateX(0deg) rotateY(0deg);
+  }
+}
 </style>';
 
+// UPDATED JS LOGIC (Entry + Exit Loader)
 $loader_js = '
 <script>
-    // Wait for the entire page (images, scripts, styles) to load
-    window.addEventListener("load", function() {
+    document.addEventListener("DOMContentLoaded", function() {
         var loader = document.getElementById("global-loading-screen");
-        if(loader) {
-            // Add the class that fades it out
-            loader.classList.add("loaded");
-            
-            // Remove it from DOM after animation completes (optional)
-            setTimeout(function(){
+        
+        // --- 1. ENTRY LOGIC: FADE OUT ---
+        // Hide loader gently when the page is fully loaded
+        window.addEventListener("load", function() {
+            if(loader) {
+                // Restore transition in case it was removed by a click
+                loader.style.transition = ""; 
+                loader.classList.add("loaded");
+                
+                // Remove from display flow after animation
+                setTimeout(function(){
+                    loader.style.display = "none";
+                }, 600);
+            }
+        });
+
+        // --- 2. EXIT LOGIC: INSTANT SHOW ---
+        // Show loader immediately when user clicks a link
+        var links = document.querySelectorAll("a");
+        links.forEach(function(link) {
+            link.addEventListener("click", function(e) {
+                var target = link.getAttribute("target");
+                var href = link.getAttribute("href");
+
+                // Check if it is a valid internal link
+                // (Not a new tab, not empty, not just an anchor/hash)
+                if (target !== "_blank" && href && href.trim() !== "" && !href.startsWith("#") && !href.startsWith("javascript")) {
+                    if(loader) {
+                        // 1. Make sure it is part of layout
+                        loader.style.display = "flex"; 
+                        // 2. Remove transition so it appears INSTANTLY (no fade-in delay)
+                        loader.style.transition = "none";
+                        // 3. Make visible
+                        loader.style.opacity = "1";
+                        loader.style.visibility = "visible";
+                        // 4. Ensure class is removed
+                        loader.classList.remove("loaded");
+                    }
+                }
+            });
+        });
+
+        // --- 3. BROWSER BACK BUTTON FIX ---
+        // If user presses back button, the page might load from cache with loader still visible.
+        // We force it to hide if the page is shown from "bfcache"
+        window.addEventListener("pageshow", function(event) {
+            if (event.persisted && loader) {
+                loader.classList.add("loaded");
                 loader.style.display = "none";
-            }, 600);
-        }
+            }
+        });
     });
 </script>';
 
 // 4. Inject logic: 
-// Add CSS to <head>, HTML to start of <body>, JS to end of <body>.
-// We use str_ireplace for case-insensitive replacement.
-
 // Inject CSS before closing head tag
 $final_content = str_ireplace('</head>', $loader_css . '</head>', $page_content);
 
@@ -191,7 +326,5 @@ $final_content = str_ireplace('<body>', '<body>' . $loader_html, $final_content)
 // Inject JS before closing body tag
 $final_content = str_ireplace('</body>', $loader_js . '</body>', $final_content);
 
-// 5. Output the final HTML with the loader included
+// 5. Output the final HTML
 echo $final_content;
-
-?>
