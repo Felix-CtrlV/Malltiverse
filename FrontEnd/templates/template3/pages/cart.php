@@ -1,38 +1,44 @@
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+include '../../BackEnd/config/dbconfig.php';
 require_once __DIR__ . '/../../../utils/Ordered.php'; 
 
-$customer_id = 1;
+$customer_id = $_SESSION['customer_id'] ?? 1;
 $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
 
+// 1. LOGIC: Handle Successful Payment Return
 if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success') {    
     $is_ordered = placeOrder($conn, $customer_id, $supplier_id);
     
     if ($is_ordered) {
-    echo "
-    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-    <script>
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true
-        });
+        echo "
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const Toast = Swal.mixin({
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                  timer: 3000,
+                  timerProgressBar: true
+                });
 
-        Toast.fire({
-          icon: 'success',
-          title: 'Ordered successfully!'
-        }).then(() => {
-            window.location.href = '?supplier_id=$supplier_id&page=cart';
-        });
-    </script>";
-    exit();
-}
+                Toast.fire({
+                  icon: 'success',
+                  title: 'Ordered successfully!'
+                }).then(() => {
+                    window.location.href = '?supplier_id=$supplier_id&page=cart';
+                });
+            });
+        </script>";
+    }
 }
 
-$cart_query = "SELECT c.cart_id, c.quantity, p.product_name, p.price, p.image, p.product_id, v.color, v.size 
+// 2. LOGIC: Fetch Cart Data
+$cart_query = "SELECT c.cart_id, c.quantity, p.product_name, p.price, p.image, p.product_id, v.color, v.size, v.quantity AS available_stock 
                FROM cart c 
                JOIN product_variant v ON c.variant_id = v.variant_id 
                JOIN products p ON v.product_id = p.product_id 
@@ -46,7 +52,10 @@ $cart_count = mysqli_num_rows($result);
 $total_price = 0;
 ?>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
+    /* YOUR ORIGINAL CSS - UNTOUCHED */
     .qty-control-btn {
         background: transparent;
         border: 1px solid #ddd;
@@ -74,10 +83,8 @@ $total_price = 0;
     }
     .custom-modal-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.4);
         display: none; 
         align-items: center;
@@ -204,6 +211,19 @@ $total_price = 0;
 <div class="container mt-5 mb-5">
     <h2 class="mb-4">Your Shopping Cart</h2>
 
+    <?php if (isset($_GET['error'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Stock Out',
+                    text: '<?= htmlspecialchars($_GET['error']) ?>',
+                    confirmButtonColor: '#98B9D5'
+                });
+            });
+        </script>
+    <?php endif; ?>
+
     <?php if ($cart_count > 0): ?>
         <div class="row">
             <div class="col-md-8">
@@ -228,8 +248,8 @@ $total_price = 0;
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <img src="../uploads/products/<?= $item['product_id'] ?>_<?= $item['image'] ?>"
-                                                    alt="<?= $item['product_name'] ?>"
-                                                    style="width: 100px; height: 100px; object-fit: contain; margin-right: 15px;">
+                                                     alt="<?= $item['product_name'] ?>"
+                                                     style="width: 100px; height: 100px; object-fit: contain; margin-right: 15px;">
                                                 <span style="text-align: left;">
                                                     <strong><?= htmlspecialchars($item['product_name']) ?></strong>
                                                     <br>
@@ -245,12 +265,12 @@ $total_price = 0;
                                         <td class="text-center">
                                             <div class="d-flex align-items-center justify-content-center bg-transparent" style="gap: 5px;">
                                                 <button type="button" class="qty-control-btn" 
-                                                        onclick="updateQuantity(<?= $item['cart_id'] ?>, <?= $item['quantity'] - 1 ?>)">
+                                                        onclick="updateQuantity(<?= $item['cart_id'] ?>, <?= $item['quantity'] - 1 ?>, <?= $item['available_stock'] ?>)">
                                                     <i class="fas fa-minus"></i>
                                                 </button>
                                                 <span class="qty-number"><?= $item['quantity'] ?></span>
                                                 <button type="button" class="qty-control-btn" 
-                                                        onclick="updateQuantity(<?= $item['cart_id'] ?>, <?= $item['quantity'] + 1 ?>)">
+                                                        onclick="updateQuantity(<?= $item['cart_id'] ?>, <?= $item['quantity'] + 1 ?>, <?= $item['available_stock'] ?>)">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
@@ -349,11 +369,22 @@ document.getElementById('confirmBtn').onclick = function() {
     }
 };
 
-function updateQuantity(cartId, newQty) {
+function updateQuantity(cartId, newQty, availableStock) {
     if (newQty < 1) {
         openRemoveModal(cartId);
         return;
     }
+    
+    if (newQty > availableStock) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Out of Stock',
+            text: 'Only ' + availableStock + ' items available in stock.',
+            confirmButtonColor: '#98B9D5'
+        });
+        return;
+    }
+
     const rootPath = window.location.origin + '/malltiverse/frontend/utils/update_cart_qty.php';
     fetch(rootPath, {
         method: 'POST',
@@ -363,12 +394,8 @@ function updateQuantity(cartId, newQty) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            const successModal = document.getElementById('updateSuccessModal');
-            successModal.style.display = 'flex';
-            
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
+            document.getElementById('updateSuccessModal').style.display = 'flex';
+            setTimeout(() => { location.reload(); }, 1000);
         } else {
             alert('Error: ' + data.message);
         }
@@ -383,16 +410,10 @@ function removeFromCart(cartId) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ 'cart_id': cartId })
     })
-    .then(response => {
-        if (!response.ok) throw new Error('HTTP error ' + response.status);
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.status === 'success') location.reload();
-        else {
-            alert('Error: ' + data.message);
-            closeModal();
-        }
+        else { alert('Error: ' + data.message); closeModal(); }
     })
     .catch(error => console.error('Error Details:', error));
 }
