@@ -73,7 +73,7 @@ $colors = array_unique($colors);
             </div>
 
             <div class="mb-4">
-                <label class="fw-bold small text-uppercase text-muted mb-2">Select Color</label>
+                <label class="fw-bold small text-uppercase text-muteadd-to-carAd mb-2">Select Color</label>
                 <div class="d-flex align-items-center">
                     <?php foreach ($colors as $color): ?>
                         <?php $uniqueId = 'color_' . preg_replace('/[^a-zA-Z0-9]/', '', $color); ?>
@@ -108,9 +108,11 @@ $colors = array_unique($colors);
 
             <input type="hidden" id="supplier_id" value="<?= htmlspecialchars($product['supplier_id']) ?>">
             
-            <button id="addToCartBtn" class="btn btn-dark btn-lg w-100 shadow-sm border-0 py-3 mt-2">
-                <i class="fas fa-shopping-bag me-2"></i> ADD TO CART
-            </button>
+       <button id="addToCartBtn" 
+        data-stock="<?= $product['stock_available'] ?? 0 ?>"
+        class="add-to-cart-btn btn btn-dark w-100 py-3">
+    ADD TO CART
+</button>
         </div>
     </div>
 </div>
