@@ -37,24 +37,28 @@ $shop_assets = mysqli_fetch_assoc($result);
     if (searchInput && resultContainer) {
         let supplierId = <?= json_encode($supplier_id) ?>;
 
-        function fetchProduct(query = "") {
-          
+       
+        function fetchProduct(query = "", page = 1) {
+           /* resultContainer.style.opacity = "0.5"; */
+
             fetch("../templates/template5/utils/search.php?supplier_id=" + supplierId, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "search=" + encodeURIComponent(query)
+              
+                body: "search=" + encodeURIComponent(query) + "&page=" + page 
             })
             .then(res => res.text())
             .then(data => {
-                
                 resultContainer.innerHTML = data;
+                resultContainer.style.opacity = "1";
             })
             .catch(err => {
                 resultContainer.innerHTML = '<div class="col-12 text-center text-danger">Error loading products.</div>';
+                resultContainer.style.opacity = "1";
             });
         }
 
-      
+        
         fetchProduct(); 
 
         
@@ -62,8 +66,21 @@ $shop_assets = mysqli_fetch_assoc($result);
         searchInput.addEventListener("keyup", () => {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
-                fetchProduct(searchInput.value);
+                fetchProduct(searchInput.value, 1); 
             }, 300);
+        });
+
+       
+        resultContainer.addEventListener("click", function(e) {
+            let link = e.target.closest(".pagination-link");
+            if (link) {
+                e.preventDefault();
+                let pageNumber = link.getAttribute("data-page");
+                fetchProduct(searchInput.value, pageNumber);
+                
+                
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     }
 </script>
