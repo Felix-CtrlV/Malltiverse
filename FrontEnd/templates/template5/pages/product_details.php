@@ -1,12 +1,12 @@
 <?php
-// product_details.php - Logic Header
+
 $product_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($product_id <= 0) {
     exit("<div class='container mt-5 text-center'><h4>Invalid Product ID.</h4><a href='index.php' class='btn btn-outline-dark'>Back to Shop</a></div>");
 }
 
-// ၁။ Product နှင့် Category အချက်အလက်များ ဆွဲထုတ်ခြင်း
+
 $stmt = mysqli_prepare($conn, "
     SELECT p.*, c.category_name 
     FROM products p 
@@ -21,7 +21,7 @@ if (!$product) {
     exit("<div class='container mt-5 text-center'><h4>Product not found.</h4><a href='index.php' class='btn btn-outline-dark'>Back to Shop</a></div>");
 }
 
-// ၂။ Variant များနှင့် Quantity ကိုပါ ဆွဲထုတ်ခြင်း
+
 $stmt2 = mysqli_prepare($conn, "SELECT variant_id, color, size, quantity FROM product_variant WHERE product_id = ?");
 mysqli_stmt_bind_param($stmt2, "i", $product_id);
 mysqli_stmt_execute($stmt2);
@@ -248,15 +248,28 @@ $colors = array_unique($colors);
 
         let checkStock = (parseInt(currentVariant.quantity) > 0) ? parseInt(currentVariant.quantity) : 1;
 
-        if (qty > checkStock) {
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Not Enough Stock', 
-                text: `Available stock is only ${checkStock} units.` 
-            });
-            return;
+     if (qty > checkStock) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Limited Availability',
+        text: `We only have ${checkStock} pieces left in stock for this variant.`,
+        
+        customClass: {
+            popup: 'swal-frost-popup',
+            title: 'swal-frost-title',
+            htmlContainer: 'swal-frost-content',
+            confirmButton: 'swal-frost-btn'
+        },
+        buttonsStyling: false,
+        showClass: {
+            popup: 'animate__animated animate__fadeIn' 
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOut'
         }
-
+    });
+    return;
+}
         const formData = new FormData();
         formData.append('variant_id', currentVariant.variant_id);
         formData.append('supplier_id', supplierId);
@@ -304,15 +317,15 @@ $colors = array_unique($colors);
 function checkCurrentStock(variantId) {
     if(!variantId) return;
 
-    // fetch path ကို သင့်ဖိုင်တည်နေရာအတိုင်း ပြင်ပေးပါ
+    
     fetch(`../../frontend/utils/get_variant_stock.php?id=${variantId}`)
     .then(res => res.json())
     .then(data => {
-        const stockDisplay = document.querySelector('.stock-display'); // သင်ပေးထားတဲ့ ပုံထဲက class name
+        const stockDisplay = document.querySelector('.stock-display'); 
         if (stockDisplay) {
             stockDisplay.innerText = `Stock available: ${data.stock}`;
             
-            // Stock 0 ဖြစ်သွားရင် Button ကို ပိတ်ပစ်တဲ့ logic ပါ ထည့်လို့ရပါတယ်
+           
             const addToCartBtn = document.querySelector('.add-to-cart-btn');
             if (data.stock <= 0) {
                 stockDisplay.style.color = 'red';

@@ -793,6 +793,34 @@ $total_price = 0;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     border: 1px solid #e2e8f0;
 }
+.modern-layout {
+    display: grid;
+    grid-template-columns: 1fr 400px; 
+    gap: 40px;
+    align-items: start;
+}
+
+.summary-panel-modern {
+    background: var(--color-surface);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    padding: 40px;
+    box-shadow: var(--shadow-lg);
+    position: sticky; 
+    top: 40px;
+}
+
+
+@media (max-width: 1200px) {
+    .modern-layout {
+        grid-template-columns: 1fr;
+    }
+    .summary-panel-modern {
+        position: static;
+        width: 100%;
+    }
+}
 </style>
 
 <!-- Animated Background -->
@@ -838,121 +866,99 @@ $total_price = 0;
             </div>
         </div>
 
-        <div class="modern-layout">
-            <!-- Products Panel -->
-            <div class="products-panel-modern">
-                <div class="panel-header-modern">
-                    <h2 class="panel-title-modern">
-                        <i class="fas fa-shopping-bag"></i>
-                        Cart Items
-                    </h2>
-                    <span style="color: var(--color-primary); font-weight: 600;">
-                        <?= $cart_count ?> item<?= $cart_count > 1 ? 's' : '' ?>
-                    </span>
+    <div class="modern-layout">
+    <div class="products-panel-modern">
+        <div class="panel-header-modern">
+            <h2 class="panel-title-modern">
+                <i class="fas fa-shopping-bag"></i>
+                Cart Items
+            </h2>
+            <span style="color: var(--color-primary); font-weight: 600;">
+                <?= $cart_count ?> item<?= $cart_count > 1 ? 's' : '' ?>
+            </span>
+        </div>
+        
+        <?php foreach ($items as $item): 
+            $subtotal = $item['price'] * $item['quantity']; 
+        ?>
+            <div class="modern-item" data-price="<?= $item['price'] ?>">
+                <div class="item-image-modern">
+                    <img src="../uploads/products/<?= $item['product_id'] ?>_<?= $item['image'] ?>" alt="<?= htmlspecialchars($item['product_name']) ?>">
                 </div>
                 
-                <?php foreach ($items as $item): ?>
-                    <div class="modern-item">
-                        <div class="item-image-modern">
-                            <img src="../uploads/products/<?= $item['product_id'] ?>_<?= $item['image'] ?>" 
-                                 alt="<?= htmlspecialchars($item['product_name']) ?>">
-                        </div>
-                        
-                        <div class="item-content">
-                            <div class="item-header">
-                                <h3><?= htmlspecialchars($item['product_name']) ?></h3>
-                                <div class="item-meta">
-                                    <span class="meta-badge">
-                                        <i class="fas fa-ruler"></i>
-                                        <?= htmlspecialchars($item['size']) ?>
-                                    </span>
-                                    <span class="meta-badge">
-                                        <span class="color-indicator" style="background-color: <?= $item['color'] ?>;"></span>
-                                        <?= htmlspecialchars($item['color']) ?>
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div class="item-actions-modern">
-                                <div class="quantity-controls-modern">
-                                    <button class="qty-btn-modern" 
-                                            onclick="updateModernQuantity(<?= $item['cart_id'] ?>, <?= $item['quantity'] - 1 ?>)">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-
-                                    <div class="qty-display-modern"><?= $item['quantity'] ?></div>
-                                    <button class="qty-btn-modern" 
-                             onclick="updateModernQuantity(<?= $item['cart_id'] ?>, <?= $item['quantity'] + 1 ?>, <?= $item['stock_limit'] ?>)">
-                         <i class="fas fa-plus"></i>
-                        </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="price-section-modern">
-                            <div>
-                                <div class="price-total-modern">$<?= number_format($subtotal, 2) ?></div>
-                                <div class="price-unit-modern">$<?= number_format($item['price'], 2) ?> each</div>
-                            </div>
-                            
-                            <div class="item-actions-right">
-                                <!--<button class="action-btn-modern save" title="Save for later">
-                                    <i class="far fa-heart"></i>
-                                </button>-->
-                                <button class="action-btn-modern" 
-                                        onclick="confirmModernRemove(<?= $item['cart_id'] ?>)"
-                                        title="Remove item">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
+                <div class="item-content">
+                    <div class="item-header">
+                        <h3><?= htmlspecialchars($item['product_name']) ?></h3>
+                        <div class="item-meta">
+                            <span class="meta-badge"><i class="fas fa-ruler"></i> <?= htmlspecialchars($item['size']) ?></span>
+                            <span class="meta-badge">
+                                <span class="color-indicator" style="background-color: <?= $item['color'] ?>;"></span>
+                                <?= htmlspecialchars($item['color']) ?>
+                            </span>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                    
+                    <div class="item-actions-modern">
+                        <div class="quantity-controls-modern">
+                            <button class="qty-btn-modern" onclick="updateModernQuantity(<?= $item['cart_id'] ?>, parseInt(document.getElementById('qty-<?= $item['cart_id'] ?>').innerText) - 1, <?= $item['stock_limit'] ?>)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="qty-display-modern" id="qty-<?= $item['cart_id'] ?>"><?= $item['quantity'] ?></div>
+                            <button class="qty-btn-modern" onclick="updateModernQuantity(<?= $item['cart_id'] ?>, parseInt(document.getElementById('qty-<?= $item['cart_id'] ?>').innerText) + 1, <?= $item['stock_limit'] ?>)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="price-section-modern">
+                    <div>
+                        <div class="price-total-modern" id="subtotal-<?= $item['cart_id'] ?>">$<?= number_format($subtotal, 2) ?></div>
+                        <div class="price-unit-modern">$<?= number_format($item['price'], 2) ?> each</div>
+                    </div>
+                    <div class="item-actions-right">
+                        <button class="action-btn-modern" onclick="confirmModernRemove(<?= $item['cart_id'] ?>)" title="Remove item">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Order Summary -->
-            <div class="summary-panel-modern">
-                <div class="summary-header">
-                    <h2 class="summary-title">Order Summary</h2>
-                    <p class="summary-subtitle">Complete your purchase</p>
-                </div>
-                
-                <div class="summary-item">
-                    <span class="summary-label">Subtotal</span>
-                    <span class="summary-value">$<?= number_format($total_price, 2) ?></span>
-                </div>
-                
-                <div class="summary-item">
-                    <span class="summary-label">Shipping</span>
-                    <span class="summary-value">
-                        <?= $shipping > 0 ? '$' . number_format($shipping, 2) : 'FREE' ?>
-                    </span>
-                </div>
-                
-               
-                
-                <div class="summary-item">
-                    <span class="summary-label" style="color: var(--color-accent);">
-                        <i class="fas fa-tag"></i> Discount
-                    </span>
-                    <span class="summary-value" style="color: var(--color-accent);">
-                        -$<?= number_format($discount, 2) ?>
-                    </span>
-                </div>
-                
-                <div class="summary-item total">
-                    <span class="summary-label">Total</span>
-                    <span class="summary-value total">$<?= number_format($grand_total, 2) ?></span>
-                </div>
-                
-                <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" class="checkout-btn-modern">
-                    <i class="fas fa-lock"></i>
-                    Secure Checkout
-                </a>
-                
-               
-            </div>
+        <?php endforeach; ?>
+    </div> <div class="summary-panel-modern">
+        <div class="summary-header">
+            <h2 class="summary-title">Order Summary</h2>
+            <p class="summary-subtitle">Complete your purchase</p>
         </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Subtotal</span>
+            <span class="summary-value">$<?= number_format($total_price, 2) ?></span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label">Shipping</span>
+            <span class="summary-value"><?= $shipping > 0 ? '$' . number_format($shipping, 2) : 'FREE' ?></span>
+        </div>
+        
+        <div class="summary-item">
+            <span class="summary-label" style="color: var(--color-accent);">
+                <i class="fas fa-tag"></i> Discount
+            </span>
+            <span class="summary-value" style="color: var(--color-accent);">
+                -$<?= number_format($discount, 2) ?>
+            </span>
+        </div>
+        
+        <div class="summary-item total">
+            <span class="summary-label">Total</span>
+            <span class="summary-value total">$<?= number_format($grand_total, 2) ?></span>
+        </div>
+        
+        <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" class="checkout-btn-modern">
+            <i class="fas fa-lock"></i> Secure Checkout
+        </a>
+    </div> 
+</div>
         
         <div class="continue-shopping">
             <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="continue-link">
@@ -1109,9 +1115,11 @@ function confirmModernRemove(cartId) {
     });
 }
 
+let updateTimer; // Global timer for debounce
+
 function updateModernQuantity(cartId, newQty, maxStock) {
-   
-   if (newQty > maxStock) {
+    // 1. Validation
+     if (newQty > maxStock) {
     modernAlert.fire({
       icon: 'warning',
     title: 'Stock Alert',
@@ -1127,63 +1135,129 @@ function updateModernQuantity(cartId, newQty, maxStock) {
     });
     return;
 }
-
-   
     if (newQty < 1) {
         confirmModernRemove(cartId);
         return;
     }
 
     
-    const currentEvent = window.event;
-    const btn = currentEvent ? currentEvent.target.closest('.qty-btn-modern') : null;
-    
-    if (btn) {
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
-        btn.disabled = true;
+    const qtyElement = document.getElementById('qty-' + cartId);
+    if (qtyElement) {
+        qtyElement.innerText = newQty;
+        recalculateCart(); 
     }
 
-    const rootPath = window.location.origin + '/malltiverse/frontend/utils/update_cart_qty.php';
+   
+    clearTimeout(updateTimer);
+    updateTimer = setTimeout(() => {
+        const rootPath = window.location.origin + '/malltiverse/frontend/utils/update_cart_qty.php';
+        
+        fetch(rootPath, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ 'cart_id': cartId, 'quantity': newQty })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+               
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                Toast.fire({ icon: 'success', title: 'Cart updated' });
+            } else {
+                location.reload(); 
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }, 500);
+}
 
-    fetch(rootPath, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ 'cart_id': cartId, 'quantity': newQty })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            
-            location.reload(); 
-        } else {
-            modernAlert.fire('Error', data.message, 'error');
-            if (btn) { btn.disabled = false; }
+function recalculateCart() {
+    let grandTotal = 0;
+    let itemCount = 0;
+
+    document.querySelectorAll('.modern-item').forEach(item => {
+        const price = parseFloat(item.getAttribute('data-price')) || 0;
+        const qtyElement = item.querySelector('.qty-display-modern');
+        const qty = qtyElement ? parseInt(qtyElement.innerText) : 0;
+        
+        const subtotal = price * qty;
+        grandTotal += subtotal;
+        itemCount += qty;
+
+        // Item subtotal update
+        const cartId = qtyElement.id.replace('qty-', '');
+        const subtotalDisplay = document.getElementById('subtotal-' + cartId);
+        if (subtotalDisplay) {
+            subtotalDisplay.innerText = '$' + subtotal.toFixed(2);
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        modernAlert.fire('Network Error', 'Try Again Later', 'error');
+    });
+
+    // Calculate Summary (Shipping & Discount)
+    const shipping = grandTotal > 100 ? 0 : 9.99;
+    const discount = Math.min(20, grandTotal * 0.1);
+    const finalTotal = grandTotal + shipping - discount;
+
+    // Update Summary UI
+    document.querySelectorAll('.stat-value')[0].innerText = itemCount; // Total Items stat
+    document.querySelectorAll('.stat-value')[1].innerText = '$' + grandTotal.toFixed(2); // Subtotal stat
+    
+    // Summary Panel Update
+    const summaryValues = document.querySelectorAll('.summary-value');
+    if (summaryValues.length >= 4) {
+        summaryValues[0].innerText = '$' + grandTotal.toFixed(2);
+        summaryValues[1].innerText = shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2);
+        summaryValues[2].innerText = '-$' + discount.toFixed(2);
+        summaryValues[3].innerText = '$' + finalTotal.toFixed(2);
+    }
+}
+
+// Confirmation dialog for removing items
+function confirmModernRemove(cartId) {
+    modernAlert.fire({
+        title: 'Remove Item?',
+        text: "Are you sure you want to remove this item from your cart?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, remove it!',
+        cancelButtonText: 'No, keep it',
+        confirmButtonColor: '#ef4444', 
+        cancelButtonColor: '#6b7280'
+    }).then((result) => {
+        if (result.isConfirmed) {
+           
+            removeModernItem(cartId);
+        }
     });
 }
-// Remove item with animation
+
+// Remove item with animation and DB update
 function removeModernItem(cartId) {
-    const item = document.querySelector(`[onclick*="${cartId}"]`).closest('.modern-item');
+   
+    const qtyElement = document.getElementById('qty-' + cartId);
+    const item = qtyElement ? qtyElement.closest('.modern-item') : null;
     
-    // Create removal animation
+   
     if (item) {
         item.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         item.style.transform = 'translateX(100px)';
         item.style.opacity = '0';
-        item.style.height = item.offsetHeight + 'px';
+        
         
         setTimeout(() => {
             item.style.height = '0';
             item.style.marginBottom = '0';
             item.style.padding = '0';
             item.style.border = 'none';
+            item.style.overflow = 'hidden';
         }, 200);
     }
     
+ 
     const rootPath = window.location.origin + '/malltiverse/frontend/utils/removeFromCart.php';
     
     fetch(rootPath, {
@@ -1196,15 +1270,15 @@ function removeModernItem(cartId) {
         if (data.status === 'success') {
             modernToast.fire({
                 icon: 'success',
-                title: 'Item removed'
+                title: 'Item removed successfully'
             });
             
-            // Reload after animation completes
+         
             setTimeout(() => {
-                location.reload();
-            }, 800);
+                location.reload(); 
+            }, 600);
         } else {
-            modernAlert.fire('Error', data.message, 'error');
+            
             if (item) {
                 item.style.transform = '';
                 item.style.opacity = '';
@@ -1212,11 +1286,12 @@ function removeModernItem(cartId) {
                 item.style.marginBottom = '';
                 item.style.padding = '';
             }
+            modernAlert.fire('Error', data.message || 'Failed to remove item', 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        modernAlert.fire('Network Error', 'Please try again', 'error');
+        modernAlert.fire('Network Error', 'Not Connected Server', 'error');
     });
 }
 
