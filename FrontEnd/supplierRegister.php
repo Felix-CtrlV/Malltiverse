@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // ... handle other fields and file uploads as per your logic ...
 
     // 1. INSERT SUPPLIER (Simplified Query - Adjust columns to your actual table)
-    $sql_supplier = "INSERT INTO suppliers (name, email, password, address, phone, shop_name) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql_supplier = "INSERT INTO suppliers (name, email, password, address, phone, company_name) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql_supplier);
     $stmt->bind_param("ssssss", $name, $email, $password, $address, $phone, $shopname);
 
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $paid_date = date('Y-m-d');
         $due_date = date('Y-m-d', strtotime("+$months_to_add month"));
 
-        $sql_rent = "INSERT INTO rent_payment (supplier_id, paid_date, due_date, paid_amount, month) VALUES (?, ?, ?, ?, ?)";
+        $sql_rent = "INSERT INTO rent_payments (supplier_id, paid_date, due_date, paid_amount, month) VALUES (?, ?, ?, ?, ?)";
         $stmt_rent = $conn->prepare($sql_rent);
         $stmt_rent->bind_param("issdi", $new_supplier_id, $paid_date, $due_date, $total_amount, $months_to_add);
         $stmt_rent->execute();

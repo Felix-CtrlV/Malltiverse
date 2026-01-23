@@ -32,7 +32,7 @@ $message = "";
 
         <div class="right-panel">
             <h1>Login</h1>
-            <p class="sub-text">Doesn't have an account? <a href="supplierRegister.php">Create Account</a></p>
+            <p class="sub-text">Doesn't have an account? <a href="pricing.php">Create Account</a></p>
 
             <p id="message"> <?= $message; ?> </p>
             <form id="loginform" method="POST">
