@@ -551,7 +551,7 @@ function getColorHex($colorName)
                     if (searchQuery !== '') formData.append('search', searchQuery);
 
                     // NOTE: Ensure this path is correct for your server
-                    const response = await fetch('/Malltiverse/FrontEnd/templates/template4/fetch_products.php', {
+                    const response = await fetch('../templates/template4/fetch_products.php', {
                         method: 'POST',
                         body: formData
                     });
