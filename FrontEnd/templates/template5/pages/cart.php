@@ -53,7 +53,7 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $cart_count = mysqli_num_rows($result);
 $total_price = 0;
-?>;
+?>
 
 
 <style>
@@ -832,22 +832,22 @@ $total_price = 0;
 
 <div class="modern-container">
     <?php if ($cart_count > 0): 
-        // 1. Logic Section: Variables အားလုံးကို တွက်ချက်ခြင်း
+        
         $items = [];
         $total_price = 0;
-        $total_quantity = 0; // စုစုပေါင်းအရေအတွက်အတွက်
+        $total_quantity = 0;
 
-        // Database ကလာတဲ့ Result ကို Loop ပတ်ပြီး တွက်မယ်
+        
         while ($item = mysqli_fetch_assoc($result)): 
             $subtotal = $item['price'] * $item['quantity'];
             $total_price += $subtotal;
-            $total_quantity += $item['quantity']; // Quantity တွေကို ပေါင်းထည့်ခြင်း
+            $total_quantity += $item['quantity']; 
             $items[] = $item;
         endwhile;
         
-        // Shipping, Discount နဲ့ Grand Total တွက်ခြင်း
+        
         $shipping = $total_price > 100 ? 0 : 9.99;
-        $discount = $total_price * 0.1; // 10% Discount (Limit မရှိ)
+        $discount = $total_price * 0.1;
         $grand_total = $total_price + $shipping - $discount;
     ?>
         
