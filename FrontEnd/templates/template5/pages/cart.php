@@ -963,9 +963,11 @@ $total_price = 0;
                 <span class="summary-value total">$<?= number_format($grand_total, 2) ?></span>
             </div>
             
-            <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" class="checkout-btn-modern">
-                <i class="fas fa-lock"></i> Secure Checkout
-            </a>
+          <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" 
+          id="checkout-btn" 
+         class="checkout-btn-modern <?= ($cart_count <= 0) ? 'disabled' : '' ?>">
+        <i class="fas fa-lock"></i> Secure Checkout
+</a>
         </div> 
     </div> 
         
@@ -1217,7 +1219,6 @@ function recalculateCart() {
     let grandTotal = 0;
     let totalQty = 0;
 
-   
     document.querySelectorAll('.modern-item').forEach(item => {
         if (item.style.display !== 'none' && item.style.opacity !== '0') {
             const price = parseFloat(item.getAttribute('data-price')) || 0;
@@ -1228,7 +1229,6 @@ function recalculateCart() {
             grandTotal += itemSubtotal;
             totalQty += qty;
 
-            // Individual item subtotal text update (e.g., $120.00)
             const cartId = qtyElement.id.replace('qty-', '');
             const subDisplay = document.getElementById('subtotal-' + cartId);
             if (subDisplay) {
@@ -1236,6 +1236,17 @@ function recalculateCart() {
             }
         }
     });
+
+  
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        if (totalQty <= 0) {
+            checkoutBtn.classList.add('disabled'); 
+        } else {
+            checkoutBtn.classList.remove('disabled'); 
+        }
+    }
+
 
    
     const shipping = (grandTotal > 100 || grandTotal === 0) ? 0 : 9.99;
@@ -1293,3 +1304,34 @@ function updateUI(tQty, sub, ship, disc, total, types) {
     }
 }
 </script>
+    <!--Checkout disabled code -->
+<script>
+function showEmptyCartAlert() {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Your cart is empty!',
+        text: 'Please add some items before checking out.',
+        confirmButtonColor: '#6366f1',
+    });
+}</script>
+<style>
+.disabled-btn {
+    background: #cccccc !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+    box-shadow: none !important;
+}
+
+.disabled-btn:hover {
+    transform: none !important;
+}
+
+/* Checkout ခလုတ် ပိတ်ထားချိန် ပုံစံ */
+.checkout-btn-modern.disabled {
+    background: #cccccc !important;
+    cursor: not-allowed !important;
+    pointer-events: none; /* link ကို နှိပ်လို့မရအောင် တားတာ */
+    box-shadow: none !important;
+    transform: none !important;
+}
+</style>
