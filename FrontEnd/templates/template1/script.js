@@ -128,7 +128,7 @@ function refreshCartDrawer(supplierId) {
                                 <div class="qty-selector-container d-flex align-items-center gap-3 mt-2">
                                     <button class="qty-button" onclick="changeQty(${item.cart_id}, ${item.qty}, -1, ${supplierId}, ${availableStock})">−</button>
                                     <span class="qty-display">${item.qty}</span>
-                                    <button class="qty-button" onclick="changeQty(${item.cart_id}, ${item.qty}, 1, ${supplierId}, ${availableStock})">+</button>
+                                    <button class="qty-button" <?= (item.qty == availableStock)? style ?>">+</button>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <span class="fw-bold">$${parseFloat(item.price * item.qty).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
