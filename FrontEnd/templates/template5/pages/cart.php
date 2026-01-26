@@ -193,7 +193,7 @@ $total_price = 0;
         gap: 30px;
         margin-top: 40px;
         flex-wrap: wrap;
-        margin-bottom:40px;
+        margin-bottom:50px;
     }
 
     .stat-card {
