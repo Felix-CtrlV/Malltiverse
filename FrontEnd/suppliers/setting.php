@@ -243,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt2->close();
 
             // Update template_id in suppliers table
-            $stmt3 = $conn->prepare("UPDATE suppliers SET template_id=? WHERE supplier_id=?");
+            $stmt3 = $conn->prepare("UPDATE companies SET template_id=? WHERE supplier_id=?");
             $stmt3->bind_param("ii", $selected_template, $supplierid);
             $stmt3->execute();
             $stmt3->close();
