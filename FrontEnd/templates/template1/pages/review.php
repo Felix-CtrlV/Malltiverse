@@ -190,9 +190,9 @@ if (isset($_POST['submit_review'])) {
             <textarea name="review" class="form-control" rows="4" required></textarea>
           </div>
           <?php if ($isLoggedIn): ?>
-            <button type="submit" name="submit_review">Submit Review</button>
+            <button type="submit" name="submit_review"  class="btn btn-warnin">Submit Review</button>
           <?php else: ?>
-            <button type="button" onclick="showLoginPopup()">Submit Review</button>
+            <button type="button" onclick="showLoginPopup()"  class="btn btn-warnin">Submit Review</button>
           <?php endif; ?>
         </form>
       </div>
