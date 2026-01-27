@@ -53,9 +53,32 @@ if (isset($_POST['submit_review'])) {
     }
 }
 ?>
+
 <div class="review-wrapper">
-  <div class="container py-5">
+
+<div class="review-header">
+  <h2 class="company-name">
+    <?= htmlspecialchars($supplier['company_name']) ?>
+  </h2>
+
+  <?php if (!empty($supplier['description'])): ?>
+    <p class="company-description">
+      <?= htmlspecialchars($supplier['description']) ?>
+    </p>
+  <?php endif; ?>
+
+  <div class="review-divider"></div>
+
+  <p class="review-encouragement">
+    Your voice is code. Every review helps us optimize, innovate, and evolve.
+  </p>
+</div>
+
+
+  <!-- REVIEW CONTENT -->
+  <div class="container py-3">
     <div class="row g-4">
+
       <!-- Rating Breakdown -->
       <div class="col-md-6 rating-breakdown">
     <h4>Rating Breakdown</h4>
