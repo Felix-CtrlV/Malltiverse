@@ -1529,23 +1529,69 @@ CONTACT PAGE STYLES
 
 
 /* =========
-REVIEW SECTION======= */
+   REVIEW SECTION
+=========== */
 
 .review-wrapper {
-
     background-color: #f9f9f9;
     padding: 60px 0;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-
+/* Section titles inside review */
 .review-wrapper h4 {
-
     font-size: 1.4rem;
     color: #333;
     margin-bottom: 25px;
     font-weight: 600;
 }
+
+
+/* =========
+   REVIEW HEADER
+=========== */
+
+.review-header {
+    max-width: 900px;
+    margin: 0 auto 50px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Company Name */
+.review-header .company-name {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #60708d;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+}
+
+/* Company Description */
+.review-header .company-description {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+    max-width: 720px;
+    margin: 0 auto 24px;
+}
+
+/* Divider */
+.review-divider {
+    width: 60px;
+    height: 2px;
+    background-color: #60708d;
+    margin: 0 auto 20px;
+    border-radius: 2px;
+}
+
+/* Review Encouragement */
+.review-header .review-encouragement {
+    font-size: 1.15rem;
+    color: #444;
+    font-style: italic;
+}
+
 
 
 .rating-breakdown {
