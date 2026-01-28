@@ -1971,43 +1971,72 @@ function navigateToShop(shopId) {
 
 /* --- NEW AUTH LOGIC --- */
 
-function updateAuthUI() {
+/* --- Replace updateAuthUI in customer.js --- */
+
+async function updateAuthUI() {
   const authContainer = document.getElementById('authContainer');
 
-  // Check local storage for user data
-  // Assuming you store it as 'currentUser' object: { name: "...", image: "..." }
-  const userStr = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+  try {
+    const res = await fetch('./api/get_current_user.php');
+    const data = await res.json();
 
-  if (userStr) {
-    try {
-      const user = JSON.parse(userStr);
-      const profileImg = user.image ? `../uploads/profiles/${user.image}` : 'assets/default-user.png'; // Adjust path as needed
-      const name = user.name || 'Shopper';
+    if (data.loggedIn && data.user) {
+      const user = data.user;
+      // Handle image path (if image is null, use default)
+      const profileImg = user.image && user.image.trim() !== ''
+        ? `../assets/customer_profiles/${user.image}`
+        : 'assets/default-user.png';
 
       authContainer.innerHTML = `
-                <div class="profile-pill">
-                    <img src="${profileImg}" alt="Profile" class="nav-profile-img">
-                    <span class="profile-name">${name}</span>
-                    <button id="btnLogout" class="btn-logout" title="Logout">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            `;
+        <div class="profile-pill" id="profileTrigger">
+            <img src="${profileImg}" alt="Profile" class="nav-profile-img">
+            <span class="profile-name">${user.name}</span>
+            <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px; color: #94a3b8;"></i>
+        </div>
+        
+        <div class="profile-dropdown" id="profileDropdown">
+            <div class="dropdown-header">
+                <span class="dropdown-name">${user.name}</span>
+                <span class="dropdown-meta">${user.email}</span>
+                <span class="dropdown-meta"><i class="fas fa-map-marker-alt"></i> ${user.address || 'No address set'}</span>
+            </div>
+            
+            <a href="../customer_profile.php" class="dropdown-btn">
+                <i class="fas fa-cog"></i> Edit Profile
+            </a>
+            
+            <a href="api/logout.php" class="dropdown-btn logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+      `;
 
-      // Attach Logout Event
-      document.getElementById('btnLogout').addEventListener('click', () => {
-        localStorage.removeItem('currentUser');
-        sessionStorage.removeItem('currentUser');
+      // Toggle Dropdown Logic
+      const trigger = document.getElementById('profileTrigger');
+      const dropdown = document.getElementById('profileDropdown');
 
-        const returnUrl = encodeURIComponent(window.location.href);
-        window.location.href = `../customerLogin.php?return_url=${returnUrl}`;
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
       });
 
-    } catch (e) {
-      console.error("Error parsing user data", e);
+      // Close dropdown when clicking outside
+      window.addEventListener('click', () => {
+        if (dropdown.classList.contains('active')) {
+          dropdown.classList.remove('active');
+        }
+      });
+
+      // Stop clicks inside dropdown from closing it
+      dropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+    } else {
       renderLoginButton(authContainer);
     }
-  } else {
+  } catch (e) {
+    console.error("Auth check failed:", e);
     renderLoginButton(authContainer);
   }
 }
