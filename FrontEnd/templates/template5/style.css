@@ -3644,3 +3644,55 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
     background-color: #ff3b30 !important;
 }
+/* SweetAlert Popup Container */
+.custom-swal-popup {
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    font-family: 'Poppins', sans-serif !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+
+/* Icon style */
+.custom-swal-icon {
+    border-width: 3px !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Title Style */
+.custom-swal-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+    padding-top: 0 !important;
+}
+
+/* Text/Content Style */
+.custom-swal-text {
+    font-size: 1rem !important;
+    color: #666 !important;
+    line-height: 1.6 !important;
+}
+
+/* Confirm Button Style */
+.custom-swal-button {
+    background: #212529 !important; /* သင့် Project က အမည်းရောင်နဲ့ လိုက်အောင်ပါ */
+    color: #fff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 35px !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    margin-top: 1.5rem !important;
+    cursor: pointer;
+    width: 100%; /* Full width button */
+}
+
+.custom-swal-button:hover {
+    background: #444 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+}
+
+/* Animation အတွက် လိုအပ်ရင် (Optional) */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');

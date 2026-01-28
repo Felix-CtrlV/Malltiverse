@@ -4,6 +4,11 @@ header('Content-Type: application/json');
 
 include '../../BackEnd/config/dbconfig.php';
 
+if (!isset($_SESSION['customer_id'])) {
+    echo json_encode(['status' => 'not_logged_in', 'message' => 'Please login first.']);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
     exit;

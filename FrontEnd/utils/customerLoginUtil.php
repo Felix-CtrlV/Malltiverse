@@ -42,10 +42,16 @@ if (!$customer) {
 }
 
 if (password_verify($password, $customer['password'])) {
-    $_SESSION['customer_logged_in'] = true;
-    $_SESSION['customer_id'] = $customer['customer_id'];
+    // ပုံသေသတ်မှတ်ထားတဲ့ logic အစား session ထဲမှာ data တွေ သိမ်းမယ်
+    $_SESSION['customer_logged_in'] = true; // ဒါက login ဝင်ထားကြောင်း အတည်ပြုတာ
+    $_SESSION['customer_id'] = $customer['customer_id']; // ဒါက ဘယ်သူလဲဆိုတာ မှတ်ထားတာ
+    $_SESSION['is_logged_in'] = true; // သင်အလိုရှိတဲ့ နောက်ထပ် check variable တစ်ခု
 
-    // Send success + the return URL
+    // Login ဝင်ဝင်ချင်းမှာ အရင်က ID 1 နဲ့ ထည့်ထားတဲ့ ပစ္စည်းတွေကို ID အသစ်ဆီ ပြောင်းပေးမယ် (Optional but recommended)
+    $new_id = $customer['customer_id'];
+    mysqli_query($conn, "UPDATE cart SET customer_id = '$new_id' WHERE customer_id = 1");
+
+    // Success response ပြန်မယ်
     echo json_encode(['success' => true, 'return_url' => $returnUrl]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid email or password']);

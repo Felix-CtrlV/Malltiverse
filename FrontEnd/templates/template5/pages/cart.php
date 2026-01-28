@@ -1,3 +1,19 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Login Session ရှိမရှိ စစ်ဆေးခြင်း
+if (!isset($_SESSION['customer_id'])) {
+    // Session မရှိရင် Login Page ဆီ ချက်ချင်း ပြန်ပို့မယ်
+    // လမ်းကြောင်း (Path) ကို သေချာစစ်ပါ (../../ လိုအပ်ရင် ပြင်ပါ)
+    header("Location: ../utils/customerLogin.php"); 
+    exit(); // အောက်က database query တွေ ဆက်အလုပ်မလုပ်အောင် ရပ်လိုက်ခြင်း
+}
+
+$customer_id = $_SESSION['customer_id'];
+$supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
+?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -5,7 +21,7 @@
 <?php
 require_once __DIR__ . '/../../../utils/Ordered.php'; 
 
-$customer_id = 1; 
+$customer_id = $_SESSION['customer_id']; 
 $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
 
 // --- PHP LOGIC REMAINS UNCHANGED ---
@@ -967,7 +983,7 @@ $total_price = 0;
           id="checkout-btn" 
          class="checkout-btn-modern <?= ($cart_count <= 0) ? 'disabled' : '' ?>">
         <i class="fas fa-lock"></i> Secure Checkout
-</a>
+        </a>
         </div> 
     </div> 
         

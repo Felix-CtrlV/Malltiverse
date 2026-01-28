@@ -8,6 +8,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // 1. Start output buffering
+
 ob_start();
 
 include '../../BackEnd/config/dbconfig.php';
