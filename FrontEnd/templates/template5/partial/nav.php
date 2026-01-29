@@ -93,8 +93,8 @@ $base_url = "?supplier_id=" . $supplier_id;
                 <small class="fw-medium d-none d-sm-block">My Account</small>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                <!--<li><a class="dropdown-item" href="?page=profile"><i class="fas fa-user-circle me-2"></i> Profile</a></li>-->
-                <li><a class="dropdown-item" href="<?= $base_url ?>&page=cart"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>
+                <li><a class="dropdown-item" href="?page=profile"><i class="fas fa-user-circle me-2"></i> Profile</a></li>
+                <!--<li><a class="dropdown-item" href="<?= $base_url ?>&page=cart"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>-->
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="../utils/logout.php?supplier_id=<?= $supplier_id ?>">
                     <i class="fas fa-sign-out-alt me-2"></i> Logout
