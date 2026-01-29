@@ -4,6 +4,35 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $isLoggedIn = isset($_SESSION['customer_id']);
+$user_name = "My Account";
+$user_email = "";
+$user_image = "https://ui-avatars.com/api/?name=User&background=random"; 
+
+if ($isLoggedIn) {
+    $c_id = $_SESSION['customer_id'];
+  
+    $user_query = mysqli_query($conn, "SELECT * FROM customers WHERE customer_id = '$c_id'");
+    
+    if($user_row = mysqli_fetch_assoc($user_query)) {
+        
+        $user_name = $user_row['customer_name'] ?? $user_row['name']; 
+        $user_email = $user_row['customer_email'] ?? $user_row['email'];
+        
+        
+        if(!empty($user_row['image'])) {
+            $user_image = "../uploads/customers/" . $user_row['image'];
+        } else {
+            $user_image = "https://ui-avatars.com/api/?name=" . urlencode($user_name) . "&background=random&color=fff";
+        }
+    }
+}
+?>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$isLoggedIn = isset($_SESSION['customer_id']);
 $base_url = "?supplier_id=" . $supplier_id;
 ?>
 
@@ -86,21 +115,32 @@ $base_url = "?supplier_id=" . $supplier_id;
                <div class="nav-auth-section border-start ps-3">
     <?php if ($isLoggedIn): ?>
         <div class="dropdown user-dropdown">
-            <a class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" 
-               href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://ui-avatars.com/api/?name=User&background=random&color=fff" 
-                     class="user-avatar-nav rounded-circle me-2" alt="Profile">
-                <small class="fw-medium d-none d-sm-block">My Account</small>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                <li><a class="dropdown-item" href="?page=profile"><i class="fas fa-user-circle me-2"></i> Profile</a></li>
-                <!--<li><a class="dropdown-item" href="<?= $base_url ?>&page=cart"><i class="fas fa-shopping-bag me-2"></i> My Orders</a></li>-->
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="../utils/logout.php?supplier_id=<?= $supplier_id ?>">
-                    <i class="fas fa-sign-out-alt me-2"></i> Logout
-                </a></li>
-            </ul>
-        </div>
+    <a class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" 
+       href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="<?= $user_image ?>" class="user-avatar-nav rounded-circle me-2" alt="Profile">
+        <small class="fw-medium d-none d-sm-block"><?= htmlspecialchars($user_name) ?></small>
+    </a>
+    
+    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="min-width: 200px;">
+        <li class="px-3 py-3 border-bottom">
+            <div class="d-flex align-items-center">
+                <img src="<?= $user_image ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
+                <div style="line-height: 1.2;">
+                    <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;"><?= htmlspecialchars($user_name) ?></h6>
+                    <small class="text-muted" style="font-size: 0.75rem;"><?= htmlspecialchars($user_email) ?></small>
+                </div>
+            </div>
+        </li>
+        
+        <!--<li><a class="dropdown-item mt-2" href="?page=profile"><i class="fas fa-user-circle me-2"></i> My Profile</a></li>-->
+        
+        <!--<li><hr class="dropdown-divider"></li>-->
+        
+        <li><a class="dropdown-item text-danger" href="../utils/logout.php?supplier_id=<?= $supplier_id ?>">
+            <i class="fas fa-sign-out-alt me-2"></i> Logout
+        </a></li>
+    </ul>
+</div>
     <?php else: ?>
         <div class="nav-auth-buttons d-flex gap-2">
             <a href="../customerLogin.php" class="btn btn-outline-dark">Login</a>
