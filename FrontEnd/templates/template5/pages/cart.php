@@ -1,3 +1,19 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Login Session ရှိမရှိ စစ်ဆေးခြင်း
+if (!isset($_SESSION['customer_id'])) {
+    // Session မရှိရင် Login Page ဆီ ချက်ချင်း ပြန်ပို့မယ်
+    // လမ်းကြောင်း (Path) ကို သေချာစစ်ပါ (../../ လိုအပ်ရင် ပြင်ပါ)
+    header("Location: ../utils/customerLogin.php"); 
+    exit(); // အောက်က database query တွေ ဆက်အလုပ်မလုပ်အောင် ရပ်လိုက်ခြင်း
+}
+
+$customer_id = $_SESSION['customer_id'];
+$supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
+?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -5,7 +21,7 @@
 <?php
 require_once __DIR__ . '/../../../utils/Ordered.php'; 
 
-$customer_id = 1; 
+$customer_id = $_SESSION['customer_id']; 
 $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
 
 // --- PHP LOGIC REMAINS UNCHANGED ---
@@ -193,7 +209,7 @@ $total_price = 0;
         gap: 30px;
         margin-top: 40px;
         flex-wrap: wrap;
-        margin-bottom:40px;
+        margin-bottom:80px;
     }
 
     .stat-card {
@@ -963,9 +979,11 @@ $total_price = 0;
                 <span class="summary-value total">$<?= number_format($grand_total, 2) ?></span>
             </div>
             
-            <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" class="checkout-btn-modern">
-                <i class="fas fa-lock"></i> Secure Checkout
-            </a>
+          <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" 
+          id="checkout-btn" 
+         class="checkout-btn-modern <?= ($cart_count <= 0) ? 'disabled' : '' ?>">
+        <i class="fas fa-lock"></i> Secure Checkout
+        </a>
         </div> 
     </div> 
         
@@ -1171,7 +1189,7 @@ function initiateRemove(cartId) {
         showConfirmButton: true,
         confirmButtonText: 'UNDO',
         confirmButtonColor: '#6366f1',
-        timer: 5000,
+        timer: 3000,
         timerProgressBar: true
     });
 
@@ -1217,7 +1235,6 @@ function recalculateCart() {
     let grandTotal = 0;
     let totalQty = 0;
 
-   
     document.querySelectorAll('.modern-item').forEach(item => {
         if (item.style.display !== 'none' && item.style.opacity !== '0') {
             const price = parseFloat(item.getAttribute('data-price')) || 0;
@@ -1228,7 +1245,6 @@ function recalculateCart() {
             grandTotal += itemSubtotal;
             totalQty += qty;
 
-            // Individual item subtotal text update (e.g., $120.00)
             const cartId = qtyElement.id.replace('qty-', '');
             const subDisplay = document.getElementById('subtotal-' + cartId);
             if (subDisplay) {
@@ -1236,6 +1252,17 @@ function recalculateCart() {
             }
         }
     });
+
+  
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        if (totalQty <= 0) {
+            checkoutBtn.classList.add('disabled'); 
+        } else {
+            checkoutBtn.classList.remove('disabled'); 
+        }
+    }
+
 
    
     const shipping = (grandTotal > 100 || grandTotal === 0) ? 0 : 9.99;
@@ -1293,3 +1320,34 @@ function updateUI(tQty, sub, ship, disc, total, types) {
     }
 }
 </script>
+    <!--Checkout disabled code -->
+<script>
+function showEmptyCartAlert() {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Your cart is empty!',
+        text: 'Please add some items before checking out.',
+        confirmButtonColor: '#6366f1',
+    });
+}</script>
+<style>
+.disabled-btn {
+    background: #cccccc !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+    box-shadow: none !important;
+}
+
+.disabled-btn:hover {
+    transform: none !important;
+}
+
+/* Checkout ခလုတ် ပိတ်ထားချိန် ပုံစံ */
+.checkout-btn-modern.disabled {
+    background: #cccccc !important;
+    cursor: not-allowed !important;
+    pointer-events: none; /* link ကို နှိပ်လို့မရအောင် တားတာ */
+    box-shadow: none !important;
+    transform: none !important;
+}
+</style>

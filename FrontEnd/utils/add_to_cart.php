@@ -1,8 +1,21 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['customer_id']) || $_SESSION['customer_id'] <= 0) {
+    echo json_encode(['status' => 'error', 'message' => 'You must login first']);
+    exit;
+}
+
+$customer_id = (int) $_SESSION['customer_id'];
+
 header('Content-Type: application/json');
 
 include '../../BackEnd/config/dbconfig.php';
+
+if (!isset($_SESSION['customer_id'])) {
+    echo json_encode(['status' => 'not_logged_in', 'message' => 'Please login first.']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request']);

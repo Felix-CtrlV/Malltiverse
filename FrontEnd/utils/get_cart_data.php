@@ -2,12 +2,42 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+if (!isset($_SESSION['customer_id']) || $_SESSION['customer_id'] <= 0) {
+    echo json_encode([
+        'status' => 'guest',
+        'items' => []
+    ]);
+    exit;
+}
+
 include __DIR__ . '/../../BackEnd/config/dbconfig.php';
 
 header('Content-Type: application/json');
 
 $supplier_id = isset($_GET['supplier_id']) ? (int) $_GET['supplier_id'] : null;
 $customer_id = isset($_SESSION['customer_id']) ? (int) $_SESSION['customer_id'] : 1;
+$variant_id = isset($_GET['variant_id']) ? (int) $_GET['variant_id'] : null;
+
+if ($variant_id) {
+    
+    $query = "SELECT quantity as available_stock FROM product_variant WHERE variant_id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $variant_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    
+    echo json_encode([
+        'availableStock' => $row ? (int)$row['available_stock'] : 0
+    ]);
+    exit;
+}
+
+if ($customer_id > 0 && $supplier_id > 0) {
+    // ၂။ Cart ထဲက ပစ္စည်းတွေ အကုန်ပြချင်တဲ့အခါ (မူလ logic)
+    // ... သင်ရေးထားတဲ့ cart query အတိုင်း ဆက်သွားပါ ...
+}
 
 $items = [];
 $total = 0;

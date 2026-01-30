@@ -1,14 +1,20 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php
-// 1. Connection & Initial Setup
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+<?php
+
 include("../../BackEnd/config/dbconfig.php"); 
 
 $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 3;
 
-// 2. Fetch Colors (Primary & Secondary)
+
 $color_sql = "SELECT primary_color, secondary_color FROM shop_assets WHERE supplier_id = $supplier_id LIMIT 1";
 $color_result = $conn->query($color_sql);
-$primary_color = "#c5a059";   // Default Gold
-$secondary_color = "#e0c08d"; // Default Champagne
+$primary_color = "#c5a059";   
+$secondary_color = "#e0c08d"; 
 
 if ($color_result && $color_result->num_rows > 0) {
     $color_row = $color_result->fetch_assoc();
@@ -18,28 +24,49 @@ if ($color_result && $color_result->num_rows > 0) {
 
 // 3. Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['review_text'])) {
-    $rating = (int)$_POST['rating'];
-    $email  = trim($_POST['email']);
-    $review_text = trim($_POST['review_text']);
+    $rating = isset($_POST['rating']) ? (int)$_POST['rating'] : 0;
+    $review_text = isset($_POST['review_text']) ? trim($_POST['review_text']) : '';
+    
+    $cid = isset($_SESSION['customer_id']) ? (int)$_SESSION['customer_id'] : null; 
 
-    if ($rating > 0 && !empty($review_text) && !empty($email)) {
-        $cust_stmt = $conn->prepare("SELECT customer_id FROM customers WHERE email = ?");
-        $cust_stmt->bind_param("s", $email);
-        $cust_stmt->execute();
-        $res = $cust_stmt->get_result();
+    if (!$cid) {
+        echo "<script>alert('Please log in as a client first to leave a review.');</script>";
+    } elseif ($rating <= 0) {
+        echo "<script>alert('Please select a star rating.');</script>";
+    } elseif (empty($review_text)) {
+        echo "<script>alert('Please write your review text.');</script>";
+    } else {
+        
+        $stmt = $conn->prepare("INSERT INTO reviews (supplier_id, customer_id, review, rating, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->bind_param("iisi", $supplier_id, $cid, $review_text, $rating);
 
-        if ($res->num_rows > 0) {
-            $customer = $res->fetch_assoc();
-            $cid = $customer['customer_id'];
+        if ($stmt->execute()) {
+           echo "
+    <script>
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      background: 'black',
+      color: 'white',
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    })
 
-            $stmt = $conn->prepare("INSERT INTO reviews (supplier_id, customer_id, review, rating, created_at) VALUES (?, ?, ?, ?, NOW())");
-            $stmt->bind_param("iisi", $supplier_id, $cid, $review_text, $rating);
-
-            if ($stmt->execute()) {
-                echo "<script>alert('Review published to the archives.'); window.location.href='?supplier_id=$supplier_id';</script>";
-            }
+    Toast.fire({
+      icon: 'success',
+      title: 'Review Published Successfully'
+    }).then(() => {
+        window.location.href='?supplier_id=$supplier_id';
+    });
+    </script>";
+            exit();
         } else {
-            echo "<script>alert('Email not found. Please register as a client first.');</script>";
+            echo "<script>alert('Error: Could not save review.');</script>";
         }
     }
 }
@@ -64,7 +91,7 @@ if ($result_stats && $result_stats->num_rows > 0) {
 }
 $avg_rating = $total_reviews > 0 ? number_format($sum_ratings / $total_reviews, 1) : "0.0";
 
-// 5. Fetch Reviews for the "Archives"
+
 $sql_reviews = "
     SELECT r.*, c.name, c.image 
     FROM reviews r 
@@ -162,41 +189,31 @@ $reviews_res = $conn->query($sql_reviews);
 </section>
 
         <aside class="form-sticky-panel reveal-on-scroll">
-            <div class="form-header">Leave Your Mark</div>
-            <form method="POST">
-               <div class="star-rating-select">
-    <input type="radio" name="rating" id="r5" value="5" required>
-    <label for="r5" title="5 stars">
-        <svg viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"/></svg>
-    </label>
+    <div class="form-header">Leave Your Mark</div>
 
-    <input type="radio" name="rating" id="r4" value="4">
-    <label for="r4" title="4 stars">
-        <svg viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"/></svg>
-    </label>
-
-    <input type="radio" name="rating" id="r3" value="3">
-    <label for="r3" title="3 stars">
-        <svg viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"/></svg>
-    </label>
-
-    <input type="radio" name="rating" id="r2" value="2">
-    <label for="r2" title="2 stars">
-        <svg viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"/></svg>
-    </label>
-
-    <input type="radio" name="rating" id="r1" value="1">
-    <label for="r1" title="1 star">
-        <svg viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"/></svg>
-    </label>
+    <?php if (isset($_SESSION['customer_id'])): ?>
+        <form method="POST">
+            <div class="star-rating-select">
+                <?php for($i=5; $i>=1; $i--): ?>
+                    <input type="radio" name="rating" id="r<?= $i ?>" value="<?= $i ?>" <?= $i==5 ? 'required' : '' ?>>
+                    <label for="r<?= $i ?>" title="<?= $i ?> stars">
+                        <svg viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"/></svg>
+                    </label>
+                <?php endfor; ?>
+            </div>
+            
+            <textarea name="review_text" class="luxury-input" rows="5" placeholder="Your experience..." required></textarea>
+            
+            <button type="submit" class="submit-btn">Publish Review</button>
+        </form>
+    <?php else: ?>
+       <div style="text-align: center; padding: 20px;">
+    <p style="color: #e0c08d; font-style: italic; margin-bottom: 20px;">Please join the archives to leave your mark.</p>
+    
+    <a href="../customerLogin.php?supplier_id=<?= $supplier_id ?>" class="submit-btn" style="text-decoration: none; display: inline-block;">Login to Review</a>
 </div>
-                
-               
-                <textarea name="review_text" class="luxury-input" rows="5" placeholder="Your experience..." required></textarea>
-                
-                <button type="submit" class="submit-btn">Publish Review</button>
-            </form>
-        </aside>
+    <?php endif; ?>
+</aside>
     </div>
 </div>
 
