@@ -11,6 +11,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // 1. Start output buffering
+
 ob_start();
 
 include '../../BackEnd/config/dbconfig.php';
@@ -377,7 +378,8 @@ $final_content = preg_replace(
     $final_content,
     1
 );
-$final_js = $loader_js . '<script>const USER_LOGGED_IN = ' . ($isLoggedIn ? 'true' : 'false') . ';</script>';
+$final_js = $loader_js . '<script>const USER_LOGGED_IN = ' . ($isLoggedIn ? 'true' : 'false') . '; const IS_LOGGED_IN = USER_LOGGED_IN;
+</script>';
 
 $final_content = preg_replace(
     '/<\/body>/i',

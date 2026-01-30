@@ -5,9 +5,9 @@
             <?= htmlspecialchars($supplier['tags']) ?>
         </span>
 
-        <h2 class="home" style="width:500px;">
-            <?= htmlspecialchars($supplier['description']) ?>
-        </h2>
+       <h2 class="home">
+       <?= htmlspecialchars($supplier['description']) ?>
+       </h2>
 
         <br>
 

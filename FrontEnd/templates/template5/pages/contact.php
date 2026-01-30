@@ -22,16 +22,7 @@
                 </header>
 
                 <form class="luxury-form">
-                    <div class="row">
-                        <div class="field">
-                            <label>First Name</label>
-                            <input type="text" placeholder="Enter first name">
-                        </div>
-                        <div class="field">
-                            <label>Last Name</label>
-                            <input type="text" placeholder="Enter last name">
-                        </div>
-                    </div>
+                    
 
 
                  

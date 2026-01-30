@@ -41,11 +41,19 @@ if (!$customer) {
     exit;
 }
 
+/*Change*/
 if (password_verify($password, $customer['password'])) {
-    $_SESSION['customer_logged_in'] = true;
-    $_SESSION['customer_id'] = $customer['customer_id'];
+   
+    $_SESSION['customer_logged_in'] = true; 
+    $_SESSION['customer_id'] = $customer['customer_id']; 
+    $_SESSION['is_logged_in'] = true; 
+    
 
-    // Send success + the return URL
+    
+    $new_id = $customer['customer_id'];
+    mysqli_query($conn, "UPDATE cart SET customer_id = '$new_id' WHERE customer_id = 1");
+
+   
     echo json_encode(['success' => true, 'return_url' => $returnUrl]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid email or password']);
