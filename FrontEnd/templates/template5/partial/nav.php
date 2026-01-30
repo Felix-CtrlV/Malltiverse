@@ -66,7 +66,7 @@ $base_url = "?supplier_id=" . $supplier_id;
         </a>
         
         <a href="../customer/index.html" class="shopping-back ms-3 d-none d-md-block">
-            <i class="fas fa-arrow-left me-1"></i> Back to Shopping Mall
+            <i class="fas fa-arrow-left me-1"></i> Back to the Mall
         </a>
 
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -117,14 +117,14 @@ $base_url = "?supplier_id=" . $supplier_id;
         <div class="dropdown user-dropdown">
     <a class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" 
        href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="<?= $user_image ?>" class="user-avatar-nav rounded-circle me-2" alt="Profile">
+        <!--<img src="<?= $user_image ?>" class="user-avatar-nav rounded-circle me-2" alt="Profile">-->
         <small class="fw-medium d-none d-sm-block"><?= htmlspecialchars($user_name) ?></small>
     </a>
     
     <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="min-width: 200px;">
         <li class="px-3 py-3 border-bottom">
             <div class="d-flex align-items-center">
-                <img src="<?= $user_image ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">
+                <!--<img src="<?= $user_image ?>" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover;">-->
                 <div style="line-height: 1.2;">
                     <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;"><?= htmlspecialchars($user_name) ?></h6>
                     <small class="text-muted" style="font-size: 0.75rem;"><?= htmlspecialchars($user_email) ?></small>
@@ -322,4 +322,34 @@ function closeLoginAlert() {
 @keyframes pulse {
     0% { transform: scale(1); opacity: 0.5; }
     100% { transform: scale(1.4); opacity: 0; }
-}</style>
+}
+.shopping-back {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff; 
+    color: #333 !important; 
+    text-decoration: none !important;
+    border-radius: 50px; 
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease; 
+    border: 1px solid #eee;
+}
+
+
+.shopping-back:hover {
+    background-color: #2c3e50; 
+    color: #ffffff !important; 
+    transform: translateX(-5px); 
+}
+
+/* Icon Animation */
+.shopping-back i {
+    transition: transform 0.3s ease;
+}
+
+.shopping-back:hover i {
+    transform: scale(1.2); 
+    }
+</style>

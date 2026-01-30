@@ -119,28 +119,26 @@ html{
 /* 1. Hero Container with Perspective */
 .hero-container {
     display: flex;
-    align-items: center;
-    min-height: 100vh;
-    padding: 0 10%;
-    background-color: #fff;
-    overflow: hidden;
-    position: relative;
-    perspective: 1200px; /* Enables 3D depth for child elements */
+    align-items: center;    /* Vertically center content */
+    justify-content: space-between;
+    padding: 60px 5%;       /* Spacing from sides */
+    gap: 40px;              /* Space between text and image */
+    min-height: 80vh;       /* Makes it look full on laptop */
 }
 
 /* 2. Hero Content Animations */
 .hero-content {
-    flex: 1;
-    z-index: 10;
-    /* Slide in from left with a 3D rotation */
-    animation: contentReveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-    position: relative;
-    right:100px;
-    margin-bottom:150px;
+    flex: 1;                /* Takes up half the space */
 }
-.hero-content1{
-    margin-left:30px;
+h2.home {
+    width: 100%;
+    max-width: 500px;       /* Keeps your desired size on Laptop */
+    font-size: 3.5rem;      /* Large clean font for Laptop */
+    line-height: 1.2;
+    margin-bottom: 30px;
+    font-weight: bold;
 }
+
 
 /* 3D Floating Category Title */
 .category-title {
@@ -296,36 +294,67 @@ html{
 
 
 
-/* 4. The 3D Masked Image */
+
 .hero-banner {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 60%;
-    height: 100%;
-    /* 3D Entry Animation */
-    animation: imageSlideIn 0.8s ease-out forwards;
+    flex: 1.4;              
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;            
 }
 
 .banner-shape-wrapper {
     width: 100%;
-    height: 100%;
-    /* Custom Curved Shape from reference */
+    height: 500px;          
     clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 55% 100%, 0% 35%);
     background: #eee;
+    overflow: hidden;       
 }
 
 .fashion-banner {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    /* Parallax effect on hover */
-    transition: transform 0.8s ease-out;
+    object-fit: cover;      
+    transform: scale(1.2); 
+}
+@media (max-width: 991px) {
+    
+    .hero-container {
+        flex-direction: column; /* Stack items vertically */
+        text-align: center;     /* Center align text */
+        padding: 40px 20px;
+        height: auto;           /* Remove fixed height */
+    }
+
+    .hero-content {
+        width: 100%;
+        margin-bottom: 40px;    /* Space between text and image */
+        padding-right: 0;
+    }
+
+    h2.home {
+        max-width: 100%;        /* Allow text to fit small screens */
+        font-size: 2rem;        /* Smaller font for mobile */
+        margin-left: auto;
+        margin-right: auto;     /* Center the text block */
+    }
+
+    .hero-banner {
+        width: 100%;
+    }
+
+    .banner-shape-wrapper {
+        width: 100%;
+        max-width: 350px;       /* Limit image size on mobile */
+        margin: 0 auto;
+    }
+
+    .btn-shop-now {
+        display: inline-block;
+        padding: 12px 30px;
+    }
 }
 
-/* .hero-banner:hover .fashion-banner {
-    transform: scale(1.1) rotate(1deg);
-} */
 
 /* --- ANIMATIONS --- */
 
@@ -3127,14 +3156,7 @@ footer {
     border-bottom: 1px solid var(--gold);
 }
 
-.star-rating-select {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 30px;
-    color: var(--gold);
-    cursor: pointer;
-}
+
 
 .submit-btn {
     width: 100%;
@@ -3154,10 +3176,16 @@ footer {
 }
 .star-rating-select {
     display: flex;
-    flex-direction: row-reverse; 
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 25px;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+}
+.star-rating-select label svg {
+    width: 30px;
+    height: 30px;
+    fill: #ddd !important; /* Bina select kiya hua star */
+    cursor: pointer;
+    transition: fill 0.3s ease;
 }
 
 .star-rating-select input {
@@ -3675,7 +3703,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 
 /* Confirm Button Style */
 .custom-swal-button {
-    background: #212529 !important; /* သင့် Project က အမည်းရောင်နဲ့ လိုက်အောင်ပါ */
+    background: #212529 !important;
     color: #fff !important;
     border: none !important;
     border-radius: 12px !important;
@@ -3694,5 +3722,5 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
     box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
 }
 
-/* Animation အတွက် လိုအပ်ရင် (Optional) */
+
 @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
