@@ -1199,17 +1199,28 @@
             });
 
             // --- 6. INTERACTION & CURSOR ---
-            function togglePanel(id) {
-                const panel = document.getElementById(id);
-                const content = panel.querySelector('.panel-content');
-                if (!panel.classList.contains('active')) {
-                    panel.classList.add('active');
-                    gsap.to(panel, { xPercent: -100, duration: 0.6, ease: "power4.inOut" });
-                    gsap.fromTo(content, { x: 30, opacity: 0 }, { x: 0, opacity: 1, delay: 0.2, duration: 0.4 });
-                } else {
-                    gsap.to(panel, { xPercent: 0, duration: 0.6, ease: "power4.inOut", onComplete: () => panel.classList.remove('active') });
-                }
-            }
+            window.togglePanel = function (id) {
+    const panel = document.getElementById(id);
+    const content = panel.querySelector('.panel-content');
+
+    if (!panel.classList.contains('active')) {
+        panel.classList.add('active');
+        gsap.to(panel, { xPercent: -100, duration: 0.6, ease: "power4.inOut" });
+        gsap.fromTo(
+            content,
+            { x: 30, opacity: 0 },
+            { x: 0, opacity: 1, delay: 0.2, duration: 0.4 }
+        );
+    } else {
+        gsap.to(panel, {
+            xPercent: 0,
+            duration: 0.6,
+            ease: "power4.inOut",
+            onComplete: () => panel.classList.remove('active')
+        });
+    }
+};
+
 
             if (window.matchMedia("(pointer: fine)").matches) {
                 // Magnetic Effect

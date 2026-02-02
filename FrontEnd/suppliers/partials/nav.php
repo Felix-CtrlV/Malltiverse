@@ -912,19 +912,35 @@ $pendingOrderList = [
   radial-gradient(circle at 90% 90%, color-mix(in srgb, var(--primary) 30%, transparent) 0%, transparent 40%);
 ">
 
-    <header>
-        <div class="logo"><?= htmlspecialchars($row['company_name']) ?></div>
-        <div class="navline">
-            <nav class="nav-links">
-                <a href="dashboard.php" <?= $active === "dashboard" ? 'class="active"' : '' ?>>Dashboard</a>
-                <a href="inventory.php" <?= $active === "inventory" ? 'class="active"' : '' ?>>Inventory</a>
-                <a href="orders.php" <?= $active === "orders" ? 'class="active"' : '' ?>>Orders</a>
-                <a href="rentpayment.php" <?= $active === "rentpayment" ? 'class="active"' : '' ?>>Rent Payment</a>
-                <a href="setting.php" <?= $active === "setting" ? 'class="active"' : '' ?>>Settings</a>
+    <!-- Mobile menu panel (same pattern as FrontEnd/index.html) -->
+    <div id="mobile-menu-panel" class="panel-overlay">
+        <div class="panel-content panel-nav-content">
+            <div class="panel-close" onclick="togglePanel('mobile-menu-panel')" aria-label="Close">×</div>
+            <nav class="panel-nav">
+                <a href="dashboard.php" <?= $active === "dashboard" ? 'class="active"' : '' ?> onclick="togglePanel('mobile-menu-panel')">Dashboard</a>
+                <a href="inventory.php" <?= $active === "inventory" ? 'class="active"' : '' ?> onclick="togglePanel('mobile-menu-panel')">Inventory</a>
+                <a href="orders.php" <?= $active === "orders" ? 'class="active"' : '' ?> onclick="togglePanel('mobile-menu-panel')">Orders</a>
+                <a href="rentpayment.php" <?= $active === "rentpayment" ? 'class="active"' : '' ?> onclick="togglePanel('mobile-menu-panel')">Rent Payment</a>
+                <a href="setting.php" <?= $active === "setting" ? 'class="active"' : '' ?> onclick="togglePanel('mobile-menu-panel')">Settings</a>
             </nav>
-            <button class="btn-logout" onclick="window.location.href='../utils/signout.php'">Logout</button>
+            <a href="../utils/signout.php" class="btn-logout panel-logout">Logout</a>
         </div>
-    </header>
+    </div>
+
+    <nav class="main-nav">
+        <div class="brand"><?= htmlspecialchars($row['company_name']) ?></div>
+        <div class="nav-right">
+            <a href="dashboard.php" class="nav-link <?= $active === "dashboard" ? 'active' : '' ?>">Dashboard</a>
+            <a href="inventory.php" class="nav-link <?= $active === "inventory" ? 'active' : '' ?>">Inventory</a>
+            <a href="orders.php" class="nav-link <?= $active === "orders" ? 'active' : '' ?>">Orders</a>
+            <a href="rentpayment.php" class="nav-link <?= $active === "rentpayment" ? 'active' : '' ?>">Rent Payment</a>
+            <a href="setting.php" class="nav-link <?= $active === "setting" ? 'active' : '' ?>">Settings</a>
+            <a href="../utils/signout.php" class="btn-logout">Logout</a>
+        </div>
+        <div class="mobile-toggle" onclick="togglePanel('mobile-menu-panel')" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
 
     <div class="container">
 
@@ -1165,6 +1181,19 @@ $pendingOrderList = [
             chatInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') sendMessage();
             });
+
+            // Mobile menu panel (same as FrontEnd/index.html)
+            window.togglePanel = function(id) {
+                var panel = document.getElementById(id);
+                if (!panel) return;
+                if (!panel.classList.contains('active')) {
+                    panel.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    panel.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            };
         </script>
 </body>
 
