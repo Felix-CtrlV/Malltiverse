@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 $isLoggedIn = isset($_SESSION['customer_logged_in']) && $_SESSION['customer_logged_in'] === true;
@@ -60,7 +59,7 @@ $page_content = ob_get_clean();
 
 // 3. Define the Loader HTML, CSS, and JS
 
-// HTML STRUCTURE (Original cube design)
+// HTML STRUCTURE (Unchanged)
 $loader_html = '
 <div id="global-loading-screen">
     <div class="gs-spinner-wrapper">
@@ -72,6 +71,7 @@ $loader_html = '
         </div>
     </div>
 </div>';
+
 
 $loader_css = '
 <style>
@@ -116,7 +116,7 @@ $loader_css = '
         height: 100%;
         position: absolute;
         width: 100%;
-        border: 1px solid var(--inner-cube-color, #f8c828); /* Dynamic color */
+        border: 1px solid #f8c828;
     }
 
     .gs-spinner div:nth-of-type(1) {
@@ -214,13 +214,8 @@ $loader_css = '
         96% { transform: rotate(45deg) rotateX(0deg) rotateY(0deg); }
         100% { transform: rotate(45deg) rotateX(0deg) rotateY(0deg); }
     }
-
-    /* Add glow effect to inner cube based on color */
-    .gs-spinner > div {
-        box-shadow: 0 0 5px var(--inner-cube-color, #f8c828),
-                    0 0 10px var(--inner-cube-color, #f8c828);
-    }
 </style>';
+
 
 $loader_js = '
 <script>
@@ -277,93 +272,9 @@ $loader_js = '
                 loader.style.display = "none";
             }
         });
-
-        // --- 4. COLOR DETECTION FUNCTION (Inner Cube Only) ---
-        function detectPageColor() {
-            // Try to get primary color from CSS variables
-            const style = window.getComputedStyle(document.documentElement);
-            let detectedColor = style.getPropertyValue("--primary-color") || 
-                              style.getPropertyValue("--color-primary") || 
-                              style.getPropertyValue("--main-color") || 
-                              null;
-
-            // If no CSS variable, try to detect from elements
-            if (!detectedColor || detectedColor === "null" || detectedColor.trim() === "") {
-                const elementsToCheck = [
-                    ".primary-color",
-                    ".btn-primary",
-                    ".bg-primary",
-                    "header",
-                    "nav",
-                    ".logo",
-                    "h1",
-                    "a"
-                ];
-                
-                for (const selector of elementsToCheck) {
-                    const element = document.querySelector(selector);
-                    if (element) {
-                        const computedStyle = window.getComputedStyle(element);
-                        const color = computedStyle.color || computedStyle.backgroundColor || computedStyle.borderColor;
-                        
-                        // Skip transparent/black/white colors
-                        if (color && 
-                            !color.includes("rgba(0, 0, 0") && 
-                            !color.includes("rgb(0, 0, 0") &&
-                            !color.includes("rgba(255, 255, 255") &&
-                            !color.includes("rgb(255, 255, 255") &&
-                            !color.includes("transparent")) {
-                            detectedColor = color;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Convert rgb/rgba to hex if needed
-            if (detectedColor && detectedColor.startsWith("rgb")) {
-                detectedColor = rgbToHex(detectedColor);
-            }
-
-            // Set the inner cube color
-            if (detectedColor && detectedColor !== "#000000" && detectedColor !== "#ffffff") {
-                document.documentElement.style.setProperty("--inner-cube-color", detectedColor);
-            } else {
-                // Fallback to original color
-                document.documentElement.style.setProperty("--inner-cube-color", "#f8c828");
-            }
-        }
-
-        function rgbToHex(rgb) {
-            // Choose correct separator
-            let sep = rgb.indexOf(",") > -1 ? "," : " ";
-            
-            // Turn "rgb(r,g,b)" into [r,g,b]
-            rgb = rgb.substr(4).split(")")[0].split(sep);
-            
-            let r = (+rgb[0]).toString(16),
-                g = (+rgb[1]).toString(16),
-                b = (+rgb[2]).toString(16);
-            
-            if (r.length == 1) r = "0" + r;
-            if (g.length == 1) g = "0" + g;
-            if (b.length == 1) b = "0" + b;
-            
-            return "#" + r + g + b;
-        }
-
-        // Run color detection when page loads
-        detectPageColor();
-        
-        // Also run when page is shown from cache
-        window.addEventListener("pageshow", function() {
-            setTimeout(detectPageColor, 100);
-        });
-
-        // Try to detect color after a short delay to ensure page is fully loaded
-        setTimeout(detectPageColor, 500);
     });
 </script>';
+
 
 $final_content = preg_replace(
     '/<\/head>/i',
