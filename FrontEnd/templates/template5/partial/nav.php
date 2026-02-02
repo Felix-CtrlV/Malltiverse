@@ -30,12 +30,12 @@ if ($isLoggedIn) {
 $cart_count = 0;
 if ($isLoggedIn) {
     $c_id = $_SESSION['customer_id'];
-    $count_res = mysqli_query($conn, "SELECT SUM(quantity) as total FROM cart WHERE customer_id = '$c_id' AND supplier_id = '$supplier_id'");
+    $count_res = mysqli_query($conn, "SELECT SUM(quantity) as total FROM cart WHERE customer_id = '$c_id' AND company_id = '$company_id'");
     $count_row = mysqli_fetch_assoc($count_res);
     $cart_count = $count_row['total'] ?? 0;
 } else {
     if (isset($_SESSION['cart'])) {
-        foreach($_SESSION['cart'] as $qty) { $cart_count += (int)$qty; }
+        foreach($_SESSION['cart'] as $qty) { $cart_count += (int)$qty;}
     }
 }
 ?>
