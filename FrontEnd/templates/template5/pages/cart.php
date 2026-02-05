@@ -969,7 +969,6 @@ div.swal2-container.swal2-top {
     </div>
     
     <?php 
-    // Cart ထဲမှာ ဘာမှမရှိရင် 0 ပဲပြအောင် သေချာအောင်လုပ်ခြင်း
     $display_subtotal = ($cart_count > 0) ? $total_price : 0;
     $display_shipping = ($cart_count > 0) ? $shipping : 0;
     $display_total = ($cart_count > 0) ? $grand_total : 0;
@@ -1176,54 +1175,62 @@ function initiateRemove(cartId) {
     const itemElement = document.querySelector(`#qty-${cartId}`)?.closest('.modern-item');
     if (!itemElement) return;
 
-    // UI Animation
+    // ၁. UI မှာ ယာယီ ဖျောက်ထားမယ် (User Experience ကောင်းအောင်)
     itemElement.style.transition = 'all 0.4s ease';
     itemElement.style.transform = 'translateX(100px)';
     itemElement.style.opacity = '0';
 
-    setTimeout(() => {
-        if (itemElement.style.opacity === '0') {
-            itemElement.style.display = 'none';
-            recalculateCart();
+    // ၂. Backend (PHP) ကို လှမ်းဖျက်မယ်
+    // မှတ်ချက်: '../utils/removeFromCart.php' က file structure ပေါ်မူတည်ပြီး ပြောင်းလဲနိုင်ပါတယ်
+    // အကောင်းဆုံးကတော့ PHP ဘက်ကနေ base_url ကို variable တစ်ခုအနေနဲ့ echo ထုတ်ပေးထားတာ ပိုကောင်းပါတယ်
+    
+    // မိတ်ဆွေရဲ့ လက်ရှိ path အတိုင်းသုံးမယ်ဆိုရင် folder name မှန်မမှန် အရင်စစ်ပါ
+    const rootPath = window.location.origin + '/malltiverse/frontend/utils/removeFromCart.php'; 
+
+    fetch(rootPath, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cache-Control': 'no-cache' // Cache မမိအောင် ထည့်မယ်
+        },
+        body: new URLSearchParams({ 'cart_id': cartId })
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
         }
-    }, 400);
-
-    localStorage.setItem('pending_delete_' + cartId, 'true');
-
-   
-    deleteTimeouts[cartId] = setTimeout(() => {
-        finalizeDelete(cartId);
-    }, 5000);
-
-   
-    const UndoToast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: true,
-        confirmButtonText: 'UNDO',
-        confirmButtonColor: '#6366f1',
-        timer: 3000,
-        timerProgressBar: true
-    });
-
-    UndoToast.fire({ icon: 'info', title: 'Item removed' }).then((result) => {
-        if (result.isConfirmed) {
+        return res.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
             
-            clearTimeout(deleteTimeouts[cartId]);
-            delete deleteTimeouts[cartId];
-            localStorage.removeItem('pending_delete_' + cartId);
-
-            itemElement.style.display = 'grid'; 
             setTimeout(() => {
-                itemElement.style.transform = 'translateX(0)';
-                itemElement.style.opacity = '1';
-                recalculateCart();
-            }, 10);
-            modernToast.fire({ icon: 'success', title: 'Item restored' });
+                itemElement.remove(); 
+                recalculateCart(); 
+            }, 300);
+
+            modernToast.fire({ icon: 'success', title: 'Item removed successfully' });
+            
+          
+            const remainingItems = document.querySelectorAll('.modern-item').length;
+            if (remainingItems <= 1) { 
+                setTimeout(() => location.reload(), 1000);
+            }
+        } else {
+           
+            itemElement.style.transform = 'translateX(0)';
+            itemElement.style.opacity = '1';
+            modernToast.fire({ icon: 'error', title: 'Failed to remove item' });
         }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+       
+        itemElement.style.transform = 'translateX(0)';
+        itemElement.style.opacity = '1';
+        modernToast.fire({ icon: 'error', title: 'Connection error. Try again.' });
     });
 }
-
 
 function finalizeDelete(cartId) {
     const rootPath = window.location.origin + '/malltiverse/frontend/utils/removeFromCart.php';
@@ -1247,10 +1254,10 @@ window.addEventListener('beforeunload', () => {
 function recalculateCart() {
     let grandTotal = 0;
     let totalQty = 0;
-    let discount = 0; // Discount logic မရှိသေးရင် 0 လို့ အရင်သတ်မှတ်ထားပါ
+    let discount = 0; 
 
     document.querySelectorAll('.modern-item').forEach(item => {
-        // ဖျက်ထားတဲ့ item တွေကို ထည့်မတွက်ဖို့ display နဲ့ opacity ကို စစ်ပါတယ်
+        
         if (item.style.display !== 'none' && item.style.opacity !== '0') {
             const price = parseFloat(item.getAttribute('data-price')) || 0;
             const qtyElement = item.querySelector('.qty-display-modern');
@@ -1260,7 +1267,7 @@ function recalculateCart() {
             grandTotal += itemSubtotal;
             totalQty += qty;
 
-            // Item တစ်ခုချင်းစီရဲ့ subtotal ကို update လုပ်ခြင်း
+          
             const cartId = qtyElement.id.replace('qty-', '');
             const subDisplay = document.getElementById('subtotal-' + cartId);
             if (subDisplay) {
@@ -1284,8 +1291,7 @@ function recalculateCart() {
     if (savingsStat) savingsStat.innerText = '$' + discount.toLocaleString(undefined, {minimumFractionDigits: 2});
     if (headerQtyText) headerQtyText.innerText = totalQty + (totalQty > 1 ? ' items' : ' item');
 
-    // --- Order Summary Panel Update ---
-    // Index နဲ့ ဖမ်းမယ့်အစား Class နာမည်တွေနဲ့ တိုက်ရိုက်ဖမ်းတာ ပိုစိတ်ချရပါတယ်
+  
     const subtotalEl = document.getElementById('summary-subtotal') || document.querySelector('.summary-item:nth-child(2) .summary-value');
     const shippingEl = document.getElementById('summary-shipping') || document.querySelector('.summary-item:nth-child(3) .summary-value');
     const totalEls = document.querySelectorAll('.summary-value.total');
@@ -1348,6 +1354,7 @@ function showEmptyCartAlert() {
         confirmButtonColor: '#6366f1',
     });
 }</script>
+
 <style>
 .disabled-btn {
     background: #cccccc !important;
@@ -1382,5 +1389,43 @@ function showEmptyCartAlert() {
     margin-top: auto; 
     display: block;
     width: 100%;
+}
+
+@media (max-width: 768px) {
+    /* Reset the container to allow proper centering */
+    div.swal2-container.swal2-top-end,
+    div.swal2-container.swal2-top {
+        top: 20px !important; 
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        
+        /* Use flexbox for perfect alignment */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        
+        /* Remove the conflicting transform */
+        transform: none !important; 
+        pointer-events: none; 
+    }
+
+    /* Style the actual toast box */
+    div.swal2-popup.swal2-toast {
+        width: auto !important;
+        max-width: 90% !important; 
+        margin: 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+        pointer-events: auto; 
+    }
+    
+    /* Ensure text is readable and centered */
+    .swal2-html-container {
+        white-space: normal !important;
+        text-align: center !important;
+        padding: 5px 10px !important;
+    }
 }
 </style>

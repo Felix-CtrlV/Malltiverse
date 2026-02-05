@@ -26,21 +26,15 @@ if ($isLoggedIn) {
     }
 }
 
-// Cart Count Logic (cart table uses company_id)
-$company_id = isset($supplier['company_id']) ? (int)$supplier['company_id'] : 0;
-if ($company_id <= 0 && $supplier_id > 0 && isset($conn)) {
-    $res = mysqli_query($conn, "SELECT company_id FROM companies WHERE supplier_id = " . (int)$supplier_id . " LIMIT 1");
-    $company_id = $res && ($row = mysqli_fetch_assoc($res)) ? (int)$row['company_id'] : 0;
-}
+
 $cart_count = 0;
-if ($isLoggedIn && $company_id > 0 && isset($conn)) {
+if ($isLoggedIn) {
     $c_id = $_SESSION['customer_id'];
-    $count_res = mysqli_query($conn, "SELECT SUM(quantity) as total FROM cart WHERE customer_id = '$c_id' AND company_id = '$company_id'");
-    $count_row = mysqli_fetch_assoc($count_res);
-    $cart_count = $count_row['total'] ?? 0;
-} else {
-    if (isset($_SESSION['cart'])) {
-        foreach($_SESSION['cart'] as $qty) { $cart_count += (int)$qty; }
+    
+    $count_res = mysqli_query($conn, "SELECT SUM(quantity) as total FROM cart WHERE customer_id = '$c_id' AND company_id = '$supplier_id'");
+    if ($count_res) {
+        $count_row = mysqli_fetch_assoc($count_res);
+        $cart_count = (int)($count_row['total'] ?? 0);
     }
 }
 ?>
@@ -127,7 +121,7 @@ if ($isLoggedIn && $company_id > 0 && isset($conn)) {
                      class="rounded-circle me-2" style="height: 40px; width: 40px; object-fit: cover;">
             <?php endif; ?>
             <div class="header-text">
-                <h1 class="fs-6 fw-bold mb-0"><?= htmlspecialchars($supplier['tags'] ?? 'Shop Name') ?></h1>
+                <h1 class="fs-6 fw-bold mb-0"><?= htmlspecialchars($supplier[''] ?? 'ROLEX') ?></h1>
                 <?php if (!empty($supplier['tagline'])): ?>
                     <p class="mb-0 text-muted" style="font-size: 0.65rem;"><?= htmlspecialchars($supplier['tagline']) ?></p>
                 <?php endif; ?>
@@ -141,10 +135,10 @@ if ($isLoggedIn && $company_id > 0 && isset($conn)) {
         <div class="nav-cart ms-auto me-3 d-lg-none">
             <a href="javascript:void(0)" onclick="handleCartClick(<?= $isLoggedIn ? 'true' : 'false' ?>)" class="position-relative text-dark">
                 <i class="fas fa-shopping-basket fa-lg"></i>
-                <span class="cart-badge-count position-absolute badge rounded-pill bg-danger" 
-                      style="<?= $cart_count > 0 ? '' : 'display:none;' ?>">
-                    <?= $cart_count ?>
-                </span>
+               <span class="cart-badge-count badge rounded-pill" 
+      style="display: <?= ($cart_count > 0) ? 'flex' : 'none' ?> !important;">
+    <?= $cart_count ?>
+</span>
             </a>
         </div>
 
@@ -180,15 +174,15 @@ if ($isLoggedIn && $company_id > 0 && isset($conn)) {
             </ul>
 
             <div class="d-none d-lg-flex align-items-center gap-3">
-               <div class="nav-cart me-2">
-    <a href="javascript:void(0)" onclick="handleCartClick(<?= $isLoggedIn ? 'true' : 'false' ?>)" class="position-relative text-dark">
-        <i class="fas fa-shopping-basket fa-lg"></i>
-        <span class="cart-badge-count badge rounded-pill bg-danger" 
-              style="<?= $cart_count > 0 ? 'display:flex;' : 'display:none;' ?>">
-            <?= $cart_count ?>
-        </span>
-    </a>
-</div>
+                <div class="nav-cart me-2">
+                    <a href="javascript:void(0)" onclick="handleCartClick(<?= $isLoggedIn ? 'true' : 'false' ?>)" class="position-relative text-dark">
+                        <i class="fas fa-shopping-basket fa-lg"></i>
+                        <span class="cart-badge-count badge rounded-pill bg-danger" 
+                              style="<?= $cart_count > 0 ? 'display:flex;' : 'display:none;' ?>">
+                            <?= $cart_count ?>
+                        </span>
+                    </a>
+                </div>
 
                 <div class="nav-auth-section border-start ps-3">
                     <?php if ($isLoggedIn): ?>
@@ -250,15 +244,15 @@ if ($isLoggedIn && $company_id > 0 && isset($conn)) {
 
     function refreshBag() {
     const supplierId = "<?= $supplier_id ?>";
+    // Cache မမိအောင် timestamp ထည့်ထားတာ မှန်ပါတယ်
     fetch(`../utils/fetch_cart_drawer.php?supplier_id=${supplierId}&t=${new Date().getTime()}`)
     .then(res => res.json())
     .then(data => {
-       
         const count = parseInt(data.total_count) || 0;
         
         document.querySelectorAll('.cart-badge-count').forEach(el => {
             el.innerText = count;
-           
+            // logic ကို ရှင်းရှင်းလေးပဲ ထားပါမယ်
             if (count > 0) {
                 el.style.setProperty('display', 'flex', 'important');
             } else {
@@ -270,11 +264,14 @@ if ($isLoggedIn && $company_id > 0 && isset($conn)) {
 }
 
 
+
+
 document.addEventListener('DOMContentLoaded', refreshBag);
 </script>
 
 </body>
 </html>
+
 <style>
 .nav-cart a.position-relative {
     display: inline-flex !important;
@@ -294,7 +291,6 @@ document.addEventListener('DOMContentLoaded', refreshBag);
     min-width: 18px;
     height: 18px;
     border-radius: 50%;
-    display: flex !important; 
     align-items: center;
     justify-content: center;
     z-index: 1000;
