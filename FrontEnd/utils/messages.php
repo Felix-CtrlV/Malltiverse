@@ -19,5 +19,8 @@ function sendContactMessage($conn, $customer_id, $company_id, $message) {
     }
 
     mysqli_stmt_close($stmt);
+    
     return $success;
 }
+
+
