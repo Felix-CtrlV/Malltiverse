@@ -112,19 +112,6 @@ while ($row = $result->fetch_assoc()) {
     }
 </style>
 <script>
-<<<<<<< HEAD
-    const toggleBtn = document.getElementById('navToggle');
-    const menu = document.getElementById('navMenuContent');
-
-    toggleBtn.addEventListener('click', () => {
-        if (menu.classList.contains('show')) {
-            menu.classList.remove('show');
-        } else {
-            menu.classList.add('show');
-        }
-    });
-</script>
-=======
 const toggleBtn = document.getElementById('navToggle');
 const menu = document.getElementById('navMenuContent');
 
@@ -137,4 +124,3 @@ toggleBtn.addEventListener('click', () => {
 });
 </script>
 
->>>>>>> 1ba3fa93b45a20bb385c19fd8e14df7efbc296d2
