@@ -34,13 +34,15 @@ $variants_data = [];
 $colors = []; 
 
 while ($v = mysqli_fetch_assoc($variants_result)) {
-   
-    if ((int)$v['quantity'] > 0) {
+    // quantity က 0 ထက်ကြီးမှသာ array ထဲထည့်မယ် (ဒါမှမဟုတ် ဖျက်ထားတဲ့ variant တွေ မပါလာမှာဖြစ်ပါတယ်)
+    if ((int)$v['quantity'] > 0) { 
         $variants_data[] = $v;
-        if (!empty($v['color'])) $colors[] = trim($v['color']); 
+        if (!empty($v['color'])) {
+            $colors[] = trim($v['color']); 
+        }
     }
 }
-$colors = array_values(array_unique($colors)); 
+$colors = array_values(array_unique($colors));
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -152,19 +154,29 @@ $colors = array_values(array_unique($colors));
                 parseInt(v.quantity) > 0 
             );
 
-            if (availableVariants.length === 0) {
+           if (availableVariants.length === 0) {
                 sizeSelect.innerHTML = '<option value="">Sold Out</option>';
                 sizeSelect.disabled = true;
             } else {
                 
+                const addedSizes = new Set();
+
                 availableVariants.forEach(v => {
-                    const option = document.createElement('option');
-                    option.value = v.size;
-                    option.textContent = v.size;
-                    sizeSelect.appendChild(option);
+                    
+                    const sizeToCheck = String(v.size).trim();
+
+                  
+                    if (!addedSizes.has(sizeToCheck)) {
+                        const option = document.createElement('option');
+                        option.value = v.size;
+                        option.textContent = v.size;
+                        sizeSelect.appendChild(option);
+                        
+                       
+                        addedSizes.add(sizeToCheck);
+                    }
                 });
             }
-
             document.getElementById('stockDisplay').innerText = "";
             document.getElementById('qtyInput').value = 1;
             document.getElementById('addToCartBtn').disabled = true;
@@ -351,7 +363,7 @@ $colors = array_values(array_unique($colors));
                         title: 'my-soft-title'
                     }
                 });
-                // Cart ထဲထည့်ပြီးရင် Stock ချက်ချင်းလျှော့ပြမယ်
+                
                 if(currentVariant) {
                     currentVariant.quantity -= qty;
                     displayStock();

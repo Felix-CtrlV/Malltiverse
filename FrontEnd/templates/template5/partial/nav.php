@@ -203,8 +203,8 @@ if ($isLoggedIn) {
                                 <li><hr class="dropdown-divider m-0"></li>
                                 <li>
                                 <a class="dropdown-item py-2" href="/malltiverse/FrontEnd/customer_profile.php">
-    <i class="fas fa-user-cog me-2"></i> Edit Profile
-</a>
+                                <i class="fas fa-user-cog me-2"></i> Edit Profile
+                                </a>
                                 </li>
                                 <li><a class="dropdown-item logout-link py-2" href="../utils/logout.php?supplier_id=<?= $supplier_id ?>">
                                     <i class="fas fa-sign-out-alt me-2"></i> Logout
