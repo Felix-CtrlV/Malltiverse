@@ -1148,6 +1148,29 @@ body {
     line-height: 1.5;
 }
 
+/* .reviewer-header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important; 
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.reviewer-info {
+    flex: 1 !important;
+}
+
+.review-stars {
+    display: flex !important;
+    margin-left: auto !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+}
+
+.review-card {
+    width: 100% !important;
+} */
+
 /* Add Review Form */
 .review-form-container {
     flex: 1;

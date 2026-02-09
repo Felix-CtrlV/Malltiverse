@@ -98,7 +98,7 @@ $current_page = 'home.php';
                                             <img src="../uploads/products/<?= $product['product_id'] ?>_<?= htmlspecialchars($product['image']) ?>"
                                                 class="card-img-top" alt="<?= htmlspecialchars($category_row['category_name']) ?>">
                                             <h3 class="category_name"><?= $category_row['category_name'] ?></h3>
-                                            <a href="?supplier_id=<?= $supplier['supplier_id'] ?>&category_id=<?= $category_row['category_id'] ?>&page=collection"
+                                            <a href="?supplier_id=<?= $supplier['supplier_id'] ?>&category_id=<?= $category_row['category_id'] ?>&page=product"
                                                 class="btn-view">View</a>
 
                                         <?php endif; ?>

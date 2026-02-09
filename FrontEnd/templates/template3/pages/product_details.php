@@ -100,12 +100,62 @@ $currentUrl = urlencode($_SERVER['REQUEST_URI']);
         .add-cart:disabled { background-color: #d1d1d1 !important; cursor: not-allowed; opacity: 0.7; }
         .stock-info { font-size: 0.9rem; color: #555; margin-top: 5px; font-weight: 500; }        
         
-        .cart-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        /* .cart-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 9999; }
         .cart-modal { background: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; }
         .success-icon { width: 80px; height: 80px; background-color: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; position: relative; }           
         .success-icon::after { content: ''; width: 60px; height: 60px; background-color: #2196f3; border-radius: 50%; position: absolute; }
-        .success-icon i { color: white; font-size: 30px; z-index: 1; }
-        
+        .success-icon i { color: white; font-size: 30px; z-index: 1; } */
+        .cart-modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0, 0, 0, 0.3); /* Transparent dark background */
+            display: none; justify-content: center; align-items: center; z-index: 9999; 
+            backdrop-filter: blur(10px); 
+        }
+        .cart-modal { 
+            background: rgba(255, 255, 255, 0.08) !important; 
+            backdrop-filter: blur(25px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+            padding: 40px; border-radius: 28px !important; text-align: center; 
+            max-width: 380px; width: 90%; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+            animation: fadeIn 0.4s ease; 
+        }
+
+        .success-icon { 
+            width: 80px; height: 80px; background: #ffffff !important; 
+            border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; margin: 0 auto 20px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .success-icon i { color: #000000 !important; font-size: 35px; }
+        .cart-modal h2 { 
+            color: #ffffff !important; font-family: 'Inter', sans-serif; 
+            font-weight: 600; font-size: 28px; margin-bottom: 10px; 
+        }
+
+        .cart-modal p { color: rgba(255, 255, 255, 0.8) !important; font-size: 16px; }
+        .qty.disabled-style, .add-cart:disabled { 
+            pointer-events: none; 
+            cursor: default; 
+            opacity: 1 !important;
+        }
+
+        #addToCartBtn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        #addToCartBtn.stock-limit-exceeded:disabled {
+            cursor: not-allowed !important;
+        }
+
+        .qty.disabled-style {
+            pointer-events: none;
+            opacity: 1 !important;
+        }
+
         .login-prompt-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -152,7 +202,7 @@ $currentUrl = urlencode($_SERVER['REQUEST_URI']);
 </head>
 
 <body>
-    <!-- Login Prompt Modal -->
+
     <div class="login-prompt-overlay" id="loginPromptModal">
         <div class="login-prompt-card">
 
@@ -169,10 +219,12 @@ $currentUrl = urlencode($_SERVER['REQUEST_URI']);
         </div>
     </div>
 
-    <!-- Add to Cart Success Modal -->
+
     <div class="cart-modal-overlay" id="cartModal">
         <div class="cart-modal">
-            <div class="success-icon"><i class="fas fa-check"></i></div>
+            <div class="success-icon">
+                <i class="fas fa-check"></i> 
+            </div>
             <h2>Added to Cart</h2>
             <p>The item has been successfully added to your cart.</p>
         </div>
@@ -238,8 +290,8 @@ $currentUrl = urlencode($_SERVER['REQUEST_URI']);
         const customerId = <?= isset($_SESSION['customer_id']) ? $_SESSION['customer_id'] : 0 ?>;
         const ADD_TO_CART_API = "../utils/add_to_cart.php";
         const allVariants = <?= json_encode($variants) ?>;
-        const supplierId = <?= isset($product['supplier_id']) ? $product['supplier_id'] : 0 ?>; 
-                                        
+        const supplierId = <?= isset($product['supplier_id']) ? $product['supplier_id'] : 0 ?>;
+
         const colorInputs = document.querySelectorAll('input[name="color"]');
         const sizeSelect = document.getElementById('sizeSelect');
         const qtyInput = document.getElementById('qtyInput');
@@ -248,26 +300,67 @@ $currentUrl = urlencode($_SERVER['REQUEST_URI']);
         const stockDisplay = document.getElementById('stockDisplay');
         const cartModal = document.getElementById('cartModal');
         const loginPromptModal = document.getElementById('loginPromptModal');
-
+        const qtyContainer = document.querySelector('.qty');
+                                
         let currentVariant = null;
-
+        if (qtyContainer) qtyContainer.classList.add('disabled-style');
+        if (addToCartBtn) {
+            addToCartBtn.disabled = true;
+            addToCartBtn.classList.remove('stock-limit-exceeded');
+        }
+                                
         function toggleLoginModal(show) {
             loginPromptModal.style.display = show ? 'flex' : 'none';
         }
-
+                                
+        function validateStock() {
+            if (!currentVariant) return;
+            const requestedQty = parseInt(qtyInput.value) || 0;
+            const availableQty = parseInt(currentVariant.quantity) || 0;
+                                
+            if (requestedQty > availableQty) {
+                qtyErrorMessage.textContent = `Only ${availableQty} items available.`;
+                qtyErrorMessage.style.display = 'block';
+                addToCartBtn.disabled = true;
+                addToCartBtn.classList.add('stock-limit-exceeded'); 
+            } else if (requestedQty < 1) {
+                addToCartBtn.disabled = true;
+                addToCartBtn.classList.remove('stock-limit-exceeded');
+            } else {
+                qtyErrorMessage.style.display = 'none';
+                addToCartBtn.disabled = false;
+                addToCartBtn.classList.remove('stock-limit-exceeded');
+            }
+        }
+                                
+        window.adjustQty = function(amount) {
+            if (qtyContainer.classList.contains('disabled-style')) return;
+                                
+            let val = parseInt(qtyInput.value) || 1;
+            let newVal = val + amount;
+            if (newVal >= 1) {
+                qtyInput.value = newVal;
+                validateStock();
+            }
+        };
+                                
+        // Color Selection Logic
         colorInputs.forEach(input => {
             input.addEventListener('change', (e) => {
                 const selectedColor = e.target.value.toString().trim().toLowerCase();
                 const filtered = allVariants.filter(v => v.color.toString().trim().toLowerCase() === selectedColor);
-
+                                
                 sizeSelect.innerHTML = '<option value="">Select Size</option>';
                 sizeSelect.disabled = false;
                 stockDisplay.textContent = '';
                 qtyInput.value = 1;
                 qtyErrorMessage.style.display = 'none';
                 currentVariant = null;
+                                
+                qtyContainer.classList.add('disabled-style');
                 addToCartBtn.disabled = true;
-
+                addToCartBtn.classList.remove('stock-limit-exceeded');
+                                
                 if (filtered.length === 0) {
                     sizeSelect.innerHTML = '<option value="">No sizes available</option>';
                     sizeSelect.disabled = true;
@@ -277,7 +370,7 @@ $currentUrl = urlencode($_SERVER['REQUEST_URI']);
                         option.value = v.size;
                         const stockQty = parseInt(v.quantity) || 0;
                         const isOutOfStock = stockQty <= 0;
-                        
+
                         option.textContent = `${v.size} ${isOutOfStock ? '(Out of Stock)' : ''}`;
                         if (isOutOfStock) option.disabled = true;
                         sizeSelect.appendChild(option);
@@ -285,95 +378,69 @@ $currentUrl = urlencode($_SERVER['REQUEST_URI']);
                 }
             });
         });
-
+                                
         sizeSelect.addEventListener('change', (e) => {
             const checkedColorInput = document.querySelector('input[name="color"]:checked');
             if (!checkedColorInput) return;
-
+                                
             const selectedColor = checkedColorInput.value.toString().trim().toLowerCase();
             const selectedSize = e.target.value;
-
+                                
             currentVariant = allVariants.find(v => 
                 v.color.toString().trim().toLowerCase() === selectedColor && 
                 v.size.toString() === selectedSize.toString()
             );
-
-            if (currentVariant) {
+                                
+            if (currentVariant && parseInt(currentVariant.quantity) > 0) {
                 stockDisplay.textContent = `Stock available: ${currentVariant.quantity}`;
+                qtyContainer.classList.remove('disabled-style');
+                addToCartBtn.disabled = false;
+                addToCartBtn.classList.remove('stock-limit-exceeded');
                 validateStock(); 
             } else {
-                stockDisplay.textContent = '';
+                stockDisplay.textContent = currentVariant ? 'Out of Stock' : '';
+                qtyContainer.classList.add('disabled-style');
                 addToCartBtn.disabled = true;
+                addToCartBtn.classList.remove('stock-limit-exceeded');
             }
         });
-
-        function validateStock() {
-            if (!currentVariant) return;
-            const requestedQty = parseInt(qtyInput.value) || 0;
-            const availableQty = parseInt(currentVariant.quantity) || 0;
-
-            if (requestedQty > availableQty) {
-                qtyErrorMessage.textContent = `Only ${availableQty} items available.`;
-                qtyErrorMessage.style.display = 'block';
-                addToCartBtn.disabled = true;
-            } else if (requestedQty < 1) {
-                addToCartBtn.disabled = true;
-            } else {
-                qtyErrorMessage.style.display = 'none';
-                addToCartBtn.disabled = false;
-            }
-        }
-
-        function adjustQty(amount) {
-            let val = parseInt(qtyInput.value) || 1;
-            let newVal = val + amount;
-            if (newVal >= 1) {
-                qtyInput.value = newVal;
-                validateStock();
-            }
-        }
-
-        window.addEventListener('click', (e) => {
-            if (e.target === loginPromptModal) {
-                toggleLoginModal(false);
-            }
-        });
-
+                                
+        // Form Submission
         document.getElementById('addToCartForm').addEventListener('submit', function (e) {
             e.preventDefault();
-
-
+                                
             if (!customerId || customerId === 0) {
                 toggleLoginModal(true);
                 return;
             }
-
+                                
             if (!currentVariant) {
-                alert("Please select both color and size.");
+                alert("Please choose both color and size.");
                 return;
             }
-
+                                
             const formData = new FormData();
             formData.append('variant_id', currentVariant.variant_id);
             formData.append('supplier_id', supplierId);
             formData.append('quantity', qtyInput.value);
-
-            fetch(ADD_TO_CART_API, {
-                method: 'POST',
-                body: formData
-            })
+                                
+            fetch(ADD_TO_CART_API, { method: 'POST', body: formData })
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'success') {
                     cartModal.style.display = 'flex';
-                    setTimeout(() => { cartModal.style.display = 'none'; }, 2000);
+                    setTimeout(() => { cartModal.style.display = 'none'; }, 2500);
                 } else {
-                    alert(data.message || "Error adding to cart");
+                    alert(data.message || "Error adding to cart.");
                 }
             })
-            .catch(err => { console.error('Error:', err); });
+            .catch(err => console.error('Error:', err));
         });
-
+                                
+        window.addEventListener('click', (e) => {
+            if (e.target === loginPromptModal) toggleLoginModal(false);
+        });
     </script>
+
 </body>
 </html>
