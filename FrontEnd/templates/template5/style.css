@@ -3877,3 +3877,57 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
         flex-direction: column;
     }
 }
+/* --- User Dropdown Hover Effects --- */
+
+/* အခြေခံ Dropdown Item Style */
+.user-dropdown .dropdown-item {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* ပိုပြီး Smooth ဖြစ်စေဖို့ */
+    font-weight: 500;
+}
+
+.user-dropdown .dropdown-item i {
+    width: 20px;
+    margin-right: 12px;
+    transition: transform 0.3s ease;
+}
+
+/* Edit Profile အတွက် Hover Effect */
+.user-dropdown .dropdown-item:not(.logout-link):hover {
+    background-color: #f8f9fa; /* Light grey background */
+    color: #1a73e8; /* Blue color highlight */
+}
+
+.user-dropdown .dropdown-item:not(.logout-link):hover i {
+    transform: translateX(4px); 
+}
+
+/* Logout အတွက် Hover Effect */
+.user-dropdown .logout-link {
+    color: #d93025 !important; /* Initial Red */
+}
+
+.user-dropdown .logout-link:hover {
+    background-color: #fff5f5 !important; 
+    color: #b91c1c !important; 
+}
+
+.user-dropdown .logout-link:hover i {
+    transform: scale(1.2) rotate(-5deg); 
+}
+
+
+.user-dropdown .dropdown-menu {
+    border-radius: 15px;
+    padding: 8px 0;
+    margin-top: 10px;
+    border: 1px solid rgba(0,0,0,0.05);
+    animation: dropdownFadeIn 0.3s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
