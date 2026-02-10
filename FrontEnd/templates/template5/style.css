@@ -617,15 +617,6 @@ h1 {
     border: 1.5px solid #ddd;
     transition: all 0.3s ease;
 }
-@media (max-width: 768px) {
-    .search-bar {
-        margin-left: auto;  /* Left margin ko auto pyan pay tl */
-        margin-right: auto; /* Right margin ka auto shi pee tharr so tot center yout thwar mal */
-        width: 80%;         /* Mobile screen ne swar ag width ko nanyi nanyi kyi pay lo ya tl */
-        max-width: 250px;   /* Phit naing yin d lout htat ma kyi ag kan htar dar par */
-        
-    }
-}
 
 /* Input & Button ka to lay tway ne tait pite nyi nay mhar par */
 #searchBar {
@@ -636,6 +627,15 @@ h1 {
     width: 100%;
     font-size: 14px;
 }
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .search-bar {
+        margin-left: auto;  /* Left margin ko auto pyan pay tl */
+        margin-right: auto; /* Right margin ka auto shi pee tharr so tot center yout thwar mal */
+        width: 80%;         /* Mobile screen ne swar ag width ko nanyi nanyi kyi pay lo ya tl */
+        max-width: 250px;   /* Phit naing yin d lout htat ma kyi ag kan htar dar par */
+    }
+}
 
 .search-bar button {
     background: none;
@@ -644,6 +644,7 @@ h1 {
     color: #888;
     font-size: 14px;
 }
+
 .feature-card:hover {
   transform: translateY(-10px); /* Lifts up gracefully */
   border-color: #d4af37; /* Changes to a Gold/Brass color */
