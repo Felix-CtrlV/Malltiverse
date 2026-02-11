@@ -177,6 +177,7 @@ if (isset($_POST['submit_review'])) {
 
             <div class="single-star me-3" style="color: var(--primary);">★</div>
 
+
             <div class="flex-grow-1 mx-2">
               <div class="progress custom-progress"
                 style="height: 8px; background-color: #7f8a9f44; border-radius: 10px;">

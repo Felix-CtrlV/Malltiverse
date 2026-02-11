@@ -259,17 +259,14 @@ $page_path = __DIR__ . "/pages/$page.php";
         </div>
     </div>
 
-    <!-- Auth popup -->
-    <div id="authModal" class="auth-modal">
-        <div class="auth-box">
-            <button class="auth-close">&times;</button>
-            <h3>Login Required</h3>
-            <p>You need to be logged in to add items to your bag. Join us to start shopping!</p>
-            <div class="auth-actions">
-                <button id="authLoginBtn">Log In</button>
-                <button id="authRegisterBtn">Create Account</button>
-            </div>
-        </div>
+<!-- Auth popup -->
+<div id="authModal" class="auth-modal">
+  <div class="auth-box">
+    <h3>Login Required</h3>
+    <p>Please login or create an account to continue.</p>
+    <div class="auth-actions">
+      <button id="authLoginBtn">Login</button>
+      <button id="authRegisterBtn">Create Account</button>
     </div>
 
     <style>
