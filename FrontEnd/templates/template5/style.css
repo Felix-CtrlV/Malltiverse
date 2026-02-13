@@ -32,7 +32,7 @@ html{
 /* Hover Effect */
 .navbar-expand-lg .nav-link:hover {
     
-    color:rgb(3, 129, 160) !important;
+    color:var(--primary);
 }
 
 
@@ -412,7 +412,7 @@ h2.home {
     height: 2px;
     bottom: -4px;
     left: 0;
-    background: linear-gradient(90deg, #6366f1, #22d3ee);
+    background:var(--primary);
     transition: width 0.3s ease-in-out;
 }
 
@@ -713,7 +713,7 @@ h1 {
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--gold-primary);
+    color:var(--primary);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -790,7 +790,7 @@ h1 {
 
 .card_title{
     margin-top:20px;
-     display: flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
@@ -846,8 +846,7 @@ h1 {
     /* Gradient 'beam' of light */
     background: conic-gradient(
         transparent, 
-        rgba(191, 149, 63, 0.8), 
-        #bf953f, 
+        var(--primary), 
         transparent 30%
     );
     transform: translate(-50%, -50%) rotate(0deg);
@@ -869,7 +868,7 @@ h1 {
 
 /* Hover State */
 .btn-order-now:hover {
-    color: #bf953f;
+    color:var(--primary);
 }
 
 .btn-order-now:hover::before {
@@ -2216,7 +2215,7 @@ footer css
     padding-bottom: 10px;
 }
 .text-center{
-    color:var(--gold-primary);
+    color:var(--primary);
     text-align: center;
 }
 
@@ -2823,7 +2822,7 @@ footer css
     /* --- 5. STAR RATING --- */
     .big-score {
         font-family: var(--font-serif);
-        color: var(--luxury-gold);
+        color:var(--primary);
         text-shadow: 0 0 15px rgba(197, 160, 89, 0.2);
     }
 

@@ -1044,7 +1044,7 @@ const modernAlert = Swal.mixin({
 const modernToast = Swal.mixin({
     toast: true,
     position: 'top-end',
-    showConfirmButton: false,
+    showConfirmButton: false, // Undo အတွက် ဒါကို dynamic ပြောင်းသုံးပါမယ်
     timer: 2000,
     timerProgressBar: true,
     background: 'rgba(255, 255, 255, 0.95)',
@@ -1069,7 +1069,6 @@ let deleteTimeouts = {};
 
 // --- 3. INITIALIZATION ON LOAD ---
 document.addEventListener('DOMContentLoaded', function() {
-   
     Object.keys(localStorage).forEach(key => {
         if (key.startsWith('pending_delete_')) {
             const cartId = key.replace('pending_delete_', '');
@@ -1081,6 +1080,7 @@ document.addEventListener('DOMContentLoaded', function() {
     recalculateCart();
 });
 
+// --- 4. QUANTITY UPDATE ---
 function updateModernQuantity(cartId, newQty, maxStock) {
     if (newQty > maxStock) {
         modernAlert.fire({
@@ -1102,12 +1102,11 @@ function updateModernQuantity(cartId, newQty, maxStock) {
         qtyElement.style.opacity = '0.3';
         qtyElement.style.transform = 'scale(0.8)';
         qtyElement.innerText = newQty;
-        recalculateCart(); // မျက်စိရှေ့တင် စျေးနှုန်းအရင်တွက်မယ်
+        recalculateCart(); 
     }
 
     clearTimeout(updateTimer);
     updateTimer = setTimeout(() => {
-        // ⚠️ ဒီလမ်းကြောင်းက ဖိုင်နာမည်ကို သေချာပြန်စစ်ပါ (qty လား quantity လား)
         const rootPath = '../utils/update_cart_qty.php'; 
         
         fetch(rootPath, {
@@ -1128,12 +1127,10 @@ function updateModernQuantity(cartId, newQty, maxStock) {
                     title: 'Quantity updated'
                 });
 
-                // 🌟 ဒီနေရာမှာ အပေါ်က Badge ကို update လုပ်တဲ့ function ခေါ်မယ်
                 if (typeof refreshBag === 'function') {
                     refreshBag();
                 }
             } else {
-                // Error ဖြစ်ရင် (ဥပမာ stock မလောက်ရင်) reload မလုပ်ဘဲ error ပြရုံပဲလုပ်ပါ
                 modernAlert.fire({ icon: 'error', title: 'Fail', text: data.message });
                 location.reload(); 
             }
@@ -1148,7 +1145,8 @@ function updateModernQuantity(cartId, newQty, maxStock) {
     }, 500);
 }
 
-// --- 5. REMOVE ITEM WITH UNDO ---
+// --- 5. REMOVE ITEM WITH UNDO (NO RELOAD VERSION) ---
+// --- 5. REMOVE ITEM (NO RELOAD VERSION) ---
 function confirmModernRemove(cartId) {
     modernAlert.fire({
         title: 'Remove Item?',
@@ -1156,7 +1154,8 @@ function confirmModernRemove(cartId) {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, remove',
-        cancelButtonText: 'Keep it'
+        cancelButtonText: 'Keep it',
+        confirmButtonColor: '#d33'
     }).then((result) => {
         if (result.isConfirmed) initiateRemove(cartId);
     });
@@ -1166,61 +1165,56 @@ function initiateRemove(cartId) {
     const itemElement = document.querySelector(`#qty-${cartId}`)?.closest('.modern-item');
     if (!itemElement) return;
 
-    
+    // 1. Start UI Animation
     itemElement.style.transition = 'all 0.4s ease';
     itemElement.style.transform = 'translateX(100px)';
     itemElement.style.opacity = '0';
 
-    
-   
-    
-    
-    
     const rootPath = window.location.origin + '/malltiverse/frontend/utils/removeFromCart.php'; 
 
     fetch(rootPath, {
         method: 'POST',
-        headers: { 
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Cache-Control': 'no-cache' 
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ 'cart_id': cartId })
     })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            
-            setTimeout(() => {
-                itemElement.remove(); 
-                recalculateCart(); 
-            }, 300);
+            // 2. Immediate Success Toast (No Undo button)
+            modernToast.fire({
+                icon: 'success',
+                title: 'Item removed',
+                timer: 2000,
+                showConfirmButton: false
+            });
 
-            modernToast.fire({ icon: 'success', title: 'Item removed successfully' });
-            
-          
-            const remainingItems = document.querySelectorAll('.modern-item').length;
-            if (remainingItems <= 1) { 
-                setTimeout(() => location.reload(), 1000);
-            }
+            // 3. Remove from DOM and Recalculate
+            setTimeout(() => {
+                itemElement.remove();
+                recalculateCart();
+                
+                // Check if cart is empty
+                const remainingItems = document.querySelectorAll('.modern-item').length;
+                if (remainingItems === 0) {
+                    if (typeof showEmptyCartAlert === 'function') showEmptyCartAlert();
+                    setTimeout(() => location.reload(), 2000);
+                }
+            }, 400);
+
+            if (typeof refreshBag === 'function') refreshBag();
         } else {
-           
-            itemElement.style.transform = 'translateX(0)';
-            itemElement.style.opacity = '1';
-            modernToast.fire({ icon: 'error', title: 'Failed to remove item' });
+            revertUI(itemElement);
         }
     })
-    .catch((error) => {
-        console.error('Error:', error);
-       
-        itemElement.style.transform = 'translateX(0)';
-        itemElement.style.opacity = '1';
-        modernToast.fire({ icon: 'error', title: 'Connection error. Try again.' });
-    });
+    .catch(() => revertUI(itemElement));
+}
+
+function revertUI(el) {
+    if (el) {
+        el.style.transform = 'translateX(0)';
+        el.style.opacity = '1';
+        recalculateCart();
+    }
 }
 
 function finalizeDelete(cartId) {
@@ -1235,7 +1229,6 @@ function finalizeDelete(cartId) {
         delete deleteTimeouts[cartId];
     });
 }
-
 
 window.addEventListener('beforeunload', () => {
     Object.keys(deleteTimeouts).forEach(cartId => finalizeDelete(cartId));
@@ -1334,9 +1327,7 @@ function updateUI(tQty, sub, ship, disc, total, types) {
         setTimeout(() => location.reload(), 1000);
     }
 }
-</script>
-    <!--Checkout disabled code -->
-<script>
+
 function showEmptyCartAlert() {
     Swal.fire({
         icon: 'warning',
@@ -1344,7 +1335,8 @@ function showEmptyCartAlert() {
         text: 'Please add some items before checking out.',
         confirmButtonColor: '#6366f1',
     });
-}</script>
+}
+</script>
 
 <style>
 .disabled-btn {
