@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_message'])) {
 
     <main class="split-screen">
         <div class="visual-side">
-            <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner5 ?? 'default.jpg' ?>">
+            <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?? 'default.jpg' ?>">
         </div>
 
         <div class="content-side">

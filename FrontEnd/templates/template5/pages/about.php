@@ -15,12 +15,12 @@
         font-weight: 700;
         line-height: 1.1;
         margin-bottom: 30px;
-        color: #2980b9;
+        color:var(--primary);
         text-transform: uppercase;
     }
 
     .about-description {
-        color: #2980b9;
+        color:var(--primary);
         line-height: 1.6;
         font-size: 1.1rem;
         margin-bottom: 50px;
@@ -46,7 +46,7 @@
         font-family: 'Playfair Display', serif;
         font-size: 1.8rem;
         font-weight: bold;
-        color: #2980b9;
+        color:var(--primary);
         text-transform: uppercase;
     }
 
@@ -55,7 +55,7 @@
         font-size: 1.8rem;
         font-weight: bold;
         line-height: 1.2;
-        color: #2980b9;
+        color:var(--primary);
         max-width: 300px;
     }
 
@@ -70,7 +70,7 @@
         top: -10px;
         left: -10px;
         background: white;
-        color: #2980b9;
+        color:var(--primary);
         padding: 20px 15px;
         z-index: 4;
         font-family: 'Playfair Display', serif;
@@ -136,8 +136,8 @@
                         <span style="font-size: 1.5rem;">2026</span>
                     </div>
                     
-                    <?php if (!empty($banner4)): ?>
-                        <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner4 ?>" 
+                    <?php if (!empty($banner1)): ?>
+                        <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>" 
                              alt="Luxury Craftsmanship" 
                              class="main-img img-fluid">
                     <?php else: ?>
