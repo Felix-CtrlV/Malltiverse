@@ -321,8 +321,8 @@ $colors = array_values(array_unique($colors));
                 cancelButtonText: 'Maybe Later',
                 confirmButtonColor: '#212529',
                 customClass: {
-                    popup: 'premium-swal',        // Popup width အတွက်
-                    title: 'luxury-font-title',   // စာလုံး font အတွက်
+                    popup: 'premium-swal',        
+                    title: 'luxury-font-title',   
                     confirmButton: 'premium-confirm-btn',
                     cancelButton: 'premium-cancel-btn'
                 }
