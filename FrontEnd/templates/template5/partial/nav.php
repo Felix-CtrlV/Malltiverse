@@ -27,6 +27,7 @@ if ($isLoggedIn) {
 }
 
 
+
 $cart_count = 0;
 if ($isLoggedIn) {
     $c_id = $_SESSION['customer_id'];
@@ -64,7 +65,7 @@ if ($isLoggedIn) {
             text-decoration: none !important; border-radius: 50px;
             font-weight: 600; font-size: 13px; transition: 0.3s; border: 1px solid #eee;
         }
-        .shopping-back:hover { background-color: #2c3e50; color: #fff !important; transform: translateX(-3px); }
+        .shopping-back:hover { background-color: var(--primary); }
 
         /* --- Cart Badge Fix --- */
         .cart-badge-count {
@@ -121,7 +122,7 @@ if ($isLoggedIn) {
                      class="rounded-circle me-2" style="height: 40px; width: 40px; object-fit: cover;">
             <?php endif; ?>
             <div class="header-text">
-                <h1 class="fs-6 fw-bold mb-0"><?= htmlspecialchars($supplier[''] ?? 'ROLEX') ?></h1>
+                <h1 class="fs-6 fw-bold mb-0"><?= htmlspecialchars($supplier['company_name']) ?></h1>
                 <?php if (!empty($supplier['tagline'])): ?>
                     <p class="mb-0 text-muted" style="font-size: 0.65rem;"><?= htmlspecialchars($supplier['tagline']) ?></p>
                 <?php endif; ?>

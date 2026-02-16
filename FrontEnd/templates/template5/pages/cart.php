@@ -190,7 +190,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 3.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background: var(--primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -236,7 +236,7 @@ $total_price = 0;
         left: 0;
         width: 100%;
         height: 4px;
-        background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+        background:var(--primary);
     }
 
     .stat-card:hover {
@@ -248,7 +248,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 2.5rem;
         font-weight: 700;
-        color: var(--color-primary);
+        color: var(--primary);
         margin-bottom: 5px;
     }
 
@@ -304,7 +304,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 1.8rem;
         font-weight: 700;
-        color: var(--color-text);
+        color: var(--primary);
         display: flex;
         align-items: center;
         gap: 15px;
@@ -473,7 +473,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 1.8rem;
         font-weight: 700;
-        color: var(--color-primary);
+        color: var(--primary);
         margin-bottom: 5px;
     }
 
@@ -577,7 +577,7 @@ $total_price = 0;
     }
 
     .summary-value.total {
-        color: var(--color-primary);
+        color: var(--primary);
         font-size: 1.8rem;
     }
 
@@ -586,7 +586,7 @@ $total_price = 0;
         display: block;
         width: 100%;
         padding: 20px;
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background:var(--primary);
         color: white;
         border: none;
         border-radius: var(--radius-lg);
@@ -670,7 +670,7 @@ $total_price = 0;
         font-weight: 700;
         color: var(--color-text);
         margin-bottom: 15px;
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background:var(--primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -698,7 +698,7 @@ $total_price = 0;
         background: white;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
-        color: var(--color-primary);
+        color: var(--primary);
         text-decoration: none;
         font-weight: 600;
         transition: var(--transition);
@@ -908,7 +908,7 @@ div.swal2-container.swal2-top {
         Cart Items
     </h2>
     
-    <span id="total-qty-header" style="color: var(--color-primary); font-weight: 600;">
+    <span id="total-qty-header" style="color: var(--primary); font-weight: 600;">
         <?= $total_quantity ?> item<?= $total_quantity > 1 ? 's' : '' ?>
     </span>
 </div>
@@ -1044,7 +1044,7 @@ const modernAlert = Swal.mixin({
 const modernToast = Swal.mixin({
     toast: true,
     position: 'top-end',
-    showConfirmButton: false,
+    showConfirmButton: false, 
     timer: 2000,
     timerProgressBar: true,
     background: 'rgba(255, 255, 255, 0.95)',
@@ -1056,7 +1056,7 @@ const modernToast = Swal.mixin({
 const modernStyle = document.createElement('style');
 modernStyle.innerHTML = `
     .modern-swal-popup { border-radius: 24px !important; box-shadow: 0 20px 60px rgba(0,0,0,0.1) !important; font-family: 'Poppins', sans-serif !important; }
-    .modern-confirm-btn { background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; color: white !important; padding: 12px 32px !important; border-radius: 12px !important; margin: 8px !important; cursor: pointer; border: none; font-weight: 600; }
+    .modern-confirm-btn { background: linear-gradient(135deg, var(--primary)) !important; color: white !important; padding: 12px 32px !important; border-radius: 12px !important; margin: 8px !important; cursor: pointer; border: none; font-weight: 600; }
     .modern-cancel-btn { background: white !important; color: #6b7280 !important; border: 1px solid #e5e7eb !important; padding: 12px 32px !important; border-radius: 12px !important; margin: 8px !important; cursor: pointer; font-weight: 600; }
     .qty-display-modern { transition: opacity 0.3s ease, transform 0.2s ease; display: inline-block; }
     .modern-toast { border-radius: 12px !important; border: 1px solid rgba(209,213,219,0.3) !important; backdrop-filter: blur(20px); }
@@ -1069,7 +1069,6 @@ let deleteTimeouts = {};
 
 // --- 3. INITIALIZATION ON LOAD ---
 document.addEventListener('DOMContentLoaded', function() {
-   
     Object.keys(localStorage).forEach(key => {
         if (key.startsWith('pending_delete_')) {
             const cartId = key.replace('pending_delete_', '');
@@ -1081,6 +1080,7 @@ document.addEventListener('DOMContentLoaded', function() {
     recalculateCart();
 });
 
+// --- 4. QUANTITY UPDATE ---
 function updateModernQuantity(cartId, newQty, maxStock) {
     if (newQty > maxStock) {
         modernAlert.fire({
@@ -1102,12 +1102,11 @@ function updateModernQuantity(cartId, newQty, maxStock) {
         qtyElement.style.opacity = '0.3';
         qtyElement.style.transform = 'scale(0.8)';
         qtyElement.innerText = newQty;
-        recalculateCart(); // မျက်စိရှေ့တင် စျေးနှုန်းအရင်တွက်မယ်
+        recalculateCart(); 
     }
 
     clearTimeout(updateTimer);
     updateTimer = setTimeout(() => {
-        // ⚠️ ဒီလမ်းကြောင်းက ဖိုင်နာမည်ကို သေချာပြန်စစ်ပါ (qty လား quantity လား)
         const rootPath = '../utils/update_cart_qty.php'; 
         
         fetch(rootPath, {
@@ -1128,12 +1127,10 @@ function updateModernQuantity(cartId, newQty, maxStock) {
                     title: 'Quantity updated'
                 });
 
-                // 🌟 ဒီနေရာမှာ အပေါ်က Badge ကို update လုပ်တဲ့ function ခေါ်မယ်
                 if (typeof refreshBag === 'function') {
                     refreshBag();
                 }
             } else {
-                // Error ဖြစ်ရင် (ဥပမာ stock မလောက်ရင်) reload မလုပ်ဘဲ error ပြရုံပဲလုပ်ပါ
                 modernAlert.fire({ icon: 'error', title: 'Fail', text: data.message });
                 location.reload(); 
             }
@@ -1148,7 +1145,8 @@ function updateModernQuantity(cartId, newQty, maxStock) {
     }, 500);
 }
 
-// --- 5. REMOVE ITEM WITH UNDO ---
+// --- 5. REMOVE ITEM WITH UNDO (NO RELOAD VERSION) ---
+// --- 5. REMOVE ITEM (NO RELOAD VERSION) ---
 function confirmModernRemove(cartId) {
     modernAlert.fire({
         title: 'Remove Item?',
@@ -1156,7 +1154,8 @@ function confirmModernRemove(cartId) {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, remove',
-        cancelButtonText: 'Keep it'
+        cancelButtonText: 'Keep it',
+        confirmButtonColor: '#d33'
     }).then((result) => {
         if (result.isConfirmed) initiateRemove(cartId);
     });
@@ -1166,61 +1165,56 @@ function initiateRemove(cartId) {
     const itemElement = document.querySelector(`#qty-${cartId}`)?.closest('.modern-item');
     if (!itemElement) return;
 
-    
+    // 1. Start UI Animation
     itemElement.style.transition = 'all 0.4s ease';
     itemElement.style.transform = 'translateX(100px)';
     itemElement.style.opacity = '0';
 
-    
-   
-    
-    
-    
     const rootPath = window.location.origin + '/malltiverse/frontend/utils/removeFromCart.php'; 
 
     fetch(rootPath, {
         method: 'POST',
-        headers: { 
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Cache-Control': 'no-cache' 
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ 'cart_id': cartId })
     })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            
-            setTimeout(() => {
-                itemElement.remove(); 
-                recalculateCart(); 
-            }, 300);
+            // 2. Immediate Success Toast (No Undo button)
+            modernToast.fire({
+                icon: 'success',
+                title: 'Item removed',
+                timer: 2000,
+                showConfirmButton: false
+            });
 
-            modernToast.fire({ icon: 'success', title: 'Item removed successfully' });
-            
-          
-            const remainingItems = document.querySelectorAll('.modern-item').length;
-            if (remainingItems <= 1) { 
-                setTimeout(() => location.reload(), 1000);
-            }
+            // 3. Remove from DOM and Recalculate
+            setTimeout(() => {
+                itemElement.remove();
+                recalculateCart();
+                
+                // Check if cart is empty
+                const remainingItems = document.querySelectorAll('.modern-item').length;
+                if (remainingItems === 0) {
+                    if (typeof showEmptyCartAlert === 'function') showEmptyCartAlert();
+                    setTimeout(() => location.reload(), 2000);
+                }
+            }, 400);
+
+            if (typeof refreshBag === 'function') refreshBag();
         } else {
-           
-            itemElement.style.transform = 'translateX(0)';
-            itemElement.style.opacity = '1';
-            modernToast.fire({ icon: 'error', title: 'Failed to remove item' });
+            revertUI(itemElement);
         }
     })
-    .catch((error) => {
-        console.error('Error:', error);
-       
-        itemElement.style.transform = 'translateX(0)';
-        itemElement.style.opacity = '1';
-        modernToast.fire({ icon: 'error', title: 'Connection error. Try again.' });
-    });
+    .catch(() => revertUI(itemElement));
+}
+
+function revertUI(el) {
+    if (el) {
+        el.style.transform = 'translateX(0)';
+        el.style.opacity = '1';
+        recalculateCart();
+    }
 }
 
 function finalizeDelete(cartId) {
@@ -1235,7 +1229,6 @@ function finalizeDelete(cartId) {
         delete deleteTimeouts[cartId];
     });
 }
-
 
 window.addEventListener('beforeunload', () => {
     Object.keys(deleteTimeouts).forEach(cartId => finalizeDelete(cartId));
@@ -1334,17 +1327,16 @@ function updateUI(tQty, sub, ship, disc, total, types) {
         setTimeout(() => location.reload(), 1000);
     }
 }
-</script>
-    <!--Checkout disabled code -->
-<script>
+
 function showEmptyCartAlert() {
     Swal.fire({
         icon: 'warning',
         title: 'Your cart is empty!',
         text: 'Please add some items before checking out.',
-        confirmButtonColor: '#6366f1',
+        confirmButtonColor: 'var(--primary)',
     });
-}</script>
+}
+</script>
 
 <style>
 .disabled-btn {
@@ -1381,6 +1373,7 @@ function showEmptyCartAlert() {
     display: block;
     width: 100%;
 }
+
 
 @media (max-width: 768px) {
     /* Reset the container to allow proper centering */
