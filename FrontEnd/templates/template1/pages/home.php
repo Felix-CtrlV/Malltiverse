@@ -86,7 +86,7 @@ function splitHeroTitle(string $title): array
 ============================= -->
 <section class="featured-section">
   <div class="section-header">
-    <h2>Our Featured Products</h2>
+    <h2 class="text-center mb-5 h1" style="color: var(--primary); margin-top: 30px;">Our Featured Products</h2>
     <span class="section-line"></span>
   </div>
 
