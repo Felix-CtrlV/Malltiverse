@@ -282,55 +282,12 @@ $hasStock = hasAnyStock($variants);
 
 <section class="related-section">
     <div class="related-section-header">
-        <h2>Related Products</h2>
+        <h2 style="color: var(--primary)">Related Products</h2>
         <span class="related-section-line"></span>
     </div>
 </section>
 
-<section class="related-products-page">
-    <div class="container">
-        <div class="related_product_list_grid">
-            <?php
-            $current_cat_id = $product['category_id'];
-            $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE company_id = ? AND category_id = ? AND product_id != ? AND status != 'unavailable' ORDER BY created_at DESC LIMIT 4");
 
-            if ($products_stmt) {
-                mysqli_stmt_bind_param($products_stmt, "iii", $company_id, $current_cat_id, $product_id);
-                mysqli_stmt_execute($products_stmt);
-                $products_result = mysqli_stmt_get_result($products_stmt);
-            }
-
-            if ($products_result && mysqli_num_rows($products_result) > 0) {
-                while ($rel_product = mysqli_fetch_assoc($products_result)) {
-                    ?>
-                    <div class="related_product">
-                        <div class="related_product_image">
-                            <?php if (!empty($rel_product['image'])): ?>
-                                <img
-                                    src="../uploads/products/<?= $rel_product['product_id'] ?>_<?= htmlspecialchars($rel_product['image']) ?>">
-                            <?php endif; ?>
-                        </div>
-                        <div class="related_product_card-body">
-                            <div class="related_product-info">
-                                <span
-                                    class="related_product_card_title"><?= htmlspecialchars($rel_product['product_name']) ?></span>
-                                <span class="related_product_price">$<?= number_format($rel_product['price'], 2) ?></span>
-                            </div>
-                        </div>
-                        <a class="detail-link"
-                            href="?supplier_id=<?= $supplier_id ?>&page=productDetail&product_id=<?= $rel_product['product_id'] ?>">
-                            <button class="detail-btn">VIEW DETAILS</button>
-                        </a>
-                    </div>
-                    <?php
-                }
-                mysqli_stmt_close($products_stmt);
-            } else {
-                echo '<div class="col-12"><p class="text-center">No related products available at the moment.</p></div>';
-            } ?>
-        </div>
-    </div>
-</section>
 <section class="related-products-page">
     <div class="container">
         <div class="related_product_list_grid">

@@ -265,7 +265,7 @@ if (isset($_POST['submit_review'])) {
 
         <?php else: ?>
           <div class="login-prompt-container text-center p-5 border rounded bg-light">
-            <p class="mb-4 text-secondary" style="font-size: 1.1rem;">
+            <p class="mb-4 text-secondary" style="font-size: 1.1rem; color: black !important;">
               Please login or create an account to submit a review.
             </p>
             <div class="d-flex justify-content-center gap-3">
