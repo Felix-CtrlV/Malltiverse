@@ -318,7 +318,7 @@ $page_path = __DIR__ . "/pages/$page.php";
             font-weight: 800;
             font-size: 1.6rem;
             margin-bottom: 12px;
-            color: #1a1a1a;
+            color: var(--primary);
         }
 
         .auth-box p {
@@ -338,7 +338,7 @@ $page_path = __DIR__ . "/pages/$page.php";
 
         /* Login Button (Black/Dark) */
         #authLoginBtn {
-            background: #1a1a1a;
+            background: var(--primary);
             color: white;
             border: none;
             padding: 14px;
@@ -350,14 +350,14 @@ $page_path = __DIR__ . "/pages/$page.php";
         }
 
         #authLoginBtn:hover {
-            background: #000;
+            background: var(--secondary);
             transform: translateY(-2px);
         }
 
         /* Register Button (Outline) */
         #authRegisterBtn {
             background: transparent;
-            color: #1a1a1a;
+            color: var(--secondary);
             border: 2px solid #e0e0e0;
             padding: 14px;
             border-radius: 12px;
@@ -368,8 +368,8 @@ $page_path = __DIR__ . "/pages/$page.php";
         }
 
         #authRegisterBtn:hover {
-            border-color: #1a1a1a;
-            background: #f8f8f8;
+            background: var(--secondary);
+            color: white;
         }
 
         /* Close Button Style */
@@ -395,6 +395,29 @@ $page_path = __DIR__ . "/pages/$page.php";
             background: #e0e0e0;
             color: #000;
         }
+
+        .btn-primary-custom {
+    background-color: var(--primary);
+    border: none;
+    color: #fff;
+    transition: 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--secondary);
+    color: #fff;
+}
+
+.btn-outline {
+    border-color: var(--secondary);
+    color: var(--secondary);
+    transition: 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: var(--secondary);
+    color: #fff;
+}
     </style>
 
     <script>
@@ -442,8 +465,8 @@ $page_path = __DIR__ . "/pages/$page.php";
             cartItemsContainer.innerHTML = `
         <div style="padding:24px; text-align:center">
             <p>Please login or create an account to view your cart.</p>
-            <button onclick="location.href='/Malltiverse/FrontEnd/customerLogin.php'" class="btn btn-dark me-2">Login</button>
-            <button onclick="location.href='/Malltiverse/FrontEnd/customerRegister.php'" class="btn btn-outline-dark">Register</button>
+            <button onclick="location.href='/Malltiverse/FrontEnd/customerLogin.php'" class="btn btn-primary-custom me-2">Login</button>
+            <button onclick="location.href='/Malltiverse/FrontEnd/customerRegister.php'" class="btn btn-outline">Register</button>
         </div>
     `;
         }
@@ -528,7 +551,7 @@ $page_path = __DIR__ . "/pages/$page.php";
                         <span class="fs-5">Total:</span>
                         <span class="fs-4 fw-bold">$${data.total}</span>
                     </div>
-                    <button class="btn btn-dark w-100 py-3 rounded-pill fw-bold" onclick="window.location.href='../utils/accessCheckout.php?supplier_id=${supplierId}'">
+                    <button class="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold" onclick="window.location.href='../utils/accessCheckout.php?supplier_id=${supplierId}'">
                         Checkout
                     </button>`;
                     }

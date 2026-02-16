@@ -65,7 +65,7 @@ if ($isLoggedIn) {
             text-decoration: none !important; border-radius: 50px;
             font-weight: 600; font-size: 13px; transition: 0.3s; border: 1px solid #eee;
         }
-        .shopping-back:hover { background-color: #2c3e50; color: #fff !important; transform: translateX(-3px); }
+        .shopping-back:hover { background-color: var(--primary); }
 
         /* --- Cart Badge Fix --- */
         .cart-badge-count {

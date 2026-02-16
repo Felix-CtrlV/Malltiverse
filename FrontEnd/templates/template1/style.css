@@ -8,7 +8,6 @@
 html,
 body,
 body.home,
-body.contact,
 body.product,
 body.productDetail,
 body.about {
@@ -521,7 +520,7 @@ ABOUT PAGE STYLES
 .contact-page-btn:hover {
 
     background: var(--bg-text);
-    color: var(--secondary);
+    color: var(--primary);
     transform: translateY(-3px);
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
 }
@@ -1149,7 +1148,7 @@ CONTACT PAGE STYLES
 
     flex: 1;
     height: 3px;
-    background: rgba(0, 0, 0, 0.25);
+    background: var(--primary);
     display: block;
 }
 
@@ -1442,7 +1441,7 @@ CONTACT PAGE STYLES
 .review-header .company-name {
     font-size: 3rem;
     font-weight: 700;
-    color: #60708d;
+    color: var(--primary);
     letter-spacing: 1.5px;
     margin-bottom: 14px;
 }
@@ -1450,7 +1449,7 @@ CONTACT PAGE STYLES
 /* Company Description */
 .review-header .company-description {
     font-size: 1rem;
-    color: #666;
+    color: var(--secondary);
     line-height: 1.6;
     max-width: 720px;
     margin: 0 auto 24px;
@@ -1460,7 +1459,7 @@ CONTACT PAGE STYLES
 .review-divider {
     width: 60px;
     height: 2px;
-    background-color: #60708d;
+    background-color: var(--primary);
     margin: 0 auto 20px;
     border-radius: 2px;
 }
@@ -1606,7 +1605,9 @@ CONTACT PAGE STYLES
 
 
 .svg-star:hover {
-
+ background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
     transform: scale(1.1);
 }
 
@@ -1669,7 +1670,7 @@ CONTACT PAGE STYLES
 /* Style for the Submit Review Button */
 .review-form button[type="submit"], 
 .review-form button[onclick="showLoginPopup()"] {
-    background-color: #6c7a91; /* The grayish-blue color from the image */
+    background-color: var(--primary); /* The grayish-blue color from the image */
     color: #ffffff;            /* White text */
     padding: 10px 24px;        /* Vertical and horizontal spacing */
     border: none;              /* Remove default browser borders */
@@ -1684,7 +1685,7 @@ CONTACT PAGE STYLES
 
 /* Hover effect to make it feel interactive */
 .review-form button:hover {
-    background-color: #5a677d; /* Slightly darker shade on hover */
+    background-color: var(--secondary); /* Slightly darker shade on hover */
 }
 
 /* Active/Click effect */
@@ -1705,7 +1706,7 @@ CONTACT PAGE STYLES
 
 /* Dark Login Button */
 .btn-login {
-    background-color: #212529; /* Dark charcoal */
+    background-color: var(--primary); /* Dark charcoal */
     color: #ffffff;
     padding: 10px 30px;
     border-radius: 8px;
@@ -1715,16 +1716,16 @@ CONTACT PAGE STYLES
 }
 
 .btn-login:hover {
-    background-color: #000;
+    background-color: var(--secondary);
     color: #fff;
 }
 
 /* White Register Button with Border */
 .btn-register {
     background-color: #ffffff;
-    color: #212529;
+    color: var(--secondary);
     padding: 10px 30px;
-    border: 1px solid #212529;
+    border: 1px solid var(--secondary);
     border-radius: 8px;
     text-decoration: none;
     font-weight: 500;
@@ -1732,8 +1733,9 @@ CONTACT PAGE STYLES
 }
 
 .btn-register:hover {
-    background-color: #f8f9fa;
-    color: #000;
+    background-color: var(--secondary);
+    color: #fff;
+    
 }
 
 /* Submit Button Style from previous request */
@@ -1745,33 +1747,6 @@ CONTACT PAGE STYLES
     border-radius: 6px;
     cursor: pointer;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 .checkout-btn {
@@ -2658,3 +2633,208 @@ body {
 }
 
 
+/*=======
+CONTACT PAGE
+=========*/
+
+
+
+body.contact {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff !important; /* Matches the light background color */
+}
+
+/* CONTACT SECTION */
+.contact-section {
+    min-height: 100vh; /* Set to full viewport height */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Keeps text on the right */
+    padding: 0 10% 0 0;
+    /* Use 'cover' to ensure it fills the space naturally, anchored to the left */
+    background-size: cover; 
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+
+
+
+.contact-content {
+    width: 500px;
+    text-align: center; /* Matches the centered text in your photo */
+}
+
+/* Heading: HeavyLoads */
+.contact-content h2 {
+    margin: 0;
+    margin-bottom: 20px;
+    font-size: 72px; /* Large and bold as seen in image */
+    font-weight: 800;
+    color: var(--primary); /* The deep red color */
+}
+
+/* Description / Slogan */
+.contact-content p:first-of-type {
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--secondary); /* Muted red slogan */
+    margin-top: -5px;
+    margin-bottom: 30px;
+}
+
+/* Contact Info Text */
+.contact-content p {
+    margin: 5px 0;
+    font-size: 18px;
+    color: var(--secondary);
+}
+
+.contact-content p strong {
+    font-weight: bold;
+    color: var(--primary);
+    margin-right: 5px;
+}
+
+/* Textarea styling to match the white box */
+.contact-content textarea {
+    width: 90%;
+    height: 130px;
+    margin: 25px auto 0 auto;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    background: #ffffff;
+    display: block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03); /* Subtle shadow for depth */
+    font-size: 14px;
+}
+
+/* Button Styling */
+.contact-content button {
+    margin-top: 20px;
+    padding: 12px 45px;
+    border: none;
+    background: var(--primary); /* The specific brownish-red from the image */
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.contact-content button:hover {
+    opacity: 0.9;
+}
+
+/* POPUP */
+.popup {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: var(--secondary);
+    color: #fff;
+}
+
+
+/* ===============================
+   WHY US SECTION - UPDATED VIBE
+================================= */
+.why-us {
+    padding: 100px 80px;
+    background-color: #ffffff; /* Matches top section background */
+    text-align: center;
+}
+
+.why-us h2 {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--primary); /* Same deep red as main title */
+    margin-bottom: 60px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+}
+
+.why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.why-card {
+    padding: 40px 30px;
+    border-radius: 4px; /* Sharp, clean edges like the image */
+    background: #ffffff;
+    border: 1px solid #f2ece4;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.why-card h3 {
+    font-size: 22px;
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.why-card p {
+    font-size: 16px;
+    color: var(--secondary); /* Same muted red/grey as top text */
+    line-height: 1.6;
+}
+
+/* HOVER EFFECTS */
+.why-card:hover {
+    transform: translateY(-10px); /* Lifts the card up */
+    background-color: #ffffff;
+    box-shadow: 0 20px 40px rgba(165, 48, 48, 0.08); /* Soft red shadow */
+    border-color: var(--primary);
+}
+
+/* Subtle line effect on hover */
+.why-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background: var(--primary);
+    transition: width 0.4s ease;
+}
+
+.why-card:hover::after {
+    width: 100%;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+    .contact-section {
+        background-position: -150px center; /* Pulls image left to make room */
+    }
+}
+
+@media (max-width: 800px) {
+    .contact-section {
+        background-image: none !important;
+        justify-content: center;
+        padding: 50px 20px;
+    }
+    .contact-content { width: 100%; }
+}
+
+   .why-grid {
+        grid-template-columns: 1fr;
+    }
+
+/*sidebar login*/
+.yourBag {
+    color: var(--primary) !important;
+}

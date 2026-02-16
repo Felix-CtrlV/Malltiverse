@@ -190,7 +190,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 3.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background: var(--primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -236,7 +236,7 @@ $total_price = 0;
         left: 0;
         width: 100%;
         height: 4px;
-        background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+        background:var(--primary);
     }
 
     .stat-card:hover {
@@ -248,7 +248,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 2.5rem;
         font-weight: 700;
-        color: var(--color-primary);
+        color: var(--primary);
         margin-bottom: 5px;
     }
 
@@ -304,7 +304,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 1.8rem;
         font-weight: 700;
-        color: var(--color-text);
+        color: var(--primary);
         display: flex;
         align-items: center;
         gap: 15px;
@@ -473,7 +473,7 @@ $total_price = 0;
         font-family: var(--font-secondary);
         font-size: 1.8rem;
         font-weight: 700;
-        color: var(--color-primary);
+        color: var(--primary);
         margin-bottom: 5px;
     }
 
@@ -577,7 +577,7 @@ $total_price = 0;
     }
 
     .summary-value.total {
-        color: var(--color-primary);
+        color: var(--primary);
         font-size: 1.8rem;
     }
 
@@ -586,7 +586,7 @@ $total_price = 0;
         display: block;
         width: 100%;
         padding: 20px;
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background:var(--primary);
         color: white;
         border: none;
         border-radius: var(--radius-lg);
@@ -670,7 +670,7 @@ $total_price = 0;
         font-weight: 700;
         color: var(--color-text);
         margin-bottom: 15px;
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background:var(--primary);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -698,7 +698,7 @@ $total_price = 0;
         background: white;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
-        color: var(--color-primary);
+        color: var(--primary);
         text-decoration: none;
         font-weight: 600;
         transition: var(--transition);
@@ -908,7 +908,7 @@ div.swal2-container.swal2-top {
         Cart Items
     </h2>
     
-    <span id="total-qty-header" style="color: var(--color-primary); font-weight: 600;">
+    <span id="total-qty-header" style="color: var(--primary); font-weight: 600;">
         <?= $total_quantity ?> item<?= $total_quantity > 1 ? 's' : '' ?>
     </span>
 </div>
@@ -1044,7 +1044,7 @@ const modernAlert = Swal.mixin({
 const modernToast = Swal.mixin({
     toast: true,
     position: 'top-end',
-    showConfirmButton: false, // Undo အတွက် ဒါကို dynamic ပြောင်းသုံးပါမယ်
+    showConfirmButton: false, 
     timer: 2000,
     timerProgressBar: true,
     background: 'rgba(255, 255, 255, 0.95)',
@@ -1056,7 +1056,7 @@ const modernToast = Swal.mixin({
 const modernStyle = document.createElement('style');
 modernStyle.innerHTML = `
     .modern-swal-popup { border-radius: 24px !important; box-shadow: 0 20px 60px rgba(0,0,0,0.1) !important; font-family: 'Poppins', sans-serif !important; }
-    .modern-confirm-btn { background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; color: white !important; padding: 12px 32px !important; border-radius: 12px !important; margin: 8px !important; cursor: pointer; border: none; font-weight: 600; }
+    .modern-confirm-btn { background: linear-gradient(135deg, var(--primary)) !important; color: white !important; padding: 12px 32px !important; border-radius: 12px !important; margin: 8px !important; cursor: pointer; border: none; font-weight: 600; }
     .modern-cancel-btn { background: white !important; color: #6b7280 !important; border: 1px solid #e5e7eb !important; padding: 12px 32px !important; border-radius: 12px !important; margin: 8px !important; cursor: pointer; font-weight: 600; }
     .qty-display-modern { transition: opacity 0.3s ease, transform 0.2s ease; display: inline-block; }
     .modern-toast { border-radius: 12px !important; border: 1px solid rgba(209,213,219,0.3) !important; backdrop-filter: blur(20px); }
@@ -1333,7 +1333,7 @@ function showEmptyCartAlert() {
         icon: 'warning',
         title: 'Your cart is empty!',
         text: 'Please add some items before checking out.',
-        confirmButtonColor: '#6366f1',
+        confirmButtonColor: 'var(--primary)',
     });
 }
 </script>
@@ -1373,6 +1373,7 @@ function showEmptyCartAlert() {
     display: block;
     width: 100%;
 }
+
 
 @media (max-width: 768px) {
     /* Reset the container to allow proper centering */

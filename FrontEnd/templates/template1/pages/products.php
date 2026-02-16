@@ -26,6 +26,7 @@ mysqli_stmt_close($count_stmt);
 
 <section class="products-page pt-5">
   <div class="container">
+    <h2 class="text-center mb-5 h1" style="color: var(--primary)">Our Products</h2>
     <h2 class="text-center mb-5">Our Products</h2>
     <div class="row justify-content-center mb-4">
       <div class="col-md-6">
