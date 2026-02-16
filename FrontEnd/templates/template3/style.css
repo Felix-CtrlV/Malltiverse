@@ -510,7 +510,7 @@
 .product-card .category_name {
     margin-bottom: 15px;
     font-family: 'Playfair Display', serif;
-    color: #ffffff;
+    color: #0f0e0e;
     font-size: 1.8rem;
     font-weight: 600;
 }
@@ -867,10 +867,10 @@
 /* Rating Summary Section */
 .rating-summary {
     background: #fff;
-    border-radius: 8px;
+    border-radius: 15px;
     padding: 25px;
     margin-bottom: 30px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
 
 .rating-summary h2 {
@@ -883,28 +883,36 @@
 
 .rating-overview {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 50px;
+    justify-content: center;
 }
 
 .average-rating {
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
     text-align: center;
     min-width: 150px;
 }
 
 .rating-number {
-    font-size: 48px;
-    font-weight: 700;
-    color: rgba(70, 135, 209, 0.8);
+    font-size: 56px;
+    font-weight: 800;
+    color: #2c3e50;
     display: block;
     line-height: 1;
     margin-bottom: 10px;
 }
 
+.stars, .star-rating, .star.filled, .star-box i {
+    color: #FFD700 !important;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
 .stars {
     color: rgba(101, 155, 218, 0.8);
-    font-size: 18px;
+    font-size: 22px;
     margin-bottom: 8px;
     letter-spacing: 2px;
 }
@@ -926,21 +934,22 @@
     white-space: nowrap;
     display: inline-block;
     margin-right: 15px;
+    margin-bottom: 10px;
 }
 
 .bar-container {
     flex: 1;
-    height: 8px;
-    background-color: #e9ecef;
-    border-radius: 4px;
+    height: 10px;
+    background-color: #f0f2f5;
+    border-radius: 10px;
     margin: 0 15px;
     overflow: hidden;
 }
 
 .bar {
     height: 100%;
-    background-color: rgba(101, 155, 218, 0.8);
-    border-radius: 4px;
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+    border-radius: 10px;
 }
 
 .rating-count {
@@ -963,9 +972,11 @@
 }
 
 .reviews-container {
-    display: flex;
-    gap: 30px;
-    margin-top: 30px;
+    flex: 1;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -994,12 +1005,11 @@ body {
 }
 
 /* Custom for Feedback */
-
 .comment-header h2 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #1c1e21;
+    color: #000000;
 }
 
 .comment-item {
@@ -1015,7 +1025,7 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 25px;
     margin-right: 12px;
     flex-shrink: 0;
     background-position: center;
@@ -1025,7 +1035,7 @@ body {
 
 .comment-bubble {
     background-color: #f0f2f5;
-    border: 1px solid rgba(65, 139, 224, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 12px 16px;
     border-radius: 18px;
     width: 100%;
@@ -1038,25 +1048,14 @@ body {
     margin-bottom: 4px;
 }
 
-.user-name {
+.user-namee {
+    font-size: 16px;
+    color: #000000;
     font-weight: 700;
-    font-size: 18px;
-    color: #050505;
+    margin: 0;
 }
 
-.star-rating {
-    color: rgba(65, 139, 224, 0.8);
-    font-size: 20px;
-    letter-spacing: 2px;
-}
 
-.star.filled {
-    color: rgba(65, 139, 224, 0.8);
-}
-
-.star {
-    color: #ccc;
-}
 
 .feedback-message {
     font-size: 14.5px;
@@ -1095,11 +1094,15 @@ body {
 .input-group {
     display: flex;
     align-items: center;
-    border: 1px solid #999;
+    border: 1.5px solid #eee;
     border-radius: 15px;
-    margin-bottom: 15px;
-    padding: 5px 10px;
-    background: #fff;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    transition: 0.3s;
+}
+
+.input-group:focus-within {
+    border-color: #2c3e50;
 }
 
 .input-icon {
@@ -1126,68 +1129,60 @@ body {
 }
 
 .textarea-group {
-    background-color: #f0f2f5;
-    border: 1px solid rgba(65, 139, 224, 0.8);
+    background-color: #f8f9fa;
     border-radius: 15px;
-    padding: 15px;
+    padding: 20px;
+    border: 1px solid #eee;
     margin-bottom: 35px;
 }
 
 .textarea-group label {
     font-size: 17px;
     color: #333;
-    ;
+
     font-weight: 600;
 }
 
 .textarea-group textarea {
-    background-color: #f0f2f5;
+    background: transparent;
     width: 100%;
     border: none;
     outline: none;
-    resize: none;
-    margin-top: 5px;
-    font-size: 14px;
+ 
     height: 250px;
-}
-
-:root {
-    --primary-p: rgba(165, 188, 215, 0.8);
-    --primary-dark: rgba(71, 78, 111, 0.6);
-    --primary-bright: rgba(94, 141, 199, 0.8);
+    margin-top: 10px;
+    font-size: 16px;
 }
 
 .submit-btn-gradient {
-    background: linear-gradient(145deg, var(--primary-p), var(--primary-dark));
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    background: #2c3e50;
     color: #fff;
     border: none;
-    padding: 15px;
+    padding: 18px;
     width: 100%;
     border-radius: 50px;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 16px;
     cursor: pointer;
     margin-top: 30px;
     transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(44, 62, 80, 0.2);
 }
 
 .submit-btn-gradient:hover {
-    background: linear-gradient(145deg, var(--primary-bright), var(--primary-dark));
-    transform: translateY(-12px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    background: #1a252f;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(44, 62, 80, 0.3);
 }
 
 @media (max-width: 900px) {
     .main-wrapper {
         flex-direction: column;
-        align-items: center;
-    }
 
-    .comments-section,
-    .review-form-container {
-        width: 100%;
-        max-width: 500px;
+    }
+    .rating-overview {
+        flex-direction: column;
+        gap: 20px;
     }
 }
 
@@ -1207,38 +1202,40 @@ body {
 
 /* Stars Wrapper */
 .stars-wrapper {
-    display: flex;
+    display: flex; 
     gap: 50px;
+    justify-content: center;
+    margin-top: 15px;
 }
 
 /* Star Box Style */
 .star-box {
     width: 50px;
     height: 50px;
-    border: 1px solid rgba(65, 139, 224, 0.8);
-    border-radius: 10px;
+    border: 1.5px solid #eee;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 19px;
     cursor: pointer;
-    transition: 0.3s;
+    background: #fff;
+    transition: all 0.3s ease;
 }
 
-.star-box i {
-    font-size: 22px;
-    color: rgba(65, 139, 224, 0.8);
+.star-box:hover {
+    transform: translateY(-5px) scale(1.1);
+    border-color: #FFD700;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+.star-box:hover i {
+    filter: drop-shadow(0 0 5px #FFD700);
 }
 
 .star-box.gray i {
     color: #ccc;
-}
 
-/* Hover effect */
-.star-box:hover {
-    background-color: #f8f9fa;
-    border-color: #999;
 }
-
 
 /* Product Details Page*/
 .product-wrapper {
@@ -1514,7 +1511,7 @@ body {
 .accent-divider {
     width: 60px;
     height: 3px;
-    background: #00d4ff;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
     margin: 20px auto;
 }
 
@@ -1522,7 +1519,7 @@ body {
     color: #333;
     max-width: 650px;
     margin: 30px auto 0;
-    font-size: 0.95rem;
+    font-size: 1.25rem;
     line-height: 1.6;
 }
 
@@ -1585,7 +1582,7 @@ body {
     align-items: center;
     justify-content: center;
     margin: 0 auto 25px;
-    color: #00bcd4;
+    color: var(--primary);
     font-size: 28px;
     transition: 0.4s;
 }
@@ -1593,11 +1590,11 @@ body {
 .info-box:hover {
     transform: translateY(-15px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    border-color: #00bcd4;
+    color: var(--primary);
 }
 
 .info-box:hover .icon-wrapper {
-    background: #00bcd4;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
     color: #ffffff;
     transform: rotateY(180deg);
 }
@@ -1617,7 +1614,7 @@ body {
 .info-box .link {
     display: inline-block;
     margin-top: 20px;
-    color: #00bcd4;
+    color: var(--primary);
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
@@ -1649,13 +1646,6 @@ body {
     align-items: center;
 }
 
-/* Input Group Styling */
-
-.input-group {
-    position: relative;
-    margin-bottom: 25px;
-}
-
 form input,
 form textarea {
     width: 100%;
@@ -1681,11 +1671,11 @@ form textarea {
     resize: none;
 }
 
-/* Submit Button - Soft Blue Transparent Style */
+
 .submit-btn {
-    background: rgba(129, 212, 250, 0.2);
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
     backdrop-filter: blur(5px);
-    color: #00bcd4;
+    color: #fff;
     padding: 15px 35px;
     border: 1px solid rgba(129, 212, 250, 0.4);
     border-radius: 50px;
@@ -1701,8 +1691,8 @@ form textarea {
 
 /* Button Hover Effect (Fashionable Animation) */
 .submit-btn:hover {
-    background: rgba(129, 212, 250, 0.4);
-    color: #01579b;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    color: #ffffff;
     transform: translateY(-3px);
     letter-spacing: 1px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
@@ -1730,14 +1720,14 @@ form textarea {
 }
 
 .form-info-text h2 .accent {
-    color: #00bcd4;
+    color: var(--primary);
     position: relative;
 }
 
 .query-tag {
     letter-spacing: 3px;
     font-weight: 800;
-    color: #00bcd4;
+    color: var(--primary);
     margin-bottom: 15px;
     display: block;
 }
@@ -1761,7 +1751,7 @@ form textarea {
 }
 
 .social-links i:hover {
-    background: #00bcd4;
+    color: var(--primary);
     color: white;
     transform: rotate(360deg);
 }

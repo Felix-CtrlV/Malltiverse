@@ -131,187 +131,83 @@ if (isset($conn) && isset($supplier)) {
 <style>
     .main-nav {
         font-family: 'Poppins', sans-serif;
+
     }
 
-    .profile-initial-circle {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #0d6efd, #0a58ca);
-        color: white;
-        border-radius: 50%;
+    .glass-dropdown {
+        width: 260px;
+        padding: 5px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px) saturate(180%);
+        -webkit-backdrop-filter: blur(15px) saturate(180%);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: 8px;
+        overflow: hidden;
+    }
+
+    .user-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 14px;
+        padding: 8px !important;
+        margin-bottom: 4px;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-        border: 2px solid #fff;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .nav-profile-img {
-        width: 40px;
-        height: 40px;
-        object-fit: cover;
-        cursor: pointer;
-        border: 2px solid #fff;
-        transition: transform 0.2s ease;
+    .user-name {
+        font-size: 0.9rem;
+        color: #000000;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .user-email {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+    }
+
+    /* Modern Buttons - Slim & Transparent Version */
+    .btn-logout-modern {
+
+        display: flex !important;
+        
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100%;
+        padding: 6px 0;
+        margin: 2px 0 !important;
+        background: rgba(255, 255, 255, 0.1);
+        color: #0b0101;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.2s ease;
+    }
+
+    .btn-logout-modern:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .profile-initial-circle, .nav-profile-img {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.5);
     }
 
     .profile-trigger:hover .profile-initial-circle,
     .profile-trigger:hover .nav-profile-img {
         transform: scale(1.05);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
-    }
-
-    .no-caret::after {
-        display: none !important;
-    }
-
-    .glass-dropdown {
-        width: 280px;
-        border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        background: linear-gradient(145deg, var(--primary-p));
-        backdrop-filter: blur(15px) saturate(180%);
-        -webkit-backdrop-filter: blur(15px) saturate(180%);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        padding: 10px 0;
-        margin-top: 12px;
-    }
-
-    .fade-animation {
-        animation: fadeInUp 0.3s ease-out forwards;
-        transform-origin: top right;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(-10px) scale(0.95);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-
-    .user-card {
-        background: rgba(255, 255, 255, 0.3) !important;
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        padding-top: 30px !important;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .user-name {
-        font-size: 0.9rem;
-        color: #333;
-    }
-
-    .user-email {
-        font-size: 0.85rem;
-        color: #666;
-    }
-
-    .btn-logout-modern {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 90%;
-        padding: 15px 0;
-        background: rgba(255, 255, 255, 0.6);
-        color: #dc3545;
-        border: 1px solid #ffcccc;
-        border-radius: 16px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        position: relative;
-        display: inline-block;
-        padding: 0.5rem;
-        transform: scale(1.1);
-        margin-right: 5px;
-        transition: color 0.3s ease;
-        display: flex !important;
-        margin: 0px auto !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
-
-    .btn-logout-modern:hover {
-        width: 100%;
-        background: rgba(94, 141, 199, 0.8);
-        color: #fff;
-        border-color: rgba(94, 141, 199, 0.8);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        transform: translateY(-2px);
-    }
-
-    .login-pill-btn {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        background: rgba(220, 235, 255, 0.45);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        color: #000000;
-        font-size: 1.2rem;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-
-    .login-pill-btn::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        top: 115%;
-        left: 50%;
-        transform: translateX(-50%) translateY(5px);
-        padding: 4px 10px;
-        background: rgba(0, 0, 0, 0.85);
-        color: #fff;
-        font-size: 0.7rem;
-        font-family: 'Poppins', sans-serif;
-        border-radius: 6px;
-        white-space: nowrap;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: none;
-    }
-
-    .login-pill-btn:hover::after {
-        opacity: 1;
-        visibility: visible;
-        transform: translateX(-50%) translateY(0);
-    }
-
-    .login-pill-btn:hover {
-        background: rgba(190, 215, 255, 0.7);
-        transform: translateY(-2px);
-        border-color: rgba(0, 0, 0, 0.1);
-    }
-
-    .login-pill-btn:active {
-        transform: scale(0.95);
-    }
-
-    .btn-logout-modern i {
-        transition: transform 0.3s ease;
-    }
-
-    .btn-logout-modern:hover i {
-        transform: translateX(5px);
     }
 
     .cart-linkk {
@@ -331,6 +227,29 @@ if (isset($conn) && isset($supplier)) {
         padding: 0.3em 0.5em;
         transform: translate(20%, -20%);
     }
+
+    .login-pill-btn {
+        width: 35px;
+        height: 35px;
+        background: rgba(255, 255, 255, 0.7);
+        color: #0b0101;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fade-animation {
+        animation: fadeInUp 0.2s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .no-caret::after { display: none !important; }
 </style>
 
 <script>

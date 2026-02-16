@@ -235,7 +235,7 @@ $average_rating = $total_ratings > 0 ? $sum_ratings / $total_ratings : 0;
                                 <div class="comment-content" style="width: 100%;">
                                     <div class="comment-bubble">
                                         <div class="bubble-header">
-                                            <span class="user-name"><?= $r['name'] ?></span>
+                                            <span class="user-namee"><?= $r['name'] ?></span>
                                             <div class="star-rating">
                                                 <?php for ($i = 1; $i <= 5; $i++): ?>
                                                     <?= $i <= $r['rating'] ? '<span class="star filled">★</span>' : '<span class="star">☆</span>' ?>
