@@ -305,6 +305,7 @@ if ($customer_id > 0 && $company_id > 0) {
 </div>
 
 <script>
+    
     // Configuration shared for all Glass Alerts
     const glassConfig = {
         customClass: {
