@@ -36,7 +36,7 @@
     }
 
     .info-item {
-        border-left: 2px solid #D4AF37; /* Vertical gold line */
+        border-left: 2px solid var(--primary); 
         padding-left: 20px;
         display: flex;
         align-items: center;
@@ -121,10 +121,10 @@
 
                 <div class="discover-container">
                     <div class="info-item">
-                        <span class="brand-tag">ROLEX</span>
+                        <span class="brand-tag"><?= htmlspecialchars($supplier['company_name']) ?></span>
                     </div>
                     <div class="info-item">
-                        <span class="discover-text">Discover The Value Of Your Precious Hours Yourself</span>
+                        <span class="discover-text"><?= htmlspecialchars($shop_assets['description'] ?? '') ?></span>
                     </div>
                 </div>
             </div>
@@ -132,8 +132,7 @@
             <div class="col-lg-6">
                 <div class="about-image-stack">
                     <div class="experience-badge">
-                        <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;">ROLEX</span><br>
-                        <span style="font-size: 1.5rem;">2026</span>
+                        <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;"></span><?= htmlspecialchars($supplier['company_name']) ?><br>
                     </div>
                     
                     <?php if (!empty($banner1)): ?>
