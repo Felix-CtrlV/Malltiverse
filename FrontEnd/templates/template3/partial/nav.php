@@ -176,7 +176,7 @@ if (isset($conn) && isset($supplier)) {
     .btn-logout-modern {
 
         display: flex !important;
-        
+
         justify-content: center !important;
         align-items: center !important;
         width: 100%;
@@ -261,4 +261,5 @@ if (isset($conn) && isset($supplier)) {
             menu.classList.toggle('show');
         });
     }
+    
 </script>
