@@ -308,7 +308,7 @@ $average_rating = $total_ratings > 0 ? $sum_ratings / $total_ratings : 0;
                 });
             });
 
-
+            
             if (reviewForm) {
                 reviewForm.addEventListener('submit', function(e) {
                     if (!isLoggedIn) {
