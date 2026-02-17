@@ -22,7 +22,7 @@ if (!$email || !$password) {
 }
 
 // 2. Fetch Supplier (added status check)
-$sql = "SELECT supplier_id, password, status FROM suppliers WHERE email = ? LIMIT 1";
+$sql = "SELECT supplier_id, password, status FROM suppliers WHERE email = ? and status != 'inactive' LIMIT 1";
 $stmt = $conn->prepare($sql);
 
 if (!$stmt) {
