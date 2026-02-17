@@ -11,13 +11,16 @@ $message_sent = false;
 $error_message = "";
 
 // Use the existing supplier logic to get the ID
-$company_id = $supplier['supplier_id'] ?? 1;
+$company_id = $supplier['company_id'];
 
 if (isset($_POST['submit'])) {
     $message = htmlspecialchars(trim($_POST['message']));
-    $customer_id = 1; // Replace with $_SESSION['user_id'] if available
+    $customer_id = $_SESSION['customer_id'] ?? 0; // Replace with $_SESSION['user_id'] if available
 
-    if (!empty($message) && $company_id > 0) {
+    // ✅ LOGIN CHECK: Block message if user is not logged in
+    if (empty($customer_id)) {
+        $error_message = "You must be logged in to send a message.";
+    } elseif (!empty($message) && $company_id > 0) {
         // $conn comes from the include in index.php
         $success = sendContactMessage($conn, $customer_id, $company_id, $message);
         

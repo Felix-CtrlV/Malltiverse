@@ -478,7 +478,7 @@
 }
 
 .product-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: linear-gradient(145deg, var(--primary), var(--primary-dark));
     border-radius: 25px;
     padding: 30px;
     text-align: left;
@@ -494,7 +494,7 @@
 }
 
 .product-card:hover {
-    background: linear-gradient(145deg, rgba(165, 188, 215, 0.8), rgba(71, 78, 111, 0.6));
+    background: linear-gradient(145deg, var(--primary), var(--primary-dark));
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
@@ -531,7 +531,7 @@
     width: 90%;
     padding: 12px 0;
     margin: 15px auto;
-    background: linear-gradient(145deg, var(--primary-p), var(--primary-dark));
+    background: linear-gradient(145deg, var(--primary), var(--primary-dark));
     color: #333333;
     text-decoration: none;
     font-family: 'Inter', sans-serif;
@@ -548,7 +548,7 @@
 }
 
 .btn-view:hover {
-    background: linear-gradient(145deg, var(--primary-dark), var(--primary-p));
+    background: linear-gradient(145deg, var(--primary-dark), var(--primary));
     transform: translateY(-2px);
 }
 
@@ -614,7 +614,7 @@
 }
 
 .card-product:hover {
-    background: linear-gradient(145deg, var(--primary-p), var(--primary-dark));
+    background: linear-gradient(145deg, var(--primary), var(--primary-dark));
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -903,15 +903,22 @@
     margin-bottom: 10px;
 }
 
-.stars, .star-rating, .star.filled, .star-box i {
-    color: #FFD700 !important;
+.stars,
+.star-rating,
+.star.filled,
+.star-box i {
+    /* color: #FFD700 !important; */
     font-size: 20px;
     letter-spacing: 1.5px;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.star-rating {
+    color: #FFD700 !important;
+}
+
 .stars {
-    color: rgba(101, 155, 218, 0.8);
+    color: #FFD700 !important;
     font-size: 22px;
     margin-bottom: 8px;
     letter-spacing: 2px;
@@ -1148,7 +1155,7 @@ body {
     width: 100%;
     border: none;
     outline: none;
- 
+
     height: 250px;
     margin-top: 10px;
     font-size: 16px;
@@ -1180,6 +1187,7 @@ body {
         flex-direction: column;
 
     }
+
     .rating-overview {
         flex-direction: column;
         gap: 20px;
@@ -1202,7 +1210,7 @@ body {
 
 /* Stars Wrapper */
 .stars-wrapper {
-    display: flex; 
+    display: flex;
     gap: 50px;
     justify-content: center;
     margin-top: 15px;
@@ -1228,8 +1236,13 @@ body {
     border-color: #FFD700;
     box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
 }
+
 .star-box:hover i {
     filter: drop-shadow(0 0 5px #FFD700);
+}
+
+.star-box {
+    color: #ffd700;
 }
 
 .star-box.gray i {
@@ -1419,7 +1432,7 @@ body {
 }
 
 .add-cart {
-    background: linear-gradient(145deg, var(--primary-bright), var(--primary-dark));
+    background: linear-gradient(145deg, var(--primary-light), var(--primary-dark));
     color: #fff;
     padding: 12px 30px;
     border: none;
@@ -1810,6 +1823,10 @@ form textarea {
         height: auto;
     }
 
+    .light-text{
+        text-align: center;
+    }
+
     /* Force both sides to take full width */
     .product-left,
     .product-right {
@@ -1879,6 +1896,10 @@ form textarea {
     .price .current {
         font-size: 28px;
     }
+
+    .light-text{
+        text-align: left;
+    }
 }
 
 @media (max-width: 991px) {
@@ -1898,7 +1919,7 @@ form textarea {
         left: 50%;
         width: 85%;
         max-width: 350px;
-        background: linear-gradient(145deg, var(--primary-bright), var(--primary-dark));
+        background: linear-gradient(145deg, var(--primary-light), var(--primary-dark));
         backdrop-filter: blur(20px);
         padding: 20px;
         border-radius: 20px;

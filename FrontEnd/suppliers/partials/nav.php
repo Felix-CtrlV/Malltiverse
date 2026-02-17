@@ -351,7 +351,7 @@ WHERE o.company_id = ? AND o.order_status = 'confirm'
 GROUP BY pv.product_id, oi.variant_id) AS variant_sales 
 JOIN products p ON p.product_id = variant_sales.product_id 
 GROUP BY p.product_id, p.product_name 
-ORDER BY best_variant_sold DESC LIMIT 5;");
+ORDER BY best_variant_sold DESC LIMIT 10;");
 
 $bestsellers = [];
 if ($bestsellerstmt) {

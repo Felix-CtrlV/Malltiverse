@@ -166,11 +166,12 @@ $reviews_res = $conn->query($sql_reviews);
     <?php if ($reviews_res && $reviews_res->num_rows > 0): ?>
         <?php while ($row = $reviews_res->fetch_assoc()): 
            
-            $initial = strtoupper(substr($row['name'], 0, 1));
         ?>
             <article class="review-card reveal-on-scroll">
                 <div class="reviewer-header">
-                    <div class="reviewer-initial"><?= $initial ?></div>
+                    <div class="reviewer-initial">
+                        <img style="width: 40px; height: 40px; border-radius: 50%;" src="../assets/customer_profiles/<?= htmlspecialchars($row['image']) ?>" alt="">
+                    </div>
 
                     <div class="reviewer-info">
                         <h4><?= htmlspecialchars($row['name']) ?></h4>

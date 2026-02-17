@@ -8,8 +8,7 @@
                 <span class="highlight-white">Passion</span>
             </h1>
             <p class="reveal-up delay-1">
-                WE SELL BEAUTIFUL DECOR ITEMS, FASHION PIECES AND MORE. <br>
-                Bringing art and comfort into your living space.
+                <?= htmlspecialchars($shop_assets['about'] ?? '') ?>
             </p>
             <div class="about-stats reveal-up delay-2">
                 <div class="stat-card">

@@ -10,6 +10,8 @@ const btnEnter = document.getElementById('btnEnter');
 const searchContainer = document.getElementById('searchContainer');
 const searchBar = document.getElementById('searchBar');
 const floorSelector = document.getElementById('floorSelector');
+const hudHeroTitleEl = document.querySelector('#hudLeft .overlayTitle');
+const hudHeroKickerEl = document.querySelector('#hudLeft .overlayKicker');
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -68,6 +70,11 @@ loadingManager.onLoad = () => {
     }
   }, 500);
 };
+
+function hideHudHero() {
+  if (hudHeroTitleEl) hudHeroTitleEl.style.display = 'none';
+  if (hudHeroKickerEl) hudHeroKickerEl.style.display = 'none';
+}
 
 // 2. Pass the manager to the loader
 const textureLoader = new THREE.TextureLoader(loadingManager);
@@ -425,12 +432,24 @@ function createShopCard({ supplier, index, z }) {
   group.position.set(0, 0, z);
 
   const side = index % 2 === 0 ? -1 : 1;
-  const x = side * 2.25;
-  const y = 2.15;
+  const isMobile = window.innerWidth <= 768;
+  const x = side * (isMobile ? 1.35 : 2.25);
+  const y = isMobile ? 2.0 : 2.15;
   const rotY = side * 0.12;
 
+  const cardScale = isMobile ? 0.80 : 1.0;
+
+  const bgW = isMobile ? 2.45 : 3.9;
+  const bgH = isMobile ? 3.75 : 2.45;
+  const imgW = isMobile ? 2.25 : 3.65;
+  const imgH = isMobile ? 2.95 : 2.05;
+  const labelW = isMobile ? 2.35 : 3.8;
+  const labelH = isMobile ? 0.7 : 0.95;
+  const hitW = isMobile ? 2.7 : 4.2;
+  const hitH = isMobile ? 4.45 : 3.75;
+
   const bgMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.0, roughness: 0.95 });
-  const bg = new THREE.Mesh(new THREE.PlaneGeometry(3.9, 2.45), bgMat);
+  const bg = new THREE.Mesh(new THREE.PlaneGeometry(bgW * cardScale, bgH * cardScale), bgMat);
   bg.position.set(x, y, 0);
   bg.rotation.y = rotY;
   bg.renderOrder = 2;
@@ -439,36 +458,34 @@ function createShopCard({ supplier, index, z }) {
   const imgMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.0, roughness: 0.9 });
   imgMat.transparent = true;
   imgMat.depthWrite = false;
-  const img = new THREE.Mesh(new THREE.PlaneGeometry(3.65, 2.05), imgMat);
-  img.position.set(x, y + 0.08, 0.01);
+  const img = new THREE.Mesh(new THREE.PlaneGeometry(imgW * cardScale, imgH * cardScale), imgMat);
+  img.position.set(x, y + (isMobile ? 0.22 : 0.08), 0.01);
   img.rotation.y = rotY;
   img.renderOrder = 3;
   group.add(img);
 
   const title = String(supplier.company_name || `Shop ${supplier.supplier_id}`);
-  const category = getShopCategoryLabel(supplier);
   const labelTex = makeTextTexture(title, {
     width: 1024,
     height: 256,
     bg: 'rgba(255,255,255,0.0)',
     color: '#0b1020',
     font: '700 72px Inter, Arial',
-    subText: category,
-    subFont: '500 28px Inter, Arial'
+    subText: null
   });
   const labelMat = new THREE.MeshStandardMaterial({ map: labelTex, transparent: true, metalness: 0.0, roughness: 0.95 });
   labelMat.depthWrite = false;
-  const label = new THREE.Mesh(new THREE.PlaneGeometry(3.8, 0.95), labelMat);
-  label.position.set(x, y - 1.75, 0.01);
+  const label = new THREE.Mesh(new THREE.PlaneGeometry(labelW * cardScale, labelH * cardScale), labelMat);
+  label.position.set(x, y - (isMobile ? 1.75 : (1.75 * cardScale)), 0.01);
   label.rotation.y = rotY;
   label.renderOrder = 4;
   group.add(label);
 
   const hit = new THREE.Mesh(
-    new THREE.PlaneGeometry(4.2, 3.75),
+    new THREE.PlaneGeometry(hitW * cardScale, hitH * cardScale),
     new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0 })
   );
-  hit.position.set(x, y - 0.25, 0.02);
+  hit.position.set(x, y - (isMobile ? 0.25 : (0.25 * cardScale)), 0.02);
   hit.rotation.y = rotY;
   hit.userData = { kind: 'shopCard', shopId: supplier.supplier_id };
   hit.material.depthWrite = false;
@@ -482,6 +499,27 @@ function createShopCard({ supplier, index, z }) {
     const tex = bannerTex || logoTex;
     if (tex) {
       tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      // "Cover" behavior (center-crop) so images don't shrink to fit.
+      if (isMobile && tex.image && tex.image.width && tex.image.height) {
+        const planeAspect = (imgW * cardScale) / (imgH * cardScale);
+        const imageAspect = tex.image.width / tex.image.height;
+
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+
+        if (imageAspect > planeAspect) {
+          // Image is wider than plane -> crop left/right
+          const scaleX = planeAspect / imageAspect;
+          tex.repeat.set(scaleX, 1);
+          tex.offset.set((1 - scaleX) / 2, 0);
+        } else {
+          // Image is taller than plane -> crop top/bottom
+          const scaleY = imageAspect / planeAspect;
+          tex.repeat.set(1, scaleY);
+          tex.offset.set(0, (1 - scaleY) / 2);
+        }
+        tex.needsUpdate = true;
+      }
       img.material.map = tex;
       img.material.needsUpdate = true;
     } else {
@@ -491,8 +529,7 @@ function createShopCard({ supplier, index, z }) {
         bg: 'rgba(255,255,255,1.0)',
         color: '#0b1020',
         font: '700 84px Inter, Arial',
-        subText: category,
-        subFont: '500 30px Inter, Arial'
+        subText: null
       });
       img.material.map = fallback;
       img.material.needsUpdate = true;
@@ -672,8 +709,11 @@ function createFloorWithMaterial(width, depth, material) {
 
 function createOutside() {
   clearSceneGeometry();
-  setHud('Mall Exterior', 'Click the Entrance Doors to Enter');
+  // setHud('Mall Exterior', 'Click the Entrance Doors to Enter');
   btnBack.hidden = true;
+
+  // Remove outside hints (keep HUD minimal on exterior)
+  setHud('', '');
 
   // Hide search UI
   if (searchContainer) {
@@ -1043,11 +1083,13 @@ function createHallway() {
   keyLight.color = new THREE.Color(0xfff3ea);
   fillLight.color = new THREE.Color(0xe7efff);
 
+  const isMobile = window.innerWidth <= 768;
   const shopsThisFloor = slice.length;
   const cards = Math.max(1, shopsThisFloor);
-  const cardSpacing = 11;
+  const cardSpacing = isMobile ? 8.5 : 11;
   const startZ = 2;
-  const firstCardZ = -6;
+  // On mobile, keep the first card a bit farther so it's fully visible at entry.
+  const firstCardZ = isMobile ? -7.0 : -6;
   const lastCardZ = firstCardZ - (cards - 1) * cardSpacing;
   const endZ = lastCardZ - 18;
   const depth = Math.abs(endZ - startZ) + 10;
@@ -1753,8 +1795,27 @@ onResize();
   // 3. Create Scene
   // Note: createOutside() generates textures procedurally (synchronous).
   // If no external images are loaded, LoadingManager won't fire automatically.
-  createOutside();
+  const params = new URLSearchParams(window.location.search);
+  const initialState = (params.get('state') || '').toLowerCase();
+  const initialFloorRaw = params.get('floor');
+  const initialFloor = initialFloorRaw != null ? parseInt(initialFloorRaw, 10) : null;
+
+  if (initialState === 'hallway') {
+    state.mode = 'hallway';
+    if (Number.isFinite(initialFloor)) state.floorIndex = initialFloor;
+    createHallway();
+  } else {
+    state.mode = 'outside';
+    createOutside();
+  }
+
   setupSearchAndFloorSelector();
+
+  // If you deep-link to hallway, hide the outside overlay and ensure back button is visible.
+  if (state.mode === 'hallway') {
+    if (overlayEl) overlayEl.hidden = true;
+    if (btnBack) btnBack.hidden = false;
+  }
 
   // 4. Start Animation Loop
   animate();
@@ -1831,6 +1892,7 @@ window.addEventListener(
     if (state.transitioning) return;
     if (state.mode !== 'hallway') return;
 
+    // Natural direction: wheel down moves forward.
     const delta = Math.max(-1, Math.min(1, e.deltaY / 100));
     state.hallwayProgress += delta * 2.6;
     state.hallwayProgress = Math.max(0, Math.min(state.hallwayMaxProgress, state.hallwayProgress));
@@ -1857,10 +1919,72 @@ btnBack.addEventListener('click', async () => {
   }
 });
 
+// --- MOBILE / RESPONSIVE HALLWAY NAVIGATION ---
+// On mobile there is no wheel. Implement drag-to-move when in hallway.
+let touchDrag = {
+  active: false,
+  startY: 0,
+  startProgress: 0
+};
+
+function setHallwayProgress(next) {
+  state.hallwayProgress = Math.max(0, Math.min(state.hallwayMaxProgress, next));
+  const z = 6 - state.hallwayProgress;
+  state.cameraTargetPos.z = z;
+  state.cameraTargetLookAt.set(0, 1.6, z - 10);
+}
+
+canvas.addEventListener('pointerdown', (e) => {
+  if (state.transitioning) return;
+  if (state.mode !== 'hallway') return;
+  if (e.pointerType !== 'touch') return;
+
+  touchDrag.active = true;
+  touchDrag.startY = e.clientY;
+  touchDrag.startProgress = state.hallwayProgress;
+  try {
+    canvas.setPointerCapture(e.pointerId);
+  } catch {
+    // ignore
+  }
+}, { passive: true });
+
+canvas.addEventListener('pointermove', (e) => {
+  if (!touchDrag.active) return;
+  if (state.transitioning) return;
+  if (state.mode !== 'hallway') return;
+
+  const dy = e.clientY - touchDrag.startY;
+  // Drag down should move forward (increase progress).
+  const sensitivity = 0.03;
+  setHallwayProgress(touchDrag.startProgress + dy * sensitivity);
+}, { passive: true });
+
+function endTouchDrag() {
+  touchDrag.active = false;
+}
+
+canvas.addEventListener('pointerup', endTouchDrag, { passive: true });
+canvas.addEventListener('pointercancel', endTouchDrag, { passive: true });
+canvas.addEventListener('lostpointercapture', endTouchDrag, { passive: true });
+
+// Keyboard fallback
+window.addEventListener('keydown', (e) => {
+  if (state.transitioning) return;
+  if (state.mode !== 'hallway') return;
+  if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+    setHallwayProgress(state.hallwayProgress + 2.6);
+  }
+  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+    setHallwayProgress(state.hallwayProgress - 2.6);
+  }
+});
+
 if (btnEnter) {
   btnEnter.addEventListener('click', async () => {
     if (state.transitioning) return;
     if (overlayEl) overlayEl.hidden = true;
+    hideHudHero();
     
     // Also hide mobile button if visible
     if (btnEnterMobile) {
@@ -1875,6 +1999,41 @@ if (btnEnter) {
     await transitionTo('hallway');
   });
 }
+
+if (btnEnterMobile) {
+  btnEnterMobile.addEventListener('click', async () => {
+    if (state.transitioning) return;
+    if (overlayEl) overlayEl.hidden = true;
+    btnEnterMobile.style.opacity = '0';
+    btnEnterMobile.style.pointerEvents = 'none';
+
+    hideHudHero();
+
+    state.cameraTargetPos.set(0, 1.65, 1.6);
+    state.cameraTargetLookAt.set(0, 2.2, -2.2);
+    setHud('Outside', 'Entering...');
+    await wait(450);
+    await transitionTo('hallway');
+  });
+}
+
+function updateMobileEnterVisibility() {
+  if (!btnEnterMobile) return;
+  const isMobile = window.innerWidth <= 768;
+  const overlayVisible = overlayEl && !overlayEl.hidden;
+
+  if (isMobile && state.mode === 'outside' && overlayVisible) {
+    btnEnterMobile.style.display = 'block';
+    btnEnterMobile.style.opacity = '1';
+    btnEnterMobile.style.pointerEvents = 'auto';
+  } else {
+    btnEnterMobile.style.display = 'none';
+    btnEnterMobile.style.pointerEvents = 'none';
+  }
+}
+
+updateMobileEnterVisibility();
+window.addEventListener('resize', updateMobileEnterVisibility);
 
 function animate() {
   requestAnimationFrame(animate);
@@ -2125,97 +2284,3 @@ function renderLoginButton(container) {
     </a>
   `;
 }
-
-
-// Call this when the script loads
-updateAuthUI();
-
-onResize();
-await loadSuppliers();
-createOutside();
-setupSearchAndFloorSelector(); // Initialize search and floor selector
-animate();
-
-// --- Mobile Button Functionality ---
-
-// Get mobile button
-const btnEnterMobile = document.getElementById('btnEnterMobile');
-
-// Mobile enter function (same as desktop but hides mobile button)
-async function enterMallMobile() {
-  if (state.transitioning) return;
-  if (overlayEl) overlayEl.hidden = true;
-  
-  // Hide mobile button immediately
-  if (btnEnterMobile) {
-    btnEnterMobile.style.opacity = '0';
-    btnEnterMobile.style.transform = 'translateX(-50%) scale(0.9)';
-    btnEnterMobile.style.pointerEvents = 'none';
-  }
-  
-  state.cameraTargetPos.set(0, 1.65, 1.6);
-  state.cameraTargetLookAt.set(0, 2.2, -2.2);
-  setHud('Outside', 'Entering...');
-  await wait(450);
-  await transitionTo('hallway');
-}
-
-// Add event listener for mobile button
-if (btnEnterMobile) {
-  btnEnterMobile.addEventListener('click', enterMallMobile);
-}
-
-// Show/hide mobile button based on screen size
-function updateMobileButtonVisibility() {
-  if (!btnEnterMobile) return;
-  
-  const isMobile = window.innerWidth <= 768;
-  
-  if (isMobile && state.mode === 'outside' && !overlayEl.hidden) {
-    btnEnterMobile.style.display = 'block';
-    // Fade in animation
-    setTimeout(() => {
-      btnEnterMobile.style.opacity = '1';
-      btnEnterMobile.style.transform = 'translateX(-50%)';
-    }, 100);
-  } else {
-    btnEnterMobile.style.display = 'none';
-  }
-}
-
-// Initial check
-updateMobileButtonVisibility();
-
-// Update on resize
-window.addEventListener('resize', updateMobileButtonVisibility);
-
-// Also update when transitioning back to outside
-// We need to modify the transitionTo function to handle this
-const originalTransitionTo = transitionTo;
-transitionTo = async function(nextMode, opts = {}) {
-  if (state.transitioning) return;
-  state.transitioning = true;
-
-  setFade(true);
-  await wait(620);
-
-  state.mode = nextMode;
-  if (nextMode === 'outside') {
-    createOutside();
-    // Show mobile button if on mobile
-    setTimeout(updateMobileButtonVisibility, 100);
-  }
-  if (nextMode === 'hallway') {
-    if (typeof opts.floorIndex === 'number') state.floorIndex = opts.floorIndex;
-    createHallway();
-    // Hide mobile button
-    if (btnEnterMobile) btnEnterMobile.style.display = 'none';
-  }
-  if (nextMode === 'shop') createShopInterior(opts.shopId);
-
-  await wait(60);
-  setFade(false);
-  await wait(650);
-
-  state.transitioning = false;
-};

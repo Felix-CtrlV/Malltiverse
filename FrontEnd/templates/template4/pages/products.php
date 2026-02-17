@@ -42,8 +42,8 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
 
     $sql = "SELECT p.*, c.category_name FROM products p 
               LEFT JOIN category c ON p.category_id = c.category_id 
-              WHERE p.supplier_id = ? AND p.status = 'available'";
-    $params = [$supplier_id];
+              WHERE p.company_id = ? AND p.status = 'available'";
+    $params = [$company_id];
     $types = "i";
 
     if ($category_filter) {

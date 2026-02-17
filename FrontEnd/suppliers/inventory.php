@@ -253,7 +253,6 @@ ob_end_flush();
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -263,14 +262,20 @@ ob_end_flush();
         /* --- CORE STYLES & OVERRIDES --- */
         :root {
             --primary-grad: color-mix(in srgb, var(--primary) 100%, #FFFFFF 10%);
-            --bg: #f8f9fa;
-            --surface: #ffffff;
-            --border: #e2e8f0;
-            --text: #1e293b;
-            --text-light: #64748b;
+            --bg: var(--bg-color);
+            --surface: var(--surface, #ffffff);
+            --surface-secondary: var(--surface-secondary, #f8fafc);
+            --surface-hover: var(--surface-hover, #f1f5f9);
+            --border: var(--border-color, #e2e8f0);
+            --text: var(--text-main, #1e293b);
+            --text-light: var(--text-muted, #64748b);
             --danger: #ef4444;
             --success: #22c55e;
             --modal-radius: 12px;
+        }
+
+        body.dark-mode {
+            --primary-grad: color-mix(in srgb, var(--primary) 100%, #000000 10%);
         }
 
         body {
@@ -311,7 +316,7 @@ ob_end_flush();
 
         .stat-title {
             font-size: 0.85rem;
-            color: #64748b;
+            color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 600;
@@ -373,11 +378,11 @@ ob_end_flush();
         }
 
         .custom-table th {
-            background: #f8fafc;
+            background: var(--surface-secondary);
             text-align: left;
             padding: 16px 24px;
             font-weight: 600;
-            color: #475569;
+            color: var(--text-light);
             border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
             white-space: nowrap;
@@ -387,11 +392,11 @@ ob_end_flush();
             padding: 16px 24px;
             border-bottom: 1px solid var(--border);
             vertical-align: middle;
-            color: #334155;
+            color: var(--text);
         }
 
         .custom-table tr:hover {
-            background: #f8fafc;
+            background: var(--surface-hover);
             cursor: pointer;
         }
 
@@ -407,7 +412,7 @@ ob_end_flush();
             border-radius: 8px;
             object-fit: cover;
             border: 1px solid var(--border);
-            background: #eee;
+            background: var(--surface-secondary);
             flex-shrink: 0;
         }
 
@@ -449,7 +454,7 @@ ob_end_flush();
         }
 
         .modal-box {
-            background: white;
+            background: var(--surface);
             width: 1000px;
             max-width: 100%;
             height: 85vh;
@@ -468,7 +473,7 @@ ob_end_flush();
 
         .modal-sidebar {
             width: 300px;
-            background: #f8fafc;
+            background: var(--surface-secondary);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
@@ -514,7 +519,7 @@ ob_end_flush();
 
         .modal-header-edit {
             padding: 24px 32px;
-            background: #fff;
+            background: var(--surface);
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
@@ -523,7 +528,7 @@ ob_end_flush();
         }
 
         .modal-header-edit .modal-title {
-            color: #0f172a;
+            color: var(--text);
             margin: 0;
             font-size: 1.25rem;
             font-weight: 700;
@@ -545,7 +550,7 @@ ob_end_flush();
         .modal-footer {
             padding: 20px 32px;
             border-top: 1px solid var(--border);
-            background: #fff;
+            background: var(--surface);
             display: flex;
             justify-content: flex-end;
             gap: 12px;
@@ -557,7 +562,7 @@ ob_end_flush();
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #64748b;
+            color: var(--text-light);
             font-weight: 700;
             margin-bottom: 16px;
             margin-top: 10px;
@@ -578,19 +583,19 @@ ob_end_flush();
             margin-bottom: 8px;
             font-weight: 500;
             font-size: 0.9rem;
-            color: #334155;
+            color: var(--text);
         }
 
         .input-std {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             border-radius: 8px;
             font-size: 0.95rem;
-            color: #0f172a;
+            color: var(--text);
             transition: all 0.2s ease;
             box-sizing: border-box;
-            background: #fff;
+            background: var(--surface);
         }
 
         .input-std:focus {
@@ -605,7 +610,7 @@ ob_end_flush();
             height: auto;
             min-height: 250px;
             aspect-ratio: 1;
-            border: 2px dashed #cbd5e1;
+            border: 2px dashed var(--border);
             border-radius: 12px;
             display: flex;
             flex-direction: column;
@@ -614,12 +619,12 @@ ob_end_flush();
             position: relative;
             cursor: pointer;
             transition: 0.2s;
-            background: white;
+            background: var(--surface);
         }
 
         .image-drop-zone:hover {
             border-color: var(--primary);
-            background: #f8fafc;
+            background: var(--surface-hover);
         }
 
         .preview-img {
@@ -632,7 +637,7 @@ ob_end_flush();
             display: none;
             padding: 10px;
             box-sizing: border-box;
-            background: white;
+            background: var(--surface);
         }
 
         .file-input {
@@ -657,12 +662,12 @@ ob_end_flush();
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            background: white;
+            background: var(--surface);
             cursor: pointer;
             font-weight: 600;
-            color: #475569;
+            color: var(--text-light);
             transition: 0.2s;
             font-size: 0.85rem;
         }
@@ -677,9 +682,9 @@ ob_end_flush();
         .qty-stepper {
             display: flex;
             align-items: center;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            background: white;
+            background: var(--surface);
             overflow: hidden;
             width: 120px;
         }
@@ -688,8 +693,8 @@ ob_end_flush();
             width: 36px;
             height: 38px;
             border: none;
-            background: #f1f5f9;
-            color: #475569;
+            background: var(--surface-secondary);
+            color: var(--text-light);
             font-size: 1.1rem;
             cursor: pointer;
             display: flex;
@@ -698,7 +703,7 @@ ob_end_flush();
         }
 
         .qty-btn:hover {
-            background: #e2e8f0;
+            background: var(--surface-hover);
         }
 
         .qty-input-real {
@@ -707,7 +712,7 @@ ob_end_flush();
             text-align: center;
             font-weight: 600;
             font-size: 1rem;
-            color: #0f172a;
+            color: var(--text);
             height: 38px;
             width: 40px;
             outline: none;
@@ -724,8 +729,8 @@ ob_end_flush();
             width: 100%;
             height: 100%;
             border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            background: white;
+            border: 1px solid var(--border);
+            background: var(--surface);
             display: flex;
             align-items: center;
             padding: 0 10px;
@@ -751,8 +756,8 @@ ob_end_flush();
 
         /* Variant Grid for Add Modal */
         .variant-creator-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--surface-secondary);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 20px;
         }
@@ -772,8 +777,8 @@ ob_end_flush();
         }
 
         .variant-card-item {
-            background: white;
-            border: 1px solid #e2e8f0;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 8px;
             padding: 10px;
             display: flex;
@@ -818,22 +823,22 @@ ob_end_flush();
 
         .var-table th {
             text-align: left;
-            color: #64748b;
+            color: var(--text-light);
             font-weight: 600;
             padding: 10px 12px;
-            border-bottom: 2px solid #f1f5f9;
+            border-bottom: 2px solid var(--surface-secondary);
         }
 
         .var-table td {
             padding: 12px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
+            border-bottom: 1px solid var(--surface-secondary);
+            color: var(--text);
         }
 
         .qty-box {
             width: 70px;
             padding: 8px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             border-radius: 6px;
             text-align: center;
         }
@@ -843,7 +848,7 @@ ob_end_flush();
             grid-template-columns: auto 1fr 100px auto;
             gap: 12px;
             align-items: center;
-            background: #f8fafc;
+            background: var(--surface-secondary);
             padding: 12px;
             border-radius: 8px;
             border: 1px solid var(--border);
@@ -851,9 +856,9 @@ ob_end_flush();
 
         /* Standard Buttons */
         .btn-secondary {
-            background: #fff;
-            border: 1px solid #cbd5e1;
-            color: #475569;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-light);
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
@@ -862,8 +867,8 @@ ob_end_flush();
         }
 
         .btn-secondary:hover {
-            background: #f1f5f9;
-            color: #0f172a;
+            background: var(--surface-hover);
+            color: var(--text);
         }
 
         .btn-create {
@@ -879,7 +884,7 @@ ob_end_flush();
         }
 
         .btn-create:hover {
-            background: #1d4ed8;
+            background: color-mix(in srgb, var(--primary), white 25%);
         }
 
         /* Toggle */
@@ -904,7 +909,7 @@ ob_end_flush();
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #cbd5e1;
+            background-color: var(--border);
             transition: .4s;
             border-radius: 34px;
         }
@@ -922,7 +927,7 @@ ob_end_flush();
         }
 
         input:checked+.slider {
-            background-color: #22c55e;
+            background-color: var(--primary);
         }
 
         input:checked+.slider:before {
@@ -960,9 +965,9 @@ ob_end_flush();
             border-radius: 50px;
             font-size: 0.9rem;
             cursor: pointer;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             transition: all 0.2s;
-            color: #64748b;
+            color: var(--text-light);
             font-weight: 500;
         }
 
@@ -981,7 +986,7 @@ ob_end_flush();
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #64748b;
+            color: var(--text-light);
         }
 
         .new-cat-box {
@@ -1118,7 +1123,6 @@ ob_end_flush();
         }
 
         /* Container for the table to prevent layout overflow */
-        <style>
         /* ... (Keep your root variables and basic body styles) ... */
 
         /* --- MINIMAL TABLE STYLES --- */

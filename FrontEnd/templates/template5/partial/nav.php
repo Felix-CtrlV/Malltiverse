@@ -129,7 +129,7 @@ if ($isLoggedIn) {
             </div>
         </a>
 
-        <a href="../customer/index.html" class="shopping-back ms-3 d-none d-md-flex">
+        <a href="../customer?state=hallway" class="shopping-back ms-3 d-none d-md-flex">
             <i class="fas fa-arrow-left me-2"></i> Back to the Mall
         </a>
 

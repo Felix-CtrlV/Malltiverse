@@ -12,7 +12,7 @@ if (!isset($supplier_id)) {
 $customer_id = $_SESSION['customer_id'] ?? null;
 
 /* ===============================
-   FETCH SUPPLIER + COMPANY INFO
+    FETCH SUPPLIER + COMPANY + BANNER
 ================================= */
 $stmt = mysqli_prepare($conn, "
     SELECT 
@@ -21,18 +21,20 @@ $stmt = mysqli_prepare($conn, "
         c.company_name,
         c.description,
         c.address,
-        c.phone
+        c.phone,
+        sa.banner
     FROM suppliers s
     LEFT JOIN companies c ON s.supplier_id = c.supplier_id
+    LEFT JOIN shop_assets sa ON c.company_id = sa.company_id
     WHERE s.supplier_id = ?
 ");
-
 
 mysqli_stmt_bind_param($stmt, "i", $supplier_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $data = mysqli_fetch_assoc($result);
 $company_id = (int)($data['company_id'] ?? 0);
+$db_banner = $data['banner'] ?? ''; // This is the filename from your database
 
 mysqli_stmt_close($stmt);
 
@@ -60,6 +62,7 @@ $base_fs_path  = $_SERVER['DOCUMENT_ROOT'] . $base_url_path;
 
 $allowed_ext = ['jpg','png','webp'];
 
+// 1. Try to find the specific contact image first
 foreach ($allowed_ext as $ext) {
     $file = "{$supplier_id}_contact.$ext";
     if (file_exists($base_fs_path . $file)) {
@@ -67,8 +70,15 @@ foreach ($allowed_ext as $ext) {
         break;
     }
 }
-?>
 
+// 2. Fallback: Use the banner filename from the database
+if (empty($contact_bg) && !empty($db_banner)) {
+    // Check if the file recorded in the database actually exists on the server
+    if (file_exists($base_fs_path . $db_banner)) {
+        $contact_bg = $base_url_path . $db_banner;
+    }
+}
+?>
 
 <style>
 <?php if ($contact_bg): ?>
