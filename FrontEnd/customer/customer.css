@@ -29,7 +29,7 @@ body {
   z-index: 20;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 20px 30px;
   pointer-events: none;
   transition: all 0.3s ease;
@@ -97,7 +97,7 @@ body {
 /* --- Auth / Top Right --- */
 #hudRight {
   display: flex;
-  align-items: center;
+  align-items: top;
   gap: 15px;
 }
 
@@ -277,9 +277,9 @@ body {
   width: 450px;
   max-width: 90%;
   padding: 40px;
-  background: rgba(5, 7, 12, 0.4);
+  /* background: rgba(5, 7, 12, 0.4); */
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -568,4 +568,47 @@ body {
   border-radius: 2px;
   width: 0%;
   transition: width 0.3s ease;
+}
+
+/* --- New: Home Icon Button --- */
+.btn-glass-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-white);
+  text-decoration: none;
+  transition: var(--transition);
+  margin-right: 8px; /* Spacing between Home and Profile */
+  font-size: 0.9rem;
+}
+
+.btn-glass-icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure #hudRight aligns items correctly */
+#hudRight {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px; /* Gap between all right-side elements */
+}
+
+/* Mobile Adjustment for Home Button */
+@media (max-width: 768px) {
+  .btn-glass-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+  }
 }

@@ -13,6 +13,10 @@ include("partials/nav.php");
             <span class="stat-val"><?= $totalOrder ?></span>
             <span class="stat-label">Total Order</span>
         </div>
+        <div class="status-item">
+                <div class="stat-val"><?= $productCount; ?></div>
+                <small class="stat-label">Total Items</small>
+            </div>
     </div>
 </section>
 
@@ -127,21 +131,6 @@ include("partials/nav.php");
 
     <div class="col-right">
 
-        <div class="top-stats">
-            <div style="text-align:center;">
-                <div class="big-num"><?= $productCount; ?></div>
-                <small style="font-weight: bold;">Total Items</small>
-            </div>
-            <div style="text-align:center; color: #ea982a;">
-                <div class="big-num"><?= $pendingOrders ?></div>
-                <small style="font-weight: bold;">Pending</small>
-            </div>
-            <div style="text-align:center; color: #cb4444;">
-                <div class="big-num"><?= $cancelledOrders ?></div>
-                <small style="font-weight: bold;">Cancelled</small>
-            </div>
-        </div>
-
         <div class="dark-card">
 
             <div class="dark-header">
@@ -149,7 +138,7 @@ include("partials/nav.php");
                     <h4 style="color: white; margin:0;">Best Sellers</h4>
                     <small style="color: rgba(255,255,255,0.8);">Top Performing Items</small>
                 </div>
-                <div class="card-chip" style="background: rgba(255,255,255,0.2); color: white;">Top 5</div>
+                <div class="card-chip" style="background: rgba(255,255,255,0.2); color: white;">Top 10</div>
             </div>
 
             <ul class="menu-list">

@@ -3,7 +3,7 @@ $message = "";
 
 // --- LOGIC TO DETERMINE RETURN URL ---
 // 1. Default destination
-$redirectUrl = 'index.php';
+$redirectUrl = 'customer/index.html';
 
 // 2. Check if a specific return URL was passed in the link (e.g. customerLogin.php?return_url=cart.php)
 if (isset($_GET['return_url']) && !empty($_GET['return_url'])) {
@@ -26,7 +26,7 @@ elseif (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/Css/customerAuth.css">
+    <link rel="stylesheet" href="assets/Css/customerAuth.css?v=1">
 </head>
 <body>
     <div class="container">
@@ -163,7 +163,7 @@ elseif (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
             .then(data => {
                 if(data.success){
                     // Redirect to the return URL from backend
-                    window.location.href = data.return_url || 'index.php';
+                    window.location.href = data.return_url || 'customer/index.html';
                 } else {
                     // Check if we need to redirect to Banned Page
                     if (data.redirect) {

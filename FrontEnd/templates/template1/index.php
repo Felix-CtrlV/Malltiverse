@@ -262,12 +262,18 @@ $page_path = __DIR__ . "/pages/$page.php";
 <!-- Auth popup -->
 <div id="authModal" class="auth-modal">
   <div class="auth-box">
+
+    <!-- ADD THIS BUTTON -->
+    <button class="auth-close" id="authCloseBtn">&times;</button>
+
     <h3>Login Required</h3>
     <p>Please login or create an account to continue.</p>
+
     <div class="auth-actions">
       <button id="authLoginBtn">Login</button>
       <button id="authRegisterBtn">Create Account</button>
     </div>
+
 
     <style>
         /* Backdrop - darker and blurred */
@@ -387,13 +393,13 @@ $page_path = __DIR__ . "/pages/$page.php";
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #666;
+            color: var(--primary);
             transition: 0.2s;
         }
 
         .auth-close:hover {
             background: #e0e0e0;
-            color: #000;
+            color: var(--primary);
         }
 
         .btn-primary-custom {

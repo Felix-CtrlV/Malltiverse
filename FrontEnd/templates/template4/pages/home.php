@@ -1,4 +1,3 @@
-
 <?php
 // PHP Logic for Banner/Video
 // $has_video = !empty($banner_video_url);
@@ -28,19 +27,19 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         /* Prevent horizontal scroll from animations */
     }
 
-    /* Utility: Smooth Scroll Reveal Class */
+    /* Utility: Smooth Scroll Reveal Class - enhanced with 3D rotation */
     .reveal-on-scroll {
         opacity: 0;
-        transform: translateY(50px);
+        transform: translateY(50px) rotateX(10deg);
+        transform-origin: top center;
         transition: all 1s var(--transition-smooth);
+        will-change: transform, opacity;
     }
 
     .reveal-on-scroll.is-visible {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) rotateX(0);
     }
-
-
 
     /* --- 2. HERO SECTION (CINEMATIC) --- */
     .hero-section {
@@ -87,6 +86,7 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         color: #fff;
         opacity: 0;
         animation: heroTextReveal 1.2s var(--transition-smooth) forwards;
+        text-shadow: 0 20px 30px rgba(0,0,0,0.3); /* depth */
     }
 
     .hero-sub {
@@ -96,6 +96,7 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         margin-top: 20px;
         opacity: 0;
         animation: heroTextReveal 1.2s var(--transition-smooth) 0.3s forwards;
+        text-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
 
     @keyframes heroTextReveal {
@@ -110,33 +111,21 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         }
     }
 
-    /* Scroll Down Indicator */
+    /* Scroll Down Indicator - enhanced float */
     .scroll-down {
         position: absolute;
         bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 3;
-        animation: bounce 2s infinite;
+        animation: float 3s ease-in-out infinite;
+        filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
     }
 
-    @keyframes bounce {
-
-        0%,
-        20%,
-        50%,
-        80%,
-        100% {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        40% {
-            transform: translateX(-50%) translateY(-10px);
-        }
-
-        60% {
-            transform: translateX(-50%) translateY(-5px);
-        }
+    @keyframes float {
+        0% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-10px); }
+        100% { transform: translateX(-50%) translateY(0); }
     }
 
     /* --- 3. INFINITE MARQUEE (TRENDY) --- */
@@ -150,11 +139,14 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         white-space: nowrap;
         position: relative;
         z-index: 5;
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.2), 0 10px 30px rgba(0,0,0,0.2);
+        transform: translateZ(0); /* force GPU layer */
     }
 
     .marquee-content {
         display: inline-block;
         animation: marquee 20s linear infinite;
+        will-change: transform;
     }
 
     .marquee-item {
@@ -163,24 +155,22 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         font-weight: 900;
         text-transform: uppercase;
         margin-right: 4rem;
+        display: inline-block;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     @keyframes marquee {
-        0% {
-            transform: translateX(0);
-        }
-
-        100% {
-            transform: translateX(-50%);
-        }
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
     }
 
-    /* --- 4. BENTO GRID FEATURES --- */
+    /* --- 4. BENTO GRID FEATURES (with 3D hover & floating icons) --- */
     .bento-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
         padding: 5% 5%;
+        perspective: 2000px; /* gives depth to children */
     }
 
     .bento-card {
@@ -190,43 +180,76 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         /* Rounded corners like Apple/Nike UI */
         position: relative;
         overflow: hidden;
-        transition: transform 0.5s var(--transition-smooth);
+        transition: transform 0.5s var(--transition-smooth), box-shadow 0.5s var(--transition-smooth), border-color 0.3s;
         border: 1px solid #333;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         min-height: 350px;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+        transform: translateZ(0);
+        backface-visibility: hidden;
     }
 
     .bento-card:hover {
-        transform: scale(0.98);
+        transform: perspective(1000px) rotateX(2deg) rotateY(2deg) scale(1.02);
         border-color: #fff;
+        box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255,255,255,0.2);
     }
 
     .bento-card i {
         font-size: 3rem;
         margin-bottom: 20px;
         color: #fff;
+        display: inline-block;
+        animation: float-icon 6s ease-in-out infinite;
+        filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
+        transition: transform 0.3s;
+        will-change: transform;
+    }
+
+    .bento-card:hover i {
+        transform: scale(1.1);
+    }
+
+    @keyframes float-icon {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0); }
     }
 
     .bento-card h3 {
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 10px;
+        transition: text-shadow 0.3s;
+    }
+
+    .bento-card:hover h3 {
+        text-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
 
     .bento-card p {
         color: var(--text-muted);
         font-size: 1.1rem;
         line-height: 1.6;
+        transition: color 0.3s;
     }
 
-    /* --- 5. LARGE TYPOGRAPHY CTA --- */
+    .bento-card:hover p {
+        color: #ddd;
+    }
+
+    /* --- 5. LARGE TYPOGRAPHY CTA (with 3D lift on hover) --- */
     .big-cta {
         padding: 100px 20px;
         text-align: center;
         background: #fff;
         color: #000;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 -30px 50px -20px rgba(0,0,0,0.3), 0 30px 50px -20px rgba(0,0,0,0.3);
+        transform: translateZ(0);
     }
 
     .big-cta h2 {
@@ -235,6 +258,13 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         line-height: 0.9;
         text-transform: uppercase;
         margin-bottom: 40px;
+        transition: transform 0.3s, text-shadow 0.3s;
+        will-change: transform;
+    }
+
+    .big-cta:hover h2 {
+        transform: perspective(1000px) translateZ(20px);
+        text-shadow: 0 20px 30px rgba(0,0,0,0.2);
     }
 
     .magnet-btn {
@@ -246,13 +276,15 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         font-size: 1.2rem;
         font-weight: bold;
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s, background 0.3s;
+        box-shadow: 0 15px 25px -8px rgba(0, 0, 0, 0.4);
+        will-change: transform;
     }
 
     .magnet-btn:hover {
         background: #333;
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        transform: scale(1.05) translateY(-5px);
+        box-shadow: 0 25px 35px -10px rgba(0, 0, 0, 0.6);
         color: #fff;
     }
 
@@ -263,26 +295,35 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
         font-weight: bold;
     }
 
+    /* --- ADDITIONAL 3D TOUCHES --- */
+    .container-fluid .display-3 {
+        text-shadow: 0 15px 25px rgba(0,0,0,0.3);
+    }
+
+    .text-uppercase {
+        letter-spacing: 2px;
+    }
+
     /* ============================
        RESPONSIVE MEDIA QUERIES
        ============================ */
-    
+
     /* Tablet Devices (768px and below) */
     @media (max-width: 768px) {
         .hero-section {
             top: -60px;
             height: 90vh;
         }
-        
+
         .hero-title {
             font-size: clamp(2.5rem, 8vw, 6rem);
         }
-        
+
         .hero-sub {
             font-size: clamp(0.9rem, 1.5vw, 1.2rem);
             margin-top: 15px;
         }
-        
+
         /* Center the button on mobile */
         .hero-content > div {
             margin-right: 0 !important;
@@ -290,236 +331,240 @@ $tagline = $supplier['tagline'] ?? 'Redefine Your Limits.';
             justify-content: center;
             margin-top: 30px !important;
         }
-        
+
         .magnet-btn {
             padding: 15px 40px;
             font-size: 1rem;
         }
-        
+
         .marquee-container {
             top: -60px;
             padding: 1rem 0;
         }
-        
+
         .marquee-item {
             font-size: 1.8rem;
             margin-right: 2rem;
         }
-        
+
         /* Philosophy section */
         .container-fluid.py-5 .row {
             padding-left: 20px !important;
             padding-right: 20px !important;
         }
-        
+
         .display-3 {
             font-size: 2.5rem !important;
         }
-        
+
         .lead {
             font-size: 1rem !important;
         }
-        
+
         /* Bento grid */
         .bento-grid {
             grid-template-columns: 1fr;
             padding: 5% 15px;
             gap: 15px;
+            perspective: none; /* reduce 3D on mobile for performance */
         }
-        
+
         .bento-card {
             padding: 30px;
             min-height: 300px;
         }
-        
+
+        .bento-card:hover {
+            transform: scale(0.98) translateY(-5px); /* simpler effect on mobile */
+        }
+
         .bento-card i {
             font-size: 2.5rem;
             margin-bottom: 15px;
+            animation: none; /* disable float on mobile to reduce motion */
         }
-        
+
         .bento-card h3 {
             font-size: 1.5rem;
         }
-        
+
         .bento-card p {
             font-size: 1rem;
         }
-        
+
         /* Big CTA */
         .big-cta {
             padding: 60px 20px;
         }
-        
+
         .big-cta h2 {
             font-size: clamp(2rem, 6vw, 4rem);
             margin-bottom: 30px;
         }
-        
+
         .scroll-down {
             bottom: 20px;
         }
-        
+
         .scroll-down small {
             font-size: 0.8rem;
         }
-        
+
         /* Adjust container padding */
         .container-fluid {
             padding-left: 15px !important;
             padding-right: 15px !important;
         }
     }
-    
+
     /* Mobile Devices (576px and below) */
     @media (max-width: 576px) {
         .hero-section {
             top: -55px;
             height: 85vh;
         }
-        
+
         .hero-title {
             font-size: clamp(2rem, 7vw, 4rem);
             line-height: 1;
         }
-        
+
         .hero-sub {
             font-size: 0.9rem;
             letter-spacing: 0.1em;
             margin-top: 10px;
         }
-        
+
         .marquee-item {
             font-size: 1.5rem;
             margin-right: 1.5rem;
         }
-        
+
         .display-3 {
             font-size: 2rem !important;
         }
-        
+
         .text-uppercase {
             font-size: 0.8rem !important;
         }
-        
+
         .bento-card {
             padding: 25px;
             min-height: 280px;
         }
-        
+
         .bento-card i {
             font-size: 2rem;
         }
-        
+
         .bento-card h3 {
             font-size: 1.3rem;
         }
-        
+
         .bento-card p {
             font-size: 0.95rem;
         }
-        
+
         .big-cta h2 {
             font-size: clamp(1.8rem, 5vw, 3rem);
         }
-        
+
         .magnet-btn {
             padding: 12px 30px;
             font-size: 0.9rem;
         }
-        
+
         /* Adjust spacing */
         .py-5 {
             padding-top: 3rem !important;
             padding-bottom: 3rem !important;
         }
-        
+
         .mb-4 {
             margin-bottom: 1rem !important;
         }
-        
+
         .mt-3 {
             margin-top: 1rem !important;
         }
-        
+
         /* Philosophy section columns stack */
         .col-lg-6, .col-lg-5 {
             width: 100%;
             margin-bottom: 30px;
         }
-        
+
         .col-lg-5:last-child {
             margin-bottom: 0;
         }
     }
-    
+
     /* Small Mobile Devices (400px and below) */
     @media (max-width: 400px) {
         .hero-section {
             height: 80vh;
         }
-        
+
         .hero-title {
             font-size: clamp(1.8rem, 6vw, 3rem);
         }
-        
+
         .hero-sub {
             font-size: 0.8rem;
         }
-        
+
         .marquee-item {
             font-size: 1.2rem;
             margin-right: 1rem;
         }
-        
+
         .bento-card {
             padding: 20px;
             min-height: 250px;
         }
-        
+
         .bento-card i {
             font-size: 1.8rem;
         }
-        
+
         .bento-card h3 {
             font-size: 1.2rem;
         }
-        
+
         .bento-card p {
             font-size: 0.9rem;
         }
-        
+
         .big-cta {
             padding: 50px 15px;
         }
-        
+
         .big-cta h2 {
             font-size: clamp(1.5rem, 4vw, 2.5rem);
         }
-        
+
         .magnet-btn {
             padding: 10px 25px;
             font-size: 0.85rem;
             width: 100%;
             text-align: center;
         }
-        
+
         /* Make the hero button full width on very small screens */
         .hero-content .magnet-btn {
             width: 100%;
             max-width: 250px;
         }
-        
+
         .scroll-down {
             bottom: 15px;
         }
-        
+
         .scroll-down small {
             font-size: 0.7rem;
         }
     }
 </style>
-
-
 
 <section class="hero-section">
     <?php if ($shop_assets['template_type'] == 'video'): ?>

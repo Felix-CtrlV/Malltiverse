@@ -3,6 +3,7 @@
 // session_start(); // REMOVED
 
 // Check if user is logged in (assuming session is set from index/customer area)
+require_once  '../utils/Ordered.php';
 $isLoggedIn = isset($_SESSION['customer_id']) || isset($_SESSION['user_id']);
 
 
@@ -240,12 +241,12 @@ if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success' && !
 
     .auth-btn.login {
         background: transparent;
-        border: 1px solid #667eea;
-        color: #667eea;
+        border: 1px solid #000000;
+        color: #000000;
     }
 
     .auth-btn.signup {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #000000 0%, #666666 100%);
         border: none;
         color: white;
     }
@@ -514,7 +515,7 @@ if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success' && !
             <a class="nav-link <?= $page === 'home' ? 'active' : '' ?>" href="<?= $base_url ?>&page=home">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?= $page === 'products' ? 'active' : '' ?>" href="<?= $base_url ?>&page=products">Products</a>
+            <a class="nav-link <?= ($page === 'products') || ($page === 'productdetail') ? 'active' : '' ?>" href="<?= $base_url ?>&page=products">Products</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <?= $page === 'about' ? 'active' : '' ?>" href="<?= $base_url ?>&page=about">About</a>
@@ -580,7 +581,7 @@ if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success' && !
             </div>
         <?php endif; ?>
 
-        <a href="../customer/index.html" class="exit-btn" title="Exit Shop">
+        <a href="../customer/?state=hallway" class="exit-btn" title="Exit Shop">
             <lord-icon
                 src="https://cdn.lordicon.com/vfiwitrm.json"
                 trigger="hover"

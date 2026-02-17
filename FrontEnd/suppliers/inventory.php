@@ -879,7 +879,7 @@ ob_end_flush();
         }
 
         .btn-create:hover {
-            background: #1d4ed8;
+            background: color-mix(in srgb, var(--primary), white 25%);
         }
 
         /* Toggle */
@@ -1334,7 +1334,6 @@ ob_end_flush();
             }
         }
     </style>
-    </style>
 </head>
 
 <body>
@@ -1391,7 +1390,7 @@ ob_end_flush();
                                 </td>
 
                                 <td style="font-weight: 700; color: #334155;">
-                                    $<?= number_format($p['price'], 2) ?>
+                                    $<?= number_format($price ?? 0, 2); ?>
                                 </td>
 
                                 <td>
@@ -1497,7 +1496,7 @@ ob_end_flush();
                                     <label id="tempNewCatPill" style="display:none;">
                                         <input type="radio" checked class="pill-radio">
                                         <span class="pill-label"
-                                            style="background:#0f172a; color:white; border-color:#0f172a;">
+                                            style="background:var(--primary); color:white; border-color:var(--primary);">
                                             <span id="tempNewCatText"></span>
                                             <span onclick="removeNewCat()"
                                                 style="margin-left:8px; cursor:pointer; opacity:0.7;">&times;</span>
