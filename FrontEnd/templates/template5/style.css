@@ -2005,7 +2005,9 @@ h1, h2, h3, .footer-logo {
     opacity: 0;
     transform: translateY(20px);
     animation: luxuryReveal 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+   
 }
+
 
 @keyframes luxuryReveal {
     0% {
@@ -2039,6 +2041,8 @@ h1, h2, h3, .footer-logo {
    
 .text-center.mb-5 {
     font-style: italic;
+    color: var(--primary);
+    
 }
 
 .hero, .features {
