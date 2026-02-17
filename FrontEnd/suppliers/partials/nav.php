@@ -958,13 +958,6 @@ $pendingOrderList = [
             <a href="rentpayment.php" class="nav-link <?= $active === "rentpayment" ? 'active' : '' ?>">Rent Payment</a>
             <a href="setting.php" class="nav-link <?= $active === "setting" ? 'active' : '' ?>">Settings</a>
 
-            <div class="theme-switch-wrapper" style="margin-right: 15px;">
-                <label class="theme-switch" for="checkbox">
-                    <input type="checkbox" id="checkbox" />
-                    <div class="slider-theme"></div>
-                </label>
-            </div>
-
             <a href="../utils/signout.php" class="btn-logout">Logout</a>
         </div>
         <div class="mobile-toggle" onclick="togglePanel('mobile-menu-panel')" aria-label="Menu">
@@ -1224,32 +1217,6 @@ $pendingOrderList = [
                     document.body.style.overflow = '';
                 }
             };
-        </script>
-        <script>
-            // --- DARK MODE LOGIC ---
-            const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
-            const currentTheme = localStorage.getItem('theme');
-
-            // 1. Check LocalStorage on load
-            if (currentTheme) {
-                document.body.classList.add(currentTheme); // Adds 'dark-mode' class
-                if (currentTheme === 'dark-mode') {
-                    toggleSwitch.checked = true;
-                }
-            }
-
-            // 2. Handle Switch Event
-            function switchTheme(e) {
-                if (e.target.checked) {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
-                }
-            }
-
-            toggleSwitch.addEventListener('change', switchTheme, false);
         </script>
 </body>
 

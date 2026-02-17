@@ -1052,6 +1052,8 @@ function createHallway() {
   const totalFloors = Math.max(1, Math.ceil(total / state.shopsPerFloor));
   setHud('Mall Hallway', `Scroll to move forward. Click a shop card to enter. Floor ${state.floorIndex + 1}/${totalFloors}`);
   btnBack.hidden = false;
+  if (hudHeroTitleEl) hudHeroTitleEl.hidden = true;
+  if (hudHeroKickerEl) hudHeroKickerEl.hidden = true;
   const hallWidth = 20;
 
 
@@ -1807,6 +1809,8 @@ onResize();
   } else {
     state.mode = 'outside';
     createOutside();
+    if (hudHeroTitleEl) hudHeroTitleEl.hidden = false;
+    if (hudHeroKickerEl) hudHeroKickerEl.hidden = false;
   }
 
   setupSearchAndFloorSelector();

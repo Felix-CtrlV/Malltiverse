@@ -9,14 +9,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Step 1: Supplier Info
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $raw_password = $_POST['password'] ?? '';
+
+    $password_ok =
+        strlen($raw_password) >= 8 &&
+        preg_match('/[A-Z]/', $raw_password) &&
+        preg_match('/[0-9]/', $raw_password) &&
+        preg_match('/[^A-Za-z0-9]/', $raw_password);
+
+    if (!$password_ok) {
+        $error_message = "Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special symbol.";
+    } else {
+        $password = password_hash($raw_password, PASSWORD_DEFAULT);
 
     // Step 2: Company Info
     $company_name = $_POST['company_name'];
     $tags = $_POST['tags'] ?? '';
     $description = $_POST['description'] ?? '';
     $address = $_POST['address'] ?? '';
-    $phone = $_POST['phone'] ?? '';
+    $phone = !empty($_POST['phone_full']) ? $_POST['phone_full'] : ($_POST['phone'] ?? '');
     $account_number = $_POST['account_number'] ?? '';
 
     // Step 3: Company Appearances
@@ -141,6 +152,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Registration failed: " . $e->getMessage();
     }
 }
+}
 
 // Fetch templates
 $templatequery = "SELECT * FROM templates";
@@ -155,7 +167,42 @@ $templateResult = mysqli_query($conn, $templatequery);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplier Registration</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/Css/supplierregister.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/css/intlTelInput.css" />
+    <link rel="stylesheet" href="assets/Css/supplierregister.css?v=2">
+
+    <style>
+        .iti {
+            width: 100%;
+        }
+
+        .iti__dropdown-content {
+            background: #ffffff;
+            color: #111827;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .iti__search-input {
+            background: #ffffff;
+            color: #111827;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .iti__country {
+            color: #111827;
+        }
+
+        .iti__dial-code {
+            color: #374151;
+        }
+
+        .iti__country.iti__highlight {
+            background-color: rgba(0, 0, 0, 0.06);
+        }
+
+        .iti__country.iti__active {
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+    </style>
     <style>
         .profile-upload-box {
             width: 150px;
@@ -237,6 +284,8 @@ $templateResult = mysqli_query($conn, $templatequery);
             <p class="sub-text">Creating account with <strong><?php echo $duration; ?> Month</strong> Plan. Total:
                 $<?php echo number_format($calculated_amount); ?>.</p>
 
+            <p class="sub-text" style="margin-top:-18px;">Already have an account? <a href="supplierLogin.php">Login</a></p>
+
             <?php if (isset($error_message)): ?>
                 <div class="error-message show"><?php echo htmlspecialchars($error_message); ?></div>
             <?php endif; ?>
@@ -268,9 +317,20 @@ $templateResult = mysqli_query($conn, $templatequery);
                         <input type="email" name="email" placeholder="Email Address" required>
                     </div>
                     <div class="input-group password-container">
-                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <input type="password" id="password" autocomplete="off" name="password" placeholder="Password" required>
                         <i class="fa-regular fa-eye eye-icon" onclick="togglePass('password', this)"></i>
                     </div>
+
+                    <div id="pass_strength" style="margin-top:-10px; margin-bottom: 15px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.85rem; color:#6c757d;">
+                            <div id="pass_strength_label">Strength: <b>Weak</b></div>
+                            <div id="pass_strength_hint" style="font-size:0.75rem;">Use 8+ chars, A-Z, 0-9, symbol</div>
+                        </div>
+                        <div style="height:6px; background:#e9ecef; border-radius:999px; margin-top:8px; overflow:hidden;">
+                            <div id="pass_strength_bar" style="height:100%; width:0%; background:#dc3545;"></div>
+                        </div>
+                    </div>
+
                     <button type="button" class="submit-btn" onclick="nextStep(2)">Next Step</button>
                 </div>
 
@@ -291,7 +351,8 @@ $templateResult = mysqli_query($conn, $templatequery);
                         <input type="text" name="address" placeholder="Address" required>
                     </div>
                     <div class="input-group">
-                        <input type="text" name="phone" placeholder="Phone Number" required>
+                        <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
+                        <input type="hidden" id="phone_full" name="phone_full" value="">
                     </div>
                     <div class="input-group">
                         <input type="text" name="account_number" placeholder="Account Number">
@@ -422,6 +483,55 @@ $templateResult = mysqli_query($conn, $templatequery);
             }
         }
 
+        function hasUppercase(s) {
+            return /[A-Z]/.test(s);
+        }
+
+        function hasNumber(s) {
+            return /[0-9]/.test(s);
+        }
+
+        function hasSpecial(s) {
+            return /[^A-Za-z0-9]/.test(s);
+        }
+
+        function updatePasswordUI(pass) {
+            const minLenOk = pass.length >= 8;
+            const upperOk = hasUppercase(pass);
+            const numOk = hasNumber(pass);
+            const specialOk = hasSpecial(pass);
+
+            const strengthLabel = document.getElementById('pass_strength_label');
+            const strengthBar = document.getElementById('pass_strength_bar');
+            const metCount = [minLenOk, upperOk, numOk, specialOk].filter(Boolean).length;
+            let strength = 'Weak';
+            if (metCount === 4 && pass.length >= 12) strength = 'Strong';
+            else if (metCount >= 3) strength = 'Medium';
+
+            if (strengthLabel) {
+                strengthLabel.innerHTML = `Strength: <b>${strength}</b>`;
+
+                const strengthColor = strength === 'Strong' ? '#198754' : (strength === 'Medium' ? '#fd7e14' : '#dc3545');
+                strengthLabel.style.color = strengthColor;
+
+                if (strengthBar) {
+                    const pct = Math.min(100, Math.round((metCount / 4) * 100));
+                    strengthBar.style.width = pct + '%';
+                    strengthBar.style.background = strengthColor;
+                }
+            }
+
+            return minLenOk && upperOk && numOk && specialOk;
+        }
+
+        const passInputEl = document.getElementById('password');
+        if (passInputEl) {
+            updatePasswordUI(passInputEl.value || '');
+            passInputEl.addEventListener('input', function () {
+                updatePasswordUI(this.value);
+            });
+        }
+
         function nextStep(step) {
             // Validate current step before proceeding
             if (step === 2) {
@@ -439,6 +549,16 @@ $templateResult = mysqli_query($conn, $templatequery);
                     alert('Please fill in all required fields');
                     return;
                 }
+
+                const passInput = document.getElementById('password');
+                if (passInput) {
+                    const ok = updatePasswordUI(passInput.value || '');
+                    if (!ok) {
+                        alert('Password must be at least 8 characters and include uppercase, number, and special symbol.');
+                        passInput.style.borderColor = '#ff4444';
+                        return;
+                    }
+                }
             } else if (step === 3) {
                 const step2Inputs = document.querySelectorAll('#step2 input[required], #step2 textarea[required]');
                 let isValid = true;
@@ -453,6 +573,18 @@ $templateResult = mysqli_query($conn, $templatequery);
                 if (!isValid) {
                     alert('Please fill in all required fields');
                     return;
+                }
+
+                if (window.itiPhone && window.phoneInputEl) {
+                    if (!window.itiPhone.isValidNumber()) {
+                        alert('Please enter a valid phone number.');
+                        window.phoneInputEl.style.borderColor = '#ff4444';
+                        window.phoneInputEl.focus();
+                        return;
+                    }
+                    const full = window.itiPhone.getNumber();
+                    const hidden = document.getElementById('phone_full');
+                    if (hidden) hidden.value = full;
                 }
             }
 
@@ -562,7 +694,51 @@ $templateResult = mysqli_query($conn, $templatequery);
                 alert('Please select a template');
                 return false;
             }
+
+            if (window.itiPhone && window.phoneInputEl) {
+                if (!window.itiPhone.isValidNumber()) {
+                    e.preventDefault();
+                    alert('Please enter a valid phone number.');
+                    window.phoneInputEl.style.borderColor = '#ff4444';
+                    window.phoneInputEl.focus();
+                    return false;
+                }
+                const full = window.itiPhone.getNumber();
+                const hidden = document.getElementById('phone_full');
+                if (hidden) hidden.value = full;
+            }
         });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/js/intlTelInput.min.js"></script>
+    <script>
+        (function initIntlTelInput() {
+            const phoneInput = document.getElementById('phone');
+            if (!phoneInput || !window.intlTelInput) return;
+
+            window.phoneInputEl = phoneInput;
+            window.itiPhone = window.intlTelInput(phoneInput, {
+                initialCountry: 'auto',
+                nationalMode: false,
+                autoPlaceholder: 'polite',
+                utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18/build/js/utils.js',
+                geoIpLookup: function (callback) {
+                    fetch('https://ipapi.co/json/')
+                        .then(r => r.json())
+                        .then(data => callback((data && data.country_code) ? data.country_code : 'US'))
+                        .catch(() => callback('US'));
+                }
+            });
+
+            phoneInput.addEventListener('blur', function () {
+                if (!phoneInput.value.trim()) return;
+                if (window.itiPhone.isValidNumber()) {
+                    phoneInput.style.borderColor = '';
+                } else {
+                    phoneInput.style.borderColor = '#ff4444';
+                }
+            });
+        })();
     </script>
 </body>
 
