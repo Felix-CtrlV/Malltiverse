@@ -88,7 +88,7 @@ if (isset($conn)) {
                         href="?supplier_id=<?= $supplier_id ?>&page=contact">Contact</a></li>
                 <li class="nav-item"><a class="nav-link" href="?supplier_id=<?= $supplier_id ?>&page=about">About</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/malltiverse/frontend/customer">Exit</a></li>
+                <li class="nav-item"><a class="nav-link" href="/malltiverse/frontend/customer?state=hallway">Exit</a></li>
 
                 <li class="nav-item ms-lg-3">
                     <?php if ($customer_id > 0): ?>
@@ -246,7 +246,7 @@ if (isset($conn)) {
     /* Primary / Login / Logout */
     .glass-dropdown .btn-primary,
     .nav-auth-button-dark {
-        background-color: #2c3136 !important;
+        background-color: var(--primary) !important;
         border: none !important;
         color: #ffffff !important;
         border-radius: 8px !important;
@@ -262,15 +262,15 @@ if (isset($conn)) {
 
     .glass-dropdown .btn-primary:hover,
     .nav-auth-button-dark:hover {
-        background-color: #000000 !important;
+        background-color: var(--secondary) !important;
         transform: translateY(-1px);
     }
 
     /* Outline / Register */
     .glass-dropdown .btn-outline-primary {
         background-color: transparent !important;
-        border: 1px solid #333 !important;
-        color: #333 !important;
+        border: 1px solid var(--secondary) !important;
+        color: var(--secondary) !important;
         border-radius: 8px !important;
         padding: 8px !important;
         font-weight: 600 !important;
@@ -279,8 +279,8 @@ if (isset($conn)) {
     }
 
     .glass-dropdown .btn-outline-primary:hover {
-        background-color: #333 !important;
-        color: #fff !important;
+        background-color: var(--secondary) !important;
+        color:  #FFFFFF !important;
     }
 
     /* 5. Utility Cleanup */
@@ -390,7 +390,7 @@ if (isset($conn)) {
 
 <div id="cartDrawer" class="cart-sidebar">
     <div class="cart-sidebar-header d-flex justify-content-between align-items-center">
-        <h2 class="h4 mb-0 fw-bold">Your Bag</h2>
+        <h2 class="yourBag h4 mb-0 fw-bold">Your Bag</h2>
         <button id="closeCart" class="btn-close close-btn shadow-none" style="font-size: 0.8rem;"></button>
     </div>
     <hr class="my-3 opacity-25">

@@ -26,10 +26,10 @@ mysqli_stmt_close($count_stmt);
 
 <section class="products-page pt-5">
   <div class="container">
-    <h2 class="text-center mb-5">Our Products</h2>
+    <h2 class="text-center mb-4 h1" style="color: var(--primary)">Our Products</h2>
     <div class="row justify-content-center mb-4">
       <div class="col-md-6">
-        <div class="input-group">
+        <div class="input-group" style="margin-bottom: 30px;" >
           <input type="text" id="search_input" class="form-control" placeholder="Search for products...">
           <span class="input-group-text"><i class="fas fa-search"></i></span>
         </div>
