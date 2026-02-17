@@ -515,7 +515,7 @@ if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success' && !
             <a class="nav-link <?= $page === 'home' ? 'active' : '' ?>" href="<?= $base_url ?>&page=home">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?= $page === 'products' ? 'active' : '' ?>" href="<?= $base_url ?>&page=products">Products</a>
+            <a class="nav-link <?= ($page === 'products') || ($page === 'productdetail') ? 'active' : '' ?>" href="<?= $base_url ?>&page=products">Products</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <?= $page === 'about' ? 'active' : '' ?>" href="<?= $base_url ?>&page=about">About</a>

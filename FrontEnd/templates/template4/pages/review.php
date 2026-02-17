@@ -1,6 +1,5 @@
 <?php
 
-
 // --- PHP LOGIC: PRESERVED (No Changes to Logic) ---
 
 // 1. Initialize & Fetch ID
@@ -17,16 +16,76 @@ if ($color_result && $color_result->num_rows > 0) {
     $color_row = $color_result->fetch_assoc();
 }
 
+// --- EARLY DEFINITION OF CUSTOM ALERT FUNCTION ---
+echo '<script>
+function showCustomAlert(message, callback) {
+    // Create modal if it doesn\'t exist
+    let alertEl = document.getElementById("customAlert");
+    if (!alertEl) {
+        alertEl = document.createElement("div");
+        alertEl.id = "customAlert";
+        alertEl.className = "custom-alert";
+        alertEl.style.display = "none";
+
+        const overlay = document.createElement("div");
+        overlay.className = "custom-alert-overlay";
+        alertEl.appendChild(overlay);
+
+        const box = document.createElement("div");
+        box.className = "custom-alert-box";
+
+        const msgP = document.createElement("p");
+        msgP.className = "custom-alert-message";
+        msgP.id = "alertMessage";
+        box.appendChild(msgP);
+
+        const okBtn = document.createElement("button");
+        okBtn.className = "custom-alert-ok";
+        okBtn.id = "alertOkBtn";
+        okBtn.textContent = "OK";
+        box.appendChild(okBtn);
+
+        alertEl.appendChild(box);
+        document.body.appendChild(alertEl);
+    }
+
+    const messageEl = document.getElementById("alertMessage") || alertEl.querySelector(".custom-alert-message");
+    const okBtn = document.getElementById("alertOkBtn") || alertEl.querySelector(".custom-alert-ok");
+
+    messageEl.textContent = message;
+
+    // Show with animation
+    alertEl.style.display = "flex";
+    setTimeout(() => {
+        alertEl.classList.add("show");
+    }, 10);
+
+    const handler = function() {
+        alertEl.classList.remove("show");
+        setTimeout(() => {
+            alertEl.style.display = "none";
+        }, 300);
+
+        okBtn.removeEventListener("click", handler);
+
+        if (typeof callback === "function") {
+            callback();
+        }
+    };
+
+    okBtn.addEventListener("click", handler);
+}
+</script>';
+
 // 2. Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // --- SECURITY CHECK: Ensure user is logged in ---
     if (!isset($_SESSION['customer_id'])) {
-        echo "<script>alert('Please log in to submit a review.'); window.location.href='login.php';</script>";
+        echo "<script>showCustomAlert('Please log in to submit a review.', function() { window.location.href='login.php'; });</script>";
         exit;
     }
 
     $rating = (int)$_POST['rating'];
-    $email  = trim($_POST['email']); // Note: Field removed from form in previous versions, but var kept here
     $review_text = trim($_POST['review_text']);
 
     if ($rating > 0 && !empty($review_text)) {
@@ -37,12 +96,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("iisi", $company_id, $cid, $review_text, $rating);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Review published.'); window.location.href='?supplier_id=$supplier_id&page=review';</script>";
+            echo "<script>showCustomAlert('Review published.', function() { window.location.href='?supplier_id=$supplier_id&page=review'; });</script>";
         } else {
-            echo "<script>alert('System error.');</script>";
+            echo "<script>showCustomAlert('System error.');</script>";
         }
     } else {
-        echo "<script>alert('Rating and review text required.');</script>";
+        echo "<script>showCustomAlert('Rating and review text required.');</script>";
     }
 }
 
@@ -574,6 +633,79 @@ $reviews_res = $conn->query($sql_reviews);
         opacity: 0.5;
     }
 
+    /* --- CUSTOM ALERT STYLES (matches Home Page design) --- */
+    .custom-alert {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        font-family: var(--font-main);
+    }
+
+    .custom-alert-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .custom-alert-box {
+        position: relative;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 30px 40px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        transform: scale(0.9);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10000;
+    }
+
+    .custom-alert.show .custom-alert-box {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .custom-alert-message {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .custom-alert-ok {
+        background: var(--accent-color);
+        color: #000000;
+        border: none;
+        padding: 12px 40px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-radius: 40px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.9rem;
+        border: 1px solid transparent;
+    }
+
+    .custom-alert-ok:hover {
+        background: #ddd;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+    }
+
     /* --- RESPONSIVE DESIGN --- */
     @media (max-width: 1024px) {
         .stats-dashboard {
@@ -643,6 +775,10 @@ $reviews_res = $conn->query($sql_reviews);
 
         .submit-btn {
             padding: 16px;
+        }
+
+        .custom-alert-box {
+            padding: 20px 25px;
         }
     }
 
