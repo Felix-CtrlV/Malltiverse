@@ -714,7 +714,7 @@ if ($chat_query) {
     <aside class="sidebar" id="mainSidebar">
         <div class="logo">
             <div class="logo-icon">
-                <i class="fas fa-vr-cardboard"></i>
+               <img class="logo-icon" src="../assets/images/MalltiverseLogo.jpg" alt="Logo" style="width:100%; height:100%; object-fit:contain;">
             </div>
             <div>
                 <div class="logo-text">Malltiverse</div>

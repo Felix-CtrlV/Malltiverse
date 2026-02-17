@@ -93,10 +93,10 @@ function splitHeroTitle(string $title): array
     mysqli_stmt_execute($category_stmt);
     $category_result = mysqli_stmt_get_result($category_stmt);
 
+    $i = 1;
     while ($row = mysqli_fetch_assoc($category_result)) {
-
       // 1. Default category image path
-      $categoryImage = "../uploads/shops/{$supplier_id}/category_{$row['category_id']}.jpg";
+      $categoryImage = "../uploads/shops/{$supplier_id}/category_{$i}.jpg";
 
       // 2. If category image NOT found → get first product image
       if (!file_exists($categoryImage)) {
@@ -135,8 +135,8 @@ function splitHeroTitle(string $title): array
       <div class="category-card">
         <img src="<?= htmlspecialchars($categoryImage) ?>" alt="<?= htmlspecialchars($row['category_name']) ?>">
 
-Mei, [2/17/2026 10:35 PM]
-<div class="category-overlay">
+        Mei, [2/17/2026 10:35 PM]
+        <div class="category-overlay">
           <h3><?= htmlspecialchars($row['category_name']) ?></h3>
           <a href="?supplier_id=<?= $supplier_id ?>&category_id=<?= $row['category_id'] ?>&page=products"
             class="shop-btn">
@@ -145,6 +145,7 @@ Mei, [2/17/2026 10:35 PM]
         </div>
       </div>
       <?php
+      $i = $i + 1;
     }
     mysqli_stmt_close($category_stmt);
     ?>

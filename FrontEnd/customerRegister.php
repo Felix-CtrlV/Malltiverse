@@ -19,12 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!$password_ok) {
         $message = "Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special symbol.";
     } else {
-    
+
         // Hash Password
         $hashed = password_hash($password, PASSWORD_DEFAULT);
-    
+
         // Default Values
-        $status = "Active"; 
+        $status = "Active";
         $created_at = date('Y-m-d H:i:s');
         $imageName = "default_user.png"; // Default image
 
@@ -32,25 +32,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) {
             $allowed = ['jpg', 'jpeg', 'png', 'webp'];
             $ext = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
-            
+
             if (in_array($ext, $allowed)) {
                 // Generate unique name
                 $imageName = "cust_" . time() . "." . $ext;
                 $uploadDir = "assets/customer_profiles/";
-                
-                if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                
+
+                if (!is_dir($uploadDir))
+                    mkdir($uploadDir, 0755, true);
+
                 move_uploaded_file($_FILES['profile_image']['tmp_name'], $uploadDir . $imageName);
             }
         }
 
         // Insert Query
         $sql = "INSERT INTO customers (name, email, password, phone, address, image, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         $stmt = $conn->prepare($sql);
         if ($stmt) {
             $stmt->bind_param("ssssssss", $name, $email, $hashed, $phone, $address, $imageName, $status, $created_at);
-            
+
             if ($stmt->execute()) {
                 header("Location: customerLogin.php?msg=success");
                 exit();
@@ -114,30 +115,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <div class="container">
-        
+
         <div class="left-panel scrollable-panel">
             <h1>Create Account</h1>
             <p class="sub-text">Already a member? <a href="customerLogin.php">Log In</a></p>
-            
-            <?php if($message): ?>
+
+            <?php if ($message): ?>
                 <div class="alert-box"><?php echo $message; ?></div>
             <?php endif; ?>
 
             <form method="POST" enctype="multipart/form-data">
-                
+
                 <div class="profile-upload-center">
                     <label for="u_image" class="profile-circle">
                         <img id="prev_image" src="assets/images/default_avatar.png">
                         <div class="overlay"><i class="fas fa-camera"></i></div>
                     </label>
                     <input type="file" name="profile_image" id="u_image" accept="image/*" onchange="previewImage(this)">
-                    <p class="tiny-text">Upload Profile Picture</p> 
+                    <p class="tiny-text">Upload Profile Picture</p>
                 </div>
 
                 <div class="input-group">
                     <input type="text" name="name" placeholder="Full Name" required>
                 </div>
-                
+
                 <div class="input-group">
                     <input type="email" name="email" placeholder="Email Address" required>
                 </div>
@@ -158,7 +159,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div id="pass_strength" style="margin-top:-10px; margin-bottom: 15px;">
-                    <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.85rem; color:#6c757d;">
+                    <div
+                        style="display:flex; align-items:center; justify-content:space-between; font-size:0.85rem; color:#6c757d;">
                         <div id="pass_strength_label">Strength: <b>Weak</b></div>
                         <div id="pass_strength_hint" style="font-size:0.75rem;">Use 8+ chars, A-Z, 0-9, symbol</div>
                     </div>
@@ -172,7 +174,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div class="right-panel register-visual">
-            <div class="logo-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div class="logo-icon"> <img class="logo-icon" src="assets/images/MalltiverseLogo.jpg" alt="Logo"
+                    style="width:100%; height:100%; object-fit:contain;">
+            </div>
             <div class="quote-box">
                 <h2>Join the Revolution<br>of Virtual Shopping.</h2>
             </div>
@@ -197,7 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     document.getElementById('prev_image').src = e.target.result;
                 }
                 reader.readAsDataURL(input.files[0]);
@@ -314,4 +318,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </script>
 
 </body>
+
 </html>

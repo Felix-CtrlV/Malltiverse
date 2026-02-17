@@ -57,6 +57,20 @@ include $template_path;
 // 5. Capture page output
 $page_content = ob_get_clean();
 
+// --- FAVICON INJECTION (SHOP LOGO IN TAB) ---
+$fallback_favicon = '../assets/images/MalltiverseLogo.jpg';
+$shop_favicon = $fallback_favicon;
+
+foreach (['logo.png', 'logo.jpg', 'logo.jpeg', 'logo.webp'] as $logoFile) {
+    $fs_path = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'shops' . DIRECTORY_SEPARATOR . $supplier_id . DIRECTORY_SEPARATOR . $logoFile;
+    if (file_exists($fs_path)) {
+        $shop_favicon = "../uploads/shops/{$supplier_id}/" . $logoFile;
+        break;
+    }
+}
+
+$favicon_html = "\n<link rel=\"icon\" href=\"" . htmlspecialchars($shop_favicon, ENT_QUOTES) . "\" />\n";
+
 // 3. Define the Loader HTML, CSS, and JS
 
 // HTML STRUCTURE (Unchanged)
@@ -278,7 +292,7 @@ $loader_js = '
 
 $final_content = preg_replace(
     '/<\/head>/i',
-    $loader_css . '</head>',
+    $favicon_html . $loader_css . '</head>',
     $page_content,
     1
 );

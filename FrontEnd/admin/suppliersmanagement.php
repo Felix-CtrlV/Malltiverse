@@ -173,7 +173,7 @@ $statusClass = match ($status) {
             <div style="margin-top: 12px;">
                 <label style="display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px;">Change Status</label>
                 <select id="status-select" class="status-select" style="width: 100%;"
-                    onchange="updateSupplierStatus(<?= $supplierid ?>, this.value)">
+                    onchange="updateCompanyStatus(<?= (int)$company_id ?>, this.value)">
                     <option value="active" <?= $status === 'active' ? 'selected' : '' ?>>Active</option>
                     <option value="inactive" <?= $status === 'inactive' ? 'selected' : '' ?>>Inactive</option>
                     <option value="banned" <?= $status === 'banned' ? 'selected' : '' ?>>Banned</option>
@@ -273,41 +273,75 @@ $statusClass = match ($status) {
 </section>
 
 <script>
+    function showAdminToast(messageText, type) {
+        let toast = document.getElementById('adminToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'adminToast';
+            toast.style.position = 'fixed';
+            toast.style.right = '18px';
+            toast.style.top = '18px';
+            toast.style.zIndex = '10000';
+            toast.style.padding = '12px 14px';
+            toast.style.borderRadius = '10px';
+            toast.style.border = '1px solid rgba(148, 163, 184, 0.25)';
+            toast.style.background = '#0b1220';
+            toast.style.color = '#e5e7eb';
+            toast.style.boxShadow = '0 18px 45px rgba(0,0,0,0.35)';
+            toast.style.maxWidth = '360px';
+            toast.style.fontSize = '13px';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-6px)';
+            toast.style.transition = '0.18s ease';
+            document.body.appendChild(toast);
+        }
+
+        const border = type === 'success' ? 'rgba(34, 197, 94, 0.35)' : (type === 'error' ? 'rgba(239, 68, 68, 0.35)' : 'rgba(148, 163, 184, 0.25)');
+        toast.style.borderColor = border;
+        toast.textContent = messageText;
+
+        requestAnimationFrame(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0px)';
+        });
+
+        clearTimeout(window.__adminToastTimer);
+        window.__adminToastTimer = setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-6px)';
+        }, 2200);
+    }
+
     // 1. Handle Status Change
-    function updateSupplierStatus(supplierId, newStatus) {
+    function updateCompanyStatus(companyId, newStatus) {
         // If Banned is selected, intercept and show modal
         if (newStatus === 'banned') {
-            document.getElementById('banSupplierId').value = supplierId;
+            document.getElementById('banSupplierId').value = companyId;
             document.getElementById('banReason').value = '';
             document.getElementById('banDate').value = '';
             document.getElementById('banModal').style.display = 'flex';
             return;
         }
 
-        if (!confirm(`Change status to "${newStatus}"?`)) {
-            location.reload(); // Reset select if cancelled
-            return;
-        }
-
         // Standard Update (Active/Inactive)
-        fetch('utils/update_user_status.php', {
+        fetch('utils/update_supplier_status.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: supplierId, role: 'supplier', status: newStatus })
+            body: JSON.stringify({ company_id: companyId, status: newStatus })
         })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert('Status updated!');
+                showAdminToast('Status updated!', 'success');
                 location.reload(); 
             } else {
-                alert('Error: ' + data.message);
+                showAdminToast('Error: ' + (data.message || 'Update failed'), 'error');
                 location.reload();
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Request failed");
+            showAdminToast('Request failed', 'error');
         });
     }
 
@@ -323,22 +357,22 @@ $statusClass = match ($status) {
         const banned_until = document.getElementById('banDate').value;
 
         if (!reason || !banned_until) {
-            alert("Please provide a reason and date.");
+            showAdminToast('Please provide a reason and date.', 'error');
             return;
         }
 
         fetch('utils/handle_ban.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id, role: 'supplier', reason: reason, banned_until: banned_until })
+            body: JSON.stringify({ id: id, role: 'company', reason: reason, banned_until: banned_until })
         })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert('Supplier Banned successfully.');
+                showAdminToast('Company banned successfully.', 'success');
                 location.reload();
             } else {
-                alert('Error: ' + data.message);
+                showAdminToast('Error: ' + (data.message || 'Ban failed'), 'error');
             }
         });
     }
