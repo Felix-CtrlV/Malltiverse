@@ -2654,15 +2654,27 @@ body.contact {
     padding: 0 10% 0 0;
     /* Use 'cover' to ensure it fills the space naturally, anchored to the left */
     background-size: cover; 
-    background-position: left center;
+    background-position: center; /* Anchors the image to the left and keeps it fixed on scroll */
     background-repeat: no-repeat;
 }
 
 
 
 .contact-content {
-    width: 500px;
+    width: 600px;
     text-align: center; /* Matches the centered text in your photo */
+    /* GLASSMORPHISM EFFECT - Moved from mobile to global */
+    background: rgba(255, 255, 255, 0.207); /* Translucent white */
+    backdrop-filter: blur(4px);           /* Glass blur effect */
+    -webkit-backdrop-filter: blur(12px);   /* Safari support */
+    
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Ensure it doesn't touch the very edge of the screen */
+    
 }
 
 /* Heading: HeavyLoads */
@@ -2672,6 +2684,7 @@ body.contact {
     font-size: 72px; /* Large and bold as seen in image */
     font-weight: 800;
     color: var(--primary); /* The deep red color */
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3); /* Soft lift */
 }
 
 /* Description / Slogan */
@@ -2682,6 +2695,7 @@ body.contact {
     color: var(--secondary); /* Muted red slogan */
     margin-top: -5px;
     margin-bottom: 30px;
+    font-weight: 600; /* Slightly bolder for glass readability */
 }
 
 /* Contact Info Text */
@@ -2814,25 +2828,119 @@ body.contact {
     width: 100%;
 }
 
-/* RESPONSIVE */
+/* ===============================
+   RESPONSIVE FIX
+================================= */
+
+/* Medium screens */
 @media (max-width: 1100px) {
+
     .contact-section {
-        background-position: -150px center; /* Pulls image left to make room */
+        padding: 0 5% 0 0;
+        background-position: left center;
+    }
+
+    .contact-content {
+        width: 420px;
+    }
+
+    .contact-content h2 {
+        font-size: 56px;
     }
 }
 
-@media (max-width: 800px) {
+
+/* Tablets */
+@media (max-width: 900px) {
+
     .contact-section {
-        background-image: none !important;
         justify-content: center;
-        padding: 50px 20px;
+        padding: 60px 20px;
+        background-position: center center;
     }
-    .contact-content { width: 100%; }
+
+    .contact-content {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .contact-content h2 {
+        font-size: 48px;
+    }
+
+    .contact-content textarea {
+        width: 100%;
+    }
+
+    .why-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
 }
 
-   .why-grid {
-        grid-template-columns: 1fr;
+
+/* Mobile */
+@media (max-width: 600px) {
+
+    .contact-section {
+        padding: 60px 20px;
+
+        /* Keep image */
+        background-size: cover;
+
+        /* Shift focus slightly left */
+        background-position: 10% center;
     }
+
+    .contact-content {
+        width: 100%;
+         background: rgba(255, 255, 255, 0.207);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(12px);
+
+        border-radius: 20px;
+        padding: 30px 25px;
+
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .contact-content h2 {
+        font-size: 36px;
+        text-shadow: 0 2px 4px rgba(189, 187, 187, 0.526); /* Soft lift */
+    }
+
+    .contact-content p {
+        font-size: 15px;
+        font-weight: 500; /* Slightly bolder for glass readability */
+        
+    }
+
+    .contact-content textarea {
+        width: 100%;
+        height: 110px;
+    }
+
+    .contact-content button {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .why-us {
+        padding: 70px 20px;
+    }
+
+    .why-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .why-us h2 {
+        font-size: 32px;
+    }
+}
+
 
 /*sidebar login*/
 .yourBag {
