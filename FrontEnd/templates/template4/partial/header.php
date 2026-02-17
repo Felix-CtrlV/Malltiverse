@@ -581,7 +581,7 @@ if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success' && !
             </div>
         <?php endif; ?>
 
-        <a href="../customer/index.html" class="exit-btn" title="Exit Shop">
+        <a href="../customer/?state=hallway" class="exit-btn" title="Exit Shop">
             <lord-icon
                 src="https://cdn.lordicon.com/vfiwitrm.json"
                 trigger="hover"
