@@ -1,4 +1,6 @@
 <?php
+
+
 // --- PHP LOGIC: PRESERVED (No Changes to Logic) ---
 
 // 1. Initialize & Fetch ID
@@ -17,19 +19,18 @@ if ($color_result && $color_result->num_rows > 0) {
 
 // 2. Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // --- SECURITY CHECK: Ensure user is logged in ---
+    if (!isset($_SESSION['customer_id'])) {
+        echo "<script>alert('Please log in to submit a review.'); window.location.href='login.php';</script>";
+        exit;
+    }
+
     $rating = (int)$_POST['rating'];
-    $email  = trim($_POST['email']);
+    $email  = trim($_POST['email']); // Note: Field removed from form in previous versions, but var kept here
     $review_text = trim($_POST['review_text']);
 
     if ($rating > 0 && !empty($review_text)) {
-        // if (!empty($email)) {
-        //     $cust_stmt = $conn->prepare("SELECT customer_id FROM customers WHERE email = ?");
-        //     $cust_stmt->bind_param("s", $email);
-        //     $cust_stmt->execute();
-        //     $res = $cust_stmt->get_result();
-
-        //     if ($res->num_rows > 0) {
-        //         $customer = $res->fetch_assoc();
+        // We now rely on session ID, not email lookup, as per your previous logic flow
         $cid = $_SESSION['customer_id'];
 
         $stmt = $conn->prepare("INSERT INTO reviews (company_id, customer_id, review, rating, created_at) VALUES (?, ?, ?, ?, NOW())");
@@ -41,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('System error.');</script>";
         }
     } else {
-        echo "<script>alert('Email required.');</script>";
+        echo "<script>alert('Rating and review text required.');</script>";
     }
 }
 
@@ -544,6 +545,9 @@ $reviews_res = $conn->query($sql_reviews);
         letter-spacing: 1px;
         font-size: 0.9rem;
         margin-top: 10px;
+        display: block; /* Ensure it behaves well as an anchor tag too */
+        text-align: center;
+        text-decoration: none;
     }
 
     .submit-btn:hover {
@@ -751,26 +755,32 @@ $reviews_res = $conn->query($sql_reviews);
         <div class="form-sticky-panel reveal-on-scroll">
             <h2 class="form-header">Write a Review</h2>
 
-            <form method="POST" action="">
+            <?php if (isset($_SESSION['customer_id'])): ?>
+                <form method="POST" action="">
+                    <div class="star-select-container">
+                        <?php for ($s = 5; $s >= 1; $s--): ?>
+                            <input type="radio" name="rating" id="star-<?= $s ?>" value="<?= $s ?>">
+                            <label for="star-<?= $s ?>">
+                                <svg viewBox="0 0 576 512">
+                                    <path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z" />
+                                </svg>
+                            </label>
+                        <?php endfor; ?>
+                    </div>
 
-                <!-- ORIGINAL STAR BUTTON (reverted to original style) -->
-                <div class="star-select-container">
-                    <?php for ($s = 5; $s >= 1; $s--): ?>
-                        <input type="radio" name="rating" id="star-<?= $s ?>" value="<?= $s ?>">
-                        <label for="star-<?= $s ?>">
-                            <svg viewBox="0 0 576 512">
-                                <path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z" />
-                            </svg>
-                        </label>
-                    <?php endfor; ?>
+                    <textarea name="review_text" rows="4" class="futuristic-input" placeholder="Your Experience..." style="resize:none;" required></textarea>
+
+                    <button type="submit" class="submit-btn">Publish</button>
+                </form>
+            <?php else: ?>
+                <div class="empty-state" style="background: transparent; border: none; padding: 0;">
+                    <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.95rem;">
+                        You must be logged in to share your experience with the community.
+                    </p>
+                    <a href="../customerLogin.php" class="submit-btn">Log In to Review</a>
                 </div>
+            <?php endif; ?>
 
-                <!-- ORIGINAL INPUT STYLES -->
-                <textarea name="review_text" rows="4" class="futuristic-input" placeholder="Your Experience..." style="resize:none;" required></textarea>
-
-                <!-- ORIGINAL BUTTON STYLE -->
-                <button type="submit" class="submit-btn">Publish</button>
-            </form>
         </div>
     </div>
 </div>
@@ -791,36 +801,42 @@ $reviews_res = $conn->query($sql_reviews);
 
         document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
-        // Star rating interaction (original behavior)
+        // Star rating interaction (only runs if form exists)
         const starInputs = document.querySelectorAll('.star-select-container input');
-        starInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                // Optional: Add any custom behavior here
-                // The original star button CSS handles the visual feedback
+        if (starInputs.length > 0) {
+            starInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    // Optional: Add any custom behavior here
+                    // The original star button CSS handles the visual feedback
+                });
             });
-        });
+        }
 
-        // Form submission feedback
+        // Form submission feedback (only runs if form exists)
         const form = document.querySelector('form');
-        form.addEventListener('submit', function(e) {
-            const submitBtn = this.querySelector('.submit-btn');
-            submitBtn.innerHTML = 'Publishing...';
-            submitBtn.disabled = true;
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('.submit-btn');
+                submitBtn.innerHTML = 'Publishing...';
+                submitBtn.disabled = true;
 
-            // Re-enable after 3 seconds if still on page (for demo)
-            setTimeout(() => {
-                submitBtn.innerHTML = 'Publish';
-                submitBtn.disabled = false;
-            }, 3000);
-        });
+                // Re-enable after 3 seconds if still on page (for demo)
+                setTimeout(() => {
+                    submitBtn.innerHTML = 'Publish';
+                    submitBtn.disabled = false;
+                }, 3000);
+            });
+        }
 
         // Handle responsive behavior
         window.addEventListener('resize', function() {
             const formPanel = document.querySelector('.form-sticky-panel');
-            if (window.innerWidth <= 900) {
-                formPanel.style.position = 'static';
-            } else {
-                formPanel.style.position = 'sticky';
+            if (formPanel) {
+                if (window.innerWidth <= 900) {
+                    formPanel.style.position = 'static';
+                } else {
+                    formPanel.style.position = 'sticky';
+                }
             }
         });
     });

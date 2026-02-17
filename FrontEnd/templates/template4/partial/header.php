@@ -3,6 +3,7 @@
 // session_start(); // REMOVED
 
 // Check if user is logged in (assuming session is set from index/customer area)
+require_once  '../utils/Ordered.php';
 $isLoggedIn = isset($_SESSION['customer_id']) || isset($_SESSION['user_id']);
 
 
@@ -240,12 +241,12 @@ if (isset($_GET['payment_status']) && $_GET['payment_status'] === 'success' && !
 
     .auth-btn.login {
         background: transparent;
-        border: 1px solid #667eea;
-        color: #667eea;
+        border: 1px solid #000000;
+        color: #000000;
     }
 
     .auth-btn.signup {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #000000 0%, #666666 100%);
         border: none;
         color: white;
     }
