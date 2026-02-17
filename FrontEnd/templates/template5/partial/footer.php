@@ -65,7 +65,7 @@
 
 .footer-brand {
     max-width: 320px;
-    flex: 1 1 300px;
+    flex: 0 1 auto; /* Brand ကို မလိုအပ်ဘဲ မကျယ်စေရန် */
 }
 
 .logo-box {
@@ -85,11 +85,14 @@
 .social-icons { display: flex; gap: 20px; }
 .social-icons a { color: #666; font-size: 1.5rem; text-decoration: none; }
 
+/* PC Responsive: Links တွေကို ညာဘက်အစွန် ကပ်ထုတ်ထားခြင်း */
 .footer-links {
     display: flex;
     gap: 60px;
     flex-wrap: wrap;
-    flex: 2 1 500px;
+    flex: 1; /* လက်ကျန်နေရာ အားလုံးကို ယူစေရန် */
+    justify-content: flex-end; /* စာသားအားလုံးကို ညာဘက်ကပ်ရန် */
+    text-align: left; /* Header နဲ့ စာသားတွေကိုတော့ ဘယ်ကပ်ထားရန် */
 }
 
 .link-column {
@@ -101,6 +104,7 @@
     font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
+    color: #111;
 }
 
 .link-column ul { list-style: none; padding: 0; }
@@ -117,19 +121,21 @@
 
 .footer-bottom p { color: #999; font-size: 0.85rem; }
 
-/* Mobile logic: PRODUCT & COMPANY side-by-side, LEGAL below */
-@media (max-width: 600px) {
+/* Mobile Logic: PRODUCT & COMPANY ဘေးချင်းယှဉ်၊ LEGAL အောက်ဆင်း */
+@media (max-width: 768px) {
     .footer-links {
+        justify-content: flex-start; /* Mobile မှာ ဘယ်ပြန်ကပ်ပေးရန် */
         display: grid;
-        grid-template-columns: 1fr 1fr; /* 2 columns for Product & Company */
+        grid-template-columns: 1fr 1fr;
         gap: 30px;
+        margin-top: 20px;
     }
 
     .legal-column {
-        grid-column: span 2; /* Legal takes full width below them */
+        grid-column: span 2;
         margin-top: 10px;
         padding-top: 20px;
-        border-top: 1px solid #f5f5f5; /* Optional line to separate legal */
+        border-top: 1px solid #f5f5f5;
     }
 }
 </style>
