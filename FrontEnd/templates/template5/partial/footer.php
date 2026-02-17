@@ -65,7 +65,7 @@
 
 .footer-brand {
     max-width: 320px;
-    flex: 0 1 auto; /* Brand ကို မလိုအပ်ဘဲ မကျယ်စေရန် */
+    flex: 0 1 auto; 
 }
 
 .logo-box {
@@ -85,14 +85,14 @@
 .social-icons { display: flex; gap: 20px; }
 .social-icons a { color: #666; font-size: 1.5rem; text-decoration: none; }
 
-/* PC Responsive: Links တွေကို ညာဘက်အစွန် ကပ်ထုတ်ထားခြင်း */
+
 .footer-links {
     display: flex;
     gap: 60px;
     flex-wrap: wrap;
-    flex: 1; /* လက်ကျန်နေရာ အားလုံးကို ယူစေရန် */
-    justify-content: flex-end; /* စာသားအားလုံးကို ညာဘက်ကပ်ရန် */
-    text-align: left; /* Header နဲ့ စာသားတွေကိုတော့ ဘယ်ကပ်ထားရန် */
+    flex: 1; 
+    justify-content: flex-end; 
+    text-align: left; 
 }
 
 .link-column {
@@ -121,10 +121,10 @@
 
 .footer-bottom p { color: #999; font-size: 0.85rem; }
 
-/* Mobile Logic: PRODUCT & COMPANY ဘေးချင်းယှဉ်၊ LEGAL အောက်ဆင်း */
+
 @media (max-width: 768px) {
     .footer-links {
-        justify-content: flex-start; /* Mobile မှာ ဘယ်ပြန်ကပ်ပေးရန် */
+        justify-content: flex-start; 
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 30px;

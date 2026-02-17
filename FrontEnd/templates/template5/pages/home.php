@@ -62,18 +62,18 @@ if (!empty($db_tags)) {
                     </div>
                 </div>
 
-                <div class="col-lg-7 position-relative overflow-hidden hero-image-col">
-                    <div class="image-reveal-curtain"></div>
-                    <div class="hero-media-wrapper parallax-target">
-                        <?php if (isset($shop_assets['template_type']) && $shop_assets['template_type'] == 'video'): ?>
-                            <video class="hero-media" autoplay muted loop playsinline
-                                src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>"></video>
-                        <?php else: ?>
-                            <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>" 
-                                 alt="Banner" class="hero-media">
-                        <?php endif; ?>
-                    </div>
-                </div>
+                <div class="col-lg-7 position-relative overflow-hidden hero-image-col h-100">
+    <div class="image-reveal-curtain"></div>
+    <div class="hero-media-wrapper parallax-target h-100">
+        <?php if (isset($shop_assets['template_type']) && $shop_assets['template_type'] == 'video'): ?>
+            <video class="hero-media" autoplay muted loop playsinline
+                src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>"></video>
+        <?php else: ?>
+            <img src="../uploads/shops/<?= $supplier_id ?>/<?= $banner1 ?>" 
+                 alt="Banner" class="hero-media">
+        <?php endif; ?>
+    </div>
+</div>
 
             </div>
         </div>
@@ -184,7 +184,7 @@ body {
         max-width: 100%;
     }
 
-    /* 4. Discover Button (Center) */
+  
     .btn-group-custom {
         width: 100%;
         display: flex;
@@ -192,22 +192,42 @@ body {
         margin-top: 20px;
     }
 
-    /* 5. Features Section (Center) */
+   
     .feature-col {
         margin-bottom: 30px;
     }
     .minimal-feature {
-        align-items: center; /* Features တွေကို Mobile မှာ အလယ်ပို့ရန် */
+        align-items: center; 
         text-align: center;
     }
     .f-line {
-        margin: 0 auto; /* Line အတိုလေးကို အလယ်ပို့ရန် */
+        margin: 0 auto; 
     }
 
-    /* 6. Image Column */
+ 
     .hero-image-col { 
         height: 40vh; 
         order: -1; 
     }
+}
+.hero-image-col {
+    display: flex;
+    padding: 0; /* Padding ကြောင့် space ဖြစ်နေတာမျိုးမရှိအောင် */
+}
+
+.hero-media-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Image နှင့် Video အား Gap မရှိအောင် လုပ်ခြင်း */
+.hero-media {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover; /* ပုံမရှုံ့ဘဲ အချိုးကျ အပြည့်ဖြည့်မယ် */
+    display: block;    /* inline-block ကြောင့်ဖြစ်တဲ့ အောက်ခြေ space ကို ဖျောက်ပေးတယ် */
+    vertical-align: middle; 
 }
 </style>
