@@ -30,6 +30,9 @@ if ($role === 'customer') {
 } elseif ($role === 'supplier') {
     $table = 'suppliers';
     $id_column = 'supplier_id';
+} elseif ($role === 'company') {
+    $table = 'companies';
+    $id_column = 'company_id';
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid role.']);
     exit;

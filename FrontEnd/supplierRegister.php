@@ -22,136 +22,136 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $password = password_hash($raw_password, PASSWORD_DEFAULT);
 
-    // Step 2: Company Info
-    $company_name = $_POST['company_name'];
-    $tags = $_POST['tags'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $address = $_POST['address'] ?? '';
-    $phone = !empty($_POST['phone_full']) ? $_POST['phone_full'] : ($_POST['phone'] ?? '');
-    $account_number = $_POST['account_number'] ?? '';
+        // Step 2: Company Info
+        $company_name = $_POST['company_name'];
+        $tags = $_POST['tags'] ?? '';
+        $description = $_POST['description'] ?? '';
+        $address = $_POST['address'] ?? '';
+        $phone = !empty($_POST['phone_full']) ? $_POST['phone_full'] : ($_POST['phone'] ?? '');
+        $account_number = $_POST['account_number'] ?? '';
 
-    // Step 3: Company Appearances
-    $template_id = intval($_POST['selected_template']);
-    $primary_color = $_POST['primary'] ?? '#7d6de3';
-    $secondary_color = $_POST['secondary'] ?? '#ff00e6';
-    $template_type = $_POST['template_type'] ?? 'image'; // image or video
-    $about = $_POST['about'] ?? '';
-    $banner_description = $_POST['banner_description'] ?? '';
+        // Step 3: Company Appearances
+        $template_id = intval($_POST['selected_template']);
+        $primary_color = $_POST['primary'] ?? '#7d6de3';
+        $secondary_color = $_POST['secondary'] ?? '#ff00e6';
+        $template_type = $_POST['template_type'] ?? 'image'; // image or video
+        $about = $_POST['about'] ?? '';
+        $banner_description = $_POST['banner_description'] ?? '';
 
-    // Package info
-    $months_to_add = intval($_POST['selected_duration']);
-    $rent_price = 1000;
-    $renting_price = 1000 * $months_to_add;
-    $price = $renting_price; // For companies table
+        // Package info
+        $months_to_add = intval($_POST['selected_duration']);
+        $rent_price = 1000;
+        $renting_price = 1000 * $months_to_add;
+        $price = $renting_price; // For companies table
 
-    // Start transaction
-    mysqli_begin_transaction($conn);
+        // Start transaction
+        mysqli_begin_transaction($conn);
 
-    try {
-        // 1. INSERT SUPPLIER
-        $supplier_image = 'default_supplier.png'; // Default image
+        try {
+            // 1. INSERT SUPPLIER
+            $supplier_image = 'default_supplier.png'; // Default image
 
-        // Handle supplier profile image upload
-        if (isset($_FILES['supplier_image']) && $_FILES['supplier_image']['error'] === UPLOAD_ERR_OK) {
-            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-            $ext = strtolower(pathinfo($_FILES['supplier_image']['name'], PATHINFO_EXTENSION));
+            // Handle supplier profile image upload
+            if (isset($_FILES['supplier_image']) && $_FILES['supplier_image']['error'] === UPLOAD_ERR_OK) {
+                $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+                $ext = strtolower(pathinfo($_FILES['supplier_image']['name'], PATHINFO_EXTENSION));
 
-            if (in_array($ext, $allowed)) {
-                $supplier_image = 'supplier_' . time() . '.' . $ext;
-                $upload_dir = "assets/customer_profiles/";
-                if (!file_exists($upload_dir)) {
-                    mkdir($upload_dir, 0777, true);
+                if (in_array($ext, $allowed)) {
+                    $supplier_image = 'supplier_' . time() . '.' . $ext;
+                    $upload_dir = "assets/customer_profiles/";
+                    if (!file_exists($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
+                    }
+                    move_uploaded_file($_FILES['supplier_image']['tmp_name'], $upload_dir . $supplier_image);
                 }
-                move_uploaded_file($_FILES['supplier_image']['tmp_name'], $upload_dir . $supplier_image);
             }
-        }
 
-        $sql_supplier = "INSERT INTO suppliers (name, email, password, status, created_at, image) 
+            $sql_supplier = "INSERT INTO suppliers (name, email, password, status, created_at, image) 
                         VALUES (?, ?, ?, 'active', NOW(), ?)";
-        $stmt_supplier = $conn->prepare($sql_supplier);
-        $stmt_supplier->bind_param("ssss", $name, $email, $password, $supplier_image);
+            $stmt_supplier = $conn->prepare($sql_supplier);
+            $stmt_supplier->bind_param("ssss", $name, $email, $password, $supplier_image);
 
-        if (!$stmt_supplier->execute()) {
-            throw new Exception("Supplier insertion failed: " . $stmt_supplier->error);
-        }
+            if (!$stmt_supplier->execute()) {
+                throw new Exception("Supplier insertion failed: " . $stmt_supplier->error);
+            }
 
-        $supplier_id = $conn->insert_id;
-        $stmt_supplier->close();
+            $supplier_id = $conn->insert_id;
+            $stmt_supplier->close();
 
-        // 2. INSERT COMPANY
-        $sql_company = "INSERT INTO companies (supplier_id, company_name, tags, description, address, phone, account_number, template_id, renting_price, status, created_at) 
+            // 2. INSERT COMPANY
+            $sql_company = "INSERT INTO companies (supplier_id, company_name, tags, description, address, phone, account_number, template_id, renting_price, status, created_at) 
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())";
-        $stmt_company = $conn->prepare($sql_company);
-        $stmt_company->bind_param("issssssid", $supplier_id, $company_name, $tags, $description, $address, $phone, $account_number, $template_id, $rent_price);
+            $stmt_company = $conn->prepare($sql_company);
+            $stmt_company->bind_param("issssssid", $supplier_id, $company_name, $tags, $description, $address, $phone, $account_number, $template_id, $rent_price);
 
-        if (!$stmt_company->execute()) {
-            throw new Exception("Company insertion failed: " . $stmt_company->error);
-        }
+            if (!$stmt_company->execute()) {
+                throw new Exception("Company insertion failed: " . $stmt_company->error);
+            }
 
-        $company_id = $conn->insert_id;
-        $stmt_company->close();
+            $company_id = $conn->insert_id;
+            $stmt_company->close();
 
-        // 3. Handle file uploads for shop assets
-        $upload_dir = "uploads/shops/$supplier_id/";
-        if (!file_exists($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
+            // 3. Handle file uploads for shop assets
+            $upload_dir = "uploads/shops/$supplier_id/";
+            if (!file_exists($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
 
-        $logo_name = '';
-        $banner_name = '';
+            $logo_name = '';
+            $banner_name = '';
 
-        // Upload logo
-        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-            $logo_ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
-            $logo_name = 'logo.' . $logo_ext;
-            move_uploaded_file($_FILES['logo']['tmp_name'], $upload_dir . $logo_name);
-        }
+            // Upload logo
+            if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+                $logo_ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
+                $logo_name = 'logo.' . $logo_ext;
+                move_uploaded_file($_FILES['logo']['tmp_name'], $upload_dir . $logo_name);
+            }
 
-        // Upload banner (image or video)
-        if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
-            $banner_ext = pathinfo($_FILES['banner']['name'], PATHINFO_EXTENSION);
-            $banner_name = 'banner.' . $banner_ext;
-            move_uploaded_file($_FILES['banner']['tmp_name'], $upload_dir . $banner_name);
-        }
+            // Upload banner (image or video)
+            if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+                $banner_ext = pathinfo($_FILES['banner']['name'], PATHINFO_EXTENSION);
+                $banner_name = 'banner.' . $banner_ext;
+                move_uploaded_file($_FILES['banner']['tmp_name'], $upload_dir . $banner_name);
+            }
 
-        // 4. INSERT SHOP ASSETS
-        $sql_assets = "INSERT INTO shop_assets (company_id, logo, banner, primary_color, secondary_color, about, description, template_type) 
+            // 4. INSERT SHOP ASSETS
+            $sql_assets = "INSERT INTO shop_assets (company_id, logo, banner, primary_color, secondary_color, about, description, template_type) 
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt_assets = $conn->prepare($sql_assets);
-        $stmt_assets->bind_param("isssssss", $company_id, $logo_name, $banner_name, $primary_color, $secondary_color, $about, $banner_description, $template_type);
+            $stmt_assets = $conn->prepare($sql_assets);
+            $stmt_assets->bind_param("isssssss", $company_id, $logo_name, $banner_name, $primary_color, $secondary_color, $about, $banner_description, $template_type);
 
-        if (!$stmt_assets->execute()) {
-            throw new Exception("Shop assets insertion failed: " . $stmt_assets->error);
-        }
-        $stmt_assets->close();
+            if (!$stmt_assets->execute()) {
+                throw new Exception("Shop assets insertion failed: " . $stmt_assets->error);
+            }
+            $stmt_assets->close();
 
-        // 5. INSERT RENT PAYMENT
-        $paid_date = date('Y-m-d');
-        $due_date = date('Y-m-d', strtotime("+$months_to_add month"));
-        $paid_amount = $renting_price;
+            // 5. INSERT RENT PAYMENT
+            $paid_date = date('Y-m-d');
+            $due_date = date('Y-m-d', strtotime("+$months_to_add month"));
+            $paid_amount = $renting_price;
 
-        $sql_rent = "INSERT INTO rent_payments (company_id, paid_date, due_date, amount) 
+            $sql_rent = "INSERT INTO rent_payments (company_id, paid_date, due_date, amount) 
                      VALUES (?, ?, ?, ?)";
-        $stmt_rent = $conn->prepare($sql_rent);
-        $stmt_rent->bind_param("issd", $company_id, $paid_date, $due_date, $paid_amount);
+            $stmt_rent = $conn->prepare($sql_rent);
+            $stmt_rent->bind_param("issd", $company_id, $paid_date, $due_date, $paid_amount);
 
-        if (!$stmt_rent->execute()) {
-            throw new Exception("Rent payment insertion failed: " . $stmt_rent->error);
+            if (!$stmt_rent->execute()) {
+                throw new Exception("Rent payment insertion failed: " . $stmt_rent->error);
+            }
+            $stmt_rent->close();
+
+            // Commit transaction
+            mysqli_commit($conn);
+
+            header("Location: supplierLogin.php?msg=registered");
+            exit();
+
+        } catch (Exception $e) {
+            // Rollback transaction on error
+            mysqli_rollback($conn);
+            $error_message = "Registration failed: " . $e->getMessage();
         }
-        $stmt_rent->close();
-
-        // Commit transaction
-        mysqli_commit($conn);
-
-        header("Location: supplierLogin.php?msg=registered");
-        exit();
-
-    } catch (Exception $e) {
-        // Rollback transaction on error
-        mysqli_rollback($conn);
-        $error_message = "Registration failed: " . $e->getMessage();
     }
-}
 }
 
 // Fetch templates
@@ -284,7 +284,8 @@ $templateResult = mysqli_query($conn, $templatequery);
             <p class="sub-text">Creating account with <strong><?php echo $duration; ?> Month</strong> Plan. Total:
                 $<?php echo number_format($calculated_amount); ?>.</p>
 
-            <p class="sub-text" style="margin-top:-18px;">Already have an account? <a href="supplierLogin.php">Login</a></p>
+            <p class="sub-text" style="margin-top:-18px;">Already have an account? <a href="supplierLogin.php">Login</a>
+            </p>
 
             <?php if (isset($error_message)): ?>
                 <div class="error-message show"><?php echo htmlspecialchars($error_message); ?></div>
@@ -317,16 +318,19 @@ $templateResult = mysqli_query($conn, $templatequery);
                         <input type="email" name="email" placeholder="Email Address" required>
                     </div>
                     <div class="input-group password-container">
-                        <input type="password" id="password" autocomplete="off" name="password" placeholder="Password" required>
+                        <input type="password" id="password" autocomplete="off" name="password" placeholder="Password"
+                            required>
                         <i class="fa-regular fa-eye eye-icon" onclick="togglePass('password', this)"></i>
                     </div>
 
                     <div id="pass_strength" style="margin-top:-10px; margin-bottom: 15px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.85rem; color:#6c757d;">
+                        <div
+                            style="display:flex; align-items:center; justify-content:space-between; font-size:0.85rem; color:#6c757d;">
                             <div id="pass_strength_label">Strength: <b>Weak</b></div>
                             <div id="pass_strength_hint" style="font-size:0.75rem;">Use 8+ chars, A-Z, 0-9, symbol</div>
                         </div>
-                        <div style="height:6px; background:#e9ecef; border-radius:999px; margin-top:8px; overflow:hidden;">
+                        <div
+                            style="height:6px; background:#e9ecef; border-radius:999px; margin-top:8px; overflow:hidden;">
                             <div id="pass_strength_bar" style="height:100%; width:0%; background:#dc3545;"></div>
                         </div>
                     </div>
@@ -418,7 +422,8 @@ $templateResult = mysqli_query($conn, $templatequery);
                                     style="background-image: url(assets/template_preview/<?= $template['preview_image'] ?>); background-size: cover;"
                                     data-template-id="<?= $template['template_id'] ?>">
                                     <div class="t-name" style="background: rgba(0,0,0,0.7); color:white; padding: 2px 5px;">
-                                        <?= $template['template_name'] ?></div>
+                                        <?= $template['template_name'] ?>
+                                    </div>
                                 </div>
                             <?php } ?>
                             <input type="hidden" name="selected_template" id="selected_template" value="" required>
@@ -462,7 +467,9 @@ $templateResult = mysqli_query($conn, $templatequery);
         </div>
 
         <div class="right-panel" id="visualPanel">
-            <div class="logo-icon"><i class="fas fa-vr-cardboard"></i></div>
+            <div class="logo-icon"> <img class="logo-icon" src="assets/images/MalltiverseLogo.jpg" alt="Logo"
+                    style="width:100%; height:100%; object-fit:contain;">
+            </div>
             <div class="quote-box" id="staticQuote">
                 <h2>Where Malls,<br>Transcend Reality.</h2>
             </div>
