@@ -90,7 +90,7 @@ $hasStock = hasAnyStock($variants);
 
                 <div class="detail_product_category"><?= htmlspecialchars($product['category_name'] ?? ' ') ?></div>
                 <h1 class="p-title"><?= htmlspecialchars($product['product_name']) ?></h1>
-                <div class="p-price">$<?= number_format($product['price'], 2) ?></div>
+                <div class="p-price" style="margin-bottom: 10px;">$<?= number_format($product['price'], 2) ?></div>
 
                 <?php if (!$hasStock): ?>
 
