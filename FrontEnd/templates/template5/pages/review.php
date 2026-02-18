@@ -179,7 +179,7 @@ $reviews_res = $conn->query($sql_reviews);
         .luxury-input:focus { border-color: var(--gold); }
         .submit-btn {
             width: 100%;
-            background: var(--gold);
+            background: var(--primary);
             color: black;
             border: none;
             padding: 18px;
@@ -189,7 +189,7 @@ $reviews_res = $conn->query($sql_reviews);
             cursor: pointer;
             transition: 0.3s;
         }
-        .submit-btn:hover { background: white; }
+        .submit-btn:hover { background: var(--primary);color:black ; }
 
         /* --- Mobile Responsive Fix --- */
         @media (max-width: 768px) {
@@ -265,20 +265,27 @@ $reviews_res = $conn->query($sql_reviews);
         <?php endif; ?>
     </section>
 
-    <aside class="form-sticky-panel reveal-on-scroll">
-        <div class="form-header">Leave Your Mark</div>
-        <?php if (isset($_SESSION['customer_id'])): ?>
-            <form method="POST">
-                <textarea name="review_text" class="luxury-input" rows="5" placeholder="Share your experience..." required></textarea>
-                <button type="submit" class="submit-btn">Publish Review</button>
-            </form>
-        <?php else: ?>
-            <div style="text-align: center; padding: 20px;">
-                <p style="color: #666; margin-bottom: 20px;">Join the archives to leave your review.</p>
-                <a href="../customerLogin.php?supplier_id=<?= $supplier_id ?>" class="submit-btn" style="text-decoration: none; display: inline-block;">Login to Review</a>
+   <aside class="form-sticky-panel reveal-on-scroll">
+    <div class="form-header">Leave Your Mark</div>
+    <?php if (isset($_SESSION['customer_id'])): ?>
+        <form method="POST" action="../utils/review.php?company_id=<?= $company_id?>">
+            <div class="star-rating-box">
+                <input type="radio" id="star5" name="rating" value="5" required/><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
             </div>
-        <?php endif; ?>
-    </aside>
+            <textarea name="review" class="luxury-input" rows="5" placeholder="Share your experience..." required></textarea>
+            <button type="submit" name="submit_review" class="submit-btn">Publish Review</button>
+        </form>
+    <?php else: ?>
+        <div style="text-align: center; padding: 20px;">
+            <p style="color: #666; margin-bottom: 20px;">Join the archives to leave your review.</p>
+            <a href="../customerLogin.php?supplier_id=<?= $supplier_id ?>" class="submit-btn" style="text-decoration: none; display: inline-block;">Login to Review</a>
+        </div>
+    <?php endif; ?>
+</aside>
 </div>
 
 <script>
@@ -296,3 +303,29 @@ $reviews_res = $conn->query($sql_reviews);
 </script>
 </body>
 </html>
+<style>/* Star Rating Input Styling */
+.star-rating-box {
+    display: flex;
+    flex-direction: row-reverse; /* 5 to 1 order for CSS selection */
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.star-rating-box input {
+    display: none; /* Hide radio buttons */
+}
+
+.star-rating-box label {
+    font-size: 30px;
+    color: #333; /* Dark gray for unselected */
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Hover & Checked Effects */
+.star-rating-box label:hover,
+.star-rating-box label:hover ~ label,
+.star-rating-box input:checked ~ label {
+    color: var(--gold); /* Your theme gold color */
+}</style>
