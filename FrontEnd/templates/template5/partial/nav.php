@@ -315,13 +315,13 @@ document.addEventListener('DOMContentLoaded', refreshBag);
         height: 32px;
         width: 32px;
         justify-content: center;
-        border-radius: 50% !important; /* ဖုန်းမှာ အဝိုင်းလေးပဲ ပြမယ် */
+        border-radius: 50% !important; 
     }
     .shopping-back i {
         margin: 0 !important;
     }
     
-    /* Logo နဲ့ စာသား အရွယ်အစားကို ဖုန်းမှာ နည်းနည်းသေးပေးခြင်း */
+   
     .navbar-brand h1 {
         font-size: 0.85rem !important;
     }

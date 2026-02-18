@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_message'])) {
         .content-side { 
             flex: 1; 
             display: flex; 
-            align-items: flex-start; /* စာသားကို အပေါ်တင်ထားသည် */
+            align-items: flex-start; 
             justify-content: center; 
-            padding: px; /* Padding-top ဖြင့် အနိမ့်အမြင့် ညှိနိုင်သည် */
+            padding: px; 
             background: #fff;
         }
 
@@ -86,18 +86,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_message'])) {
 
         /* --- Mobile Responsive Fixes --- */
         @media (max-width: 991px) {
-            .split-screen { flex-direction: column; } /* ပုံအပေါ် စာအောက် ပုံစံပြောင်းသည် */
+            .split-screen { flex-direction: column; } 
             
             .visual-side { 
                 width: 100%; 
-                height: 50vh; /* Mobile မှာ ပုံအမြင့်ကို လျှော့ထားသည် */
+                height: 50vh;
                 position: relative; 
             }
 
             .content-side { 
                 width: 100%; 
                 padding: 40px 25px; 
-                align-items: center; /* Mobile မှာ စာသားကို ဗဟိုချက်ပြန်ညှိသည် */
+                align-items: center; 
             }
 
             header h1 { font-size: 2.2rem; text-align: center; }

@@ -582,7 +582,7 @@ h1 {
   background: #ffffff;
  
   text-align: center;
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth movement */
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); 
   position: relative;
   cursor: pointer;
  
@@ -591,7 +591,7 @@ h1 {
 
 /* Typography */
 .feature-card h3 {
-  font-family: 'Playfair Display', serif; /* Use a serif font for heritage feel */
+  font-family: 'Playfair Display', serif; 
   font-size: 1.5rem;
   color:var(--gold-primary);
   margin-bottom: 15px;
@@ -607,18 +607,18 @@ h1 {
     border-radius: 25px;
     padding: 2px 12px;
     
-    /* Left align lote pho d lay pyin pay pr */
+    
     width: 220px;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-left: 3%;    /* Screen asoon ne ma kat ag 5% lout char htar tl */
-    margin-right: auto; /* D dar lay ka nya bet ko twin htout pay dar */
+    margin-left: 3%;    
+    margin-right: auto; 
     
     border: 1.5px solid #ddd;
     transition: all 0.3s ease;
 }
 
-/* Input & Button ka to lay tway ne tait pite nyi nay mhar par */
+
 #searchBar {
     border: none;
     background: transparent;
@@ -630,10 +630,10 @@ h1 {
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
     .search-bar {
-        margin-left: auto;  /* Left margin ko auto pyan pay tl */
-        margin-right: auto; /* Right margin ka auto shi pee tharr so tot center yout thwar mal */
-        width: 80%;         /* Mobile screen ne swar ag width ko nanyi nanyi kyi pay lo ya tl */
-        max-width: 250px;   /* Phit naing yin d lout htat ma kyi ag kan htar dar par */
+        margin-left: auto;  
+        margin-right: auto; 
+        width: 80%;         
+        max-width: 250px;   
     }
 }
 
@@ -2957,7 +2957,7 @@ input[name="qty"] {
     border: 1px solid #e5e5e5;
     position: sticky;
     top: 50px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* ခပ်ဖွဖွ shadow */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
 }
 
 /* Sidebar Header - Rolex Gold/Dark Green feel */
@@ -3417,7 +3417,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 }
 /* --- User Dropdown Hover Effects --- */
 
-/* အခြေခံ Dropdown Item Style */
+
 .user-dropdown .dropdown-item {
     padding: 12px 20px;
     display: flex;
@@ -3432,7 +3432,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
     transition: transform 0.3s ease;
 }
 
-/* Edit Profile အတွက် Hover Effect */
+
 .user-dropdown .dropdown-item:not(.logout-link):hover {
     background-color: #f8f9fa; /* Light grey background */
     color: #1a73e8; /* Blue color highlight */
@@ -3442,7 +3442,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
     transform: translateX(4px); 
 }
 
-/* Logout အတွက် Hover Effect */
+
 .user-dropdown .logout-link {
     color: #d93025 !important; /* Initial Red */
 }
