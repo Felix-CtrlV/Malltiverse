@@ -111,7 +111,7 @@
      color: white;
      font-size: 22px;
      box-shadow: 0 4px 15px rgba(0, 13, 255, 0.3);
-     margin-bottom: 20px;
+     /* margin-bottom: 20px; */
  }
 
  /* --- 3. INPUTS & FORM ELEMENTS (EXACT MATCH) --- */
@@ -531,3 +531,52 @@
      line-height: 1.2;
      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
  }
+
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+        align-items: flex-start;
+    }
+
+    .container {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        max-width: 600px;
+        border-radius: 16px;
+    }
+
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        padding: 22px;
+    }
+
+    .right-panel {
+        min-height: 220px;
+        justify-content: center;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .btn-row {
+        flex-direction: column;
+    }
+
+    .btn-row button {
+        width: 100%;
+    }
+
+    .template-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .left-panel,
+    .right-panel {
+        padding: 18px;
+    }
+}

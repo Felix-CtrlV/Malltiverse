@@ -120,7 +120,7 @@ h2 {
     color: white;
     font-size: 20px;
     box-shadow: 0 4px 15px rgba(0, 13, 255, 0.3);
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 .back-btn {
@@ -312,4 +312,58 @@ input[type="file"] {
     color: #ff5f56;
     margin-bottom: 15px;
     font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+        align-items: flex-start;
+    }
+
+    .container {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        max-width: 520px;
+        border-radius: 16px;
+    }
+
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        padding: 22px;
+    }
+
+    .login-visual,
+    .register-visual {
+        min-height: 220px;
+    }
+
+    .row-group {
+        flex-direction: column;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    h2 {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        max-width: 100%;
+    }
+
+    .left-panel,
+    .right-panel {
+        padding: 18px;
+    }
+
+    .login-visual,
+    .register-visual {
+        min-height: 200px;
+    }
 }

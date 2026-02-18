@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/../../../utils/Ordered.php';
 include '../../BackEnd/config/dbconfig.php';
 
@@ -130,23 +129,18 @@ $total_price = 0;
     }
 
     /* --- REDESIGNED REMOVE BUTTON --- */
-    /* Visible Grey Circle -> Glowing Red on Hover */
     .btn-remove-custom {
         width: 42px;
         height: 42px;
         border-radius: 50%;
         background-color: #2a2a2a;
-        /* Clearly visible against black bg */
         border: 1px solid #444;
-        /* Subtle border definition */
         color: #ffffff;
-        /* White icon */
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: all 0.4s var(--transition-smooth);
-        /* Smooth animation */
         position: relative;
         overflow: hidden;
         margin-left: 10px;
@@ -157,20 +151,15 @@ $total_price = 0;
         transition: transform 0.3s ease;
     }
 
-    /* Hover State */
     .btn-remove-custom:hover {
         background-color: var(--danger-color);
-        /* Vibrant Red */
         border-color: var(--danger-color);
         box-shadow: 0 0 15px rgba(255, 59, 59, 0.4);
-        /* Glow Effect */
         transform: translateY(-2px);
-        /* Slight lift */
     }
 
     .btn-remove-custom:hover i {
         transform: scale(1.1);
-        /* Icon pops slightly */
     }
 
     .btn-remove-custom:active {
@@ -178,8 +167,55 @@ $total_price = 0;
         box-shadow: 0 0 5px rgba(255, 59, 59, 0.6);
     }
 
-    /* ------------------------------ */
+    /* --- NEW QUANTITY CONTROL BUTTONS --- */
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
+    .qty-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #2a2a2a;
+        border: 1px solid #444;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s var(--transition-smooth);
+        user-select: none;
+    }
+
+    .qty-btn:hover {
+        background-color: var(--accent);
+        border-color: var(--accent);
+        color: #000;
+        box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .qty-btn:active {
+        transform: scale(0.95);
+    }
+
+    .qty-btn:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        filter: grayscale(80%);
+    }
+
+    .qty-value {
+        min-width: 30px;
+        text-align: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 1.1rem;
+    }
 
     /* Magnet Button Style (Matched to Home) */
     .btn-magnet {
@@ -297,11 +333,14 @@ $total_price = 0;
                                             </td>
                                             <td style="color: var(--text-muted);">$<?= number_format($item['price'], 2) ?></td>
                                             <td>
-                                                <span class="badge rounded-pill quantity-badge">
-                                                    <?= $item['quantity'] ?>
-                                                </span>
+                                                <!-- Quantity Control -->
+                                                <div class="quantity-control">
+                                                    <button class="qty-btn qty-decrease" data-cart-id="<?= $item['cart_id'] ?>" <?= ($item['quantity'] <= 1) ? 'disabled' : '' ?>>−</button>
+                                                    <span class="qty-value" id="qty-<?= $item['cart_id'] ?>"><?= $item['quantity'] ?></span>
+                                                    <button class="qty-btn qty-increase" data-cart-id="<?= $item['cart_id'] ?>">+</button>
+                                                </div>
                                             </td>
-                                            <td class="text-end fw-bold text-white" style="font-size: 1.1rem;">
+                                            <td class="text-end fw-bold text-white subtotal" id="subtotal-<?= $item['cart_id'] ?>" data-price="<?= $item['price'] ?>">
                                                 $<?= number_format($subtotal, 2) ?>
                                             </td>
                                             <td class="text-end">
@@ -315,7 +354,6 @@ $total_price = 0;
                                                         style="width:25px;height:25px">
                                                     </lord-icon>
                                                 </button>
-
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
@@ -331,7 +369,7 @@ $total_price = 0;
 
                         <div class="summary-row">
                             <span>Subtotal (<?= $cart_count ?> items)</span>
-                            <span class="text-white">$<?= number_format($total_price, 2) ?></span>
+                            <span class="text-white" id="summary-subtotal">$<?= number_format($total_price, 2) ?></span>
                         </div>
                         <div class="summary-row">
                             <span>Shipping</span>
@@ -340,7 +378,7 @@ $total_price = 0;
 
                         <div class="summary-total">
                             <span>Total</span>
-                            <span>$<?= number_format($total_price, 2) ?></span>
+                            <span id="summary-total">$<?= number_format($total_price, 2) ?></span>
                         </div>
 
                         <div class="mt-5">
@@ -374,6 +412,101 @@ $total_price = 0;
 </div>
 
 <script>
+    // Utility to update the total summary
+    function updateTotal() {
+        let subtotalElements = document.querySelectorAll('.subtotal');
+        let total = 0;
+        subtotalElements.forEach(el => {
+            let value = parseFloat(el.textContent.replace('$', '').replace(',', ''));
+            total += value;
+        });
+        document.getElementById('summary-subtotal').textContent = '$' + total.toFixed(2);
+        document.getElementById('summary-total').textContent = '$' + total.toFixed(2);
+    }
+
+    // Quantity update with AJAX
+    function updateQuantity(cartId, newQuantity, button) {
+        // Disable buttons to prevent double submission
+        let decreaseBtn = document.querySelector(`.qty-decrease[data-cart-id="${cartId}"]`);
+        let increaseBtn = document.querySelector(`.qty-increase[data-cart-id="${cartId}"]`);
+        if (decreaseBtn) decreaseBtn.disabled = true;
+        if (increaseBtn) increaseBtn.disabled = true;
+
+        const url = window.location.origin + '/malltiverse/frontend/utils/update_cart_qty.php';
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ cart_id: cartId, quantity: newQuantity })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('HTTP error ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                // Update displayed quantity
+                document.getElementById('qty-' + cartId).textContent = newQuantity;
+
+                // Update subtotal for this row
+                let price = parseFloat(document.getElementById('subtotal-' + cartId).dataset.price);
+                let subtotalElem = document.getElementById('subtotal-' + cartId);
+                subtotalElem.textContent = '$' + (price * newQuantity).toFixed(2);
+
+                // Disable decrease button if quantity becomes 1
+                if (newQuantity <= 1) {
+                    if (decreaseBtn) decreaseBtn.disabled = true;
+                } else {
+                    if (decreaseBtn) decreaseBtn.disabled = false;
+                }
+
+                // Recalculate total summary
+                updateTotal();
+            } else {
+                alert(data.message);
+                // Revert quantity display to previous value (we don't store old, but we can fetch from DOM)
+                // For simplicity, reload the page to ensure consistency
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Cannot connect to server. Please try again.');
+        })
+        .finally(() => {
+            // Re-enable buttons (if not reloading)
+            if (decreaseBtn) decreaseBtn.disabled = false;
+            if (increaseBtn) increaseBtn.disabled = false;
+        });
+    }
+
+    // Attach event listeners to quantity buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Increase buttons
+        document.querySelectorAll('.qty-increase').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let cartId = this.dataset.cartId;
+                let qtySpan = document.getElementById('qty-' + cartId);
+                let currentQty = parseInt(qtySpan.textContent);
+                let newQty = currentQty + 1;
+                updateQuantity(cartId, newQty, this);
+            });
+        });
+
+        // Decrease buttons
+        document.querySelectorAll('.qty-decrease').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let cartId = this.dataset.cartId;
+                let qtySpan = document.getElementById('qty-' + cartId);
+                let currentQty = parseInt(qtySpan.textContent);
+                if (currentQty > 1) {
+                    let newQty = currentQty - 1;
+                    updateQuantity(cartId, newQty, this);
+                }
+            });
+        });
+    });
+
+    // Existing remove function (unchanged)
     function removeFromCart(cartId) {
         if (confirm('Remove item from cart?')) {
             const rootPath = window.location.origin + '/malltiverse/frontend/utils/removeFromCart.php';
@@ -383,9 +516,7 @@ $total_price = 0;
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: new URLSearchParams({
-                        'cart_id': cartId
-                    })
+                    body: new URLSearchParams({ 'cart_id': cartId })
                 })
                 .then(response => {
                     if (!response.ok) throw new Error('HTTP error ' + response.status);

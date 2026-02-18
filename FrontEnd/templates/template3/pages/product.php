@@ -23,7 +23,7 @@
     }
 
     .page-btn.active {
-        background: linear-gradient(145deg, rgba(159, 204, 223, 0.8), rgba(71, 78, 111, 0.6));
+        background: linear-gradient(145deg, var(--primary-light), var(--primary-dark));
 
         border-color: #98B9D5;
     }

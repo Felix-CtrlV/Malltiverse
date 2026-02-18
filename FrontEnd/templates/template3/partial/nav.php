@@ -40,7 +40,7 @@ if (isset($conn) && isset($supplier)) {
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <nav class="main-nav navbar navbar-expand-lg">
-    <div class="container-fluid px-0 nav-container">
+    <div class="container-fluid nav-container">
         <div class="header-wrapper">
             <div class="logo-container d-flex align-items-center">
                 <?php if (!empty($shop_assets['logo'])): ?>
@@ -59,13 +59,13 @@ if (isset($conn) && isset($supplier)) {
             <ul class="navbar-nav ms-auto align-items-lg-center">
                 <?php $base_url = "?supplier_id=" . $supplier_id; ?>
                 <li class="nav-item"><a class="navlink <?= ($page === 'home') ? 'active' : '' ?>" href="<?= $base_url ?>&page=home">HOME</a></li>
-                <li class="nav-item"><a class="navlink <?= ($page === 'product') ? 'active' : '' ?>" href="<?= $base_url ?>&page=product">PRODUCT</a></li>
+                <li class="nav-item"><a class="navlink <?= ($page === 'product') || ($page === 'product_details') ? 'active' : '' ?>" href="<?= $base_url ?>&page=product">PRODUCT</a></li>
                 <li class="nav-item"><a class="navlink <?= ($page === 'about') ? 'active' : '' ?>" href="<?= $base_url ?>&page=about">ABOUT US</a></li>
                 <li class="nav-item"><a class="navlink <?= ($page === 'contact') ? 'active' : '' ?>" href="<?= $base_url ?>&page=contact">CONTACT</a></li>
                 <li class="nav-item"><a class="navlink <?= ($page === 'review') ? 'active' : '' ?>" href="<?= $base_url ?>&page=review">REVIEW</a></li>
 
                 <li class="nav-item">
-                    <a class="navlink exit-btn" href="/malltiverse/frontend/customer">
+                    <a class="navlink exit-btn" href="/malltiverse/frontend/customer?state=hallway">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
                 </li>

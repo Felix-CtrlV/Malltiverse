@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Plan - Supplier Registration</title>
-    <link rel="stylesheet" href="assets/Css/supplierregister.css">
+    <link rel="stylesheet" href="assets/Css/supplierregister.css?v=2">
     <style>
         :root {
             --primary: #7d6de3;
@@ -184,6 +184,9 @@
 <body>
 
     <div class="header-section">
+        <div style="margin-bottom: 14px;">
+            <a href="index.html" style="display:inline-block; text-decoration:none; color: var(--primary); font-weight:600;">&larr; Back to Home</a>
+        </div>
         <h1>Open Your Shop</h1>
         <p>Choose a subscription plan to start selling in our mall.</p>
     </div>

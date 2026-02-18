@@ -278,7 +278,7 @@ if ($customer_id > 0 && $company_id > 0) {
                         <hr>
                         <div class="d-flex justify-content-between mb-3"><span>Total Items:</span><strong><?= $cart_count ?></strong></div>
                         <div class="d-flex justify-content-between mb-3"><span>Grand Total:</span><strong id="grand-total" class="text-primary fs-4">$<?= number_format($total_price, 2) ?></strong></div>
-                        <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" class="btn btn-primary w-100 py-3 mt-3 fw-bold" style="background: linear-gradient(145deg, rgba(159, 204, 223, 0.8), rgba(71, 78, 111, 0.6)); border: none; border-radius: 10px; color: white; display: block; text-align: center;">PROCEED TO CHECKOUT</a>
+                        <a href="../utils/accessCheckout.php?supplier_id=<?= $supplier_id ?>" class="btn btn-primary w-100 py-3 mt-3 fw-bold" style="background: linear-gradient(145deg, var(--primary-light), var(--primary-dark)); border: none; border-radius: 10px; color: white; display: block; text-align: center;">PROCEED TO CHECKOUT</a>
                         <a href="?supplier_id=<?= $supplier_id ?>&page=product" class="continue-shopping-btn"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
                     </div>
                 </div>
@@ -288,7 +288,7 @@ if ($customer_id > 0 && $company_id > 0) {
         <div class="text-center py-5">
             <i class="fas fa-cart-arrow-down fs-1 text-muted"></i>
             <p class="mt-3">Your cart is empty.</p>
-            <a href="?supplier_id=<?= $supplier_id ?>&page=product" class="btn btn-primary" style="background: linear-gradient(145deg, var(--primary-bright), var(--primary-dark)); border: none;">Shop Now</a>
+            <a href="?supplier_id=<?= $supplier_id ?>&page=product" class="btn btn-primary" style="background: linear-gradient(145deg, var(--primary-light), var(--primary-dark)); border: none;">Shop Now</a>
         </div>
     <?php endif; ?>
 </div>
@@ -326,7 +326,7 @@ if ($customer_id > 0 && $company_id > 0) {
         loginPromptModal.style.display = 'flex';
     }
     
-    window.addEventListener('click', (e) => { if (e.target === loginPromptModal) window.location.href = 'shop/?supplier_id=<?= $supplier_id ?>&page=home'; });  
+    window.addEventListener('click', (e) => { if (e.target === loginPromptModal) window.location.href = '?supplier_id=<?= $supplier_id ?>&page=home'; });  
 
     let pendingCartId = null;
     let updateTimer = null;

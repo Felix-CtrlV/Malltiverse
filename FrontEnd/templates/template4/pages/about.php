@@ -12,814 +12,568 @@ $company_desc = !empty($supplier['description'])
 // Fallback logic for colors/names
 $company_name = $supplier['company_name'] ?? 'BRAND';
 $accent_color = $shop_assets['primary_color'] ?? '#D4AF37';
+
+// Generate a fallback logo data URI
+$fallback_logo_svg = '<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">'
+    . '<circle cx="100" cy="100" r="80" fill="#111" stroke="' . htmlspecialchars($accent_color) . '" stroke-width="2"/>'
+    . '<text x="100" y="108" text-anchor="middle" fill="' . htmlspecialchars($accent_color) . '" font-family="-apple-system, sans-serif" font-size="24" font-weight="600" letter-spacing="1">'
+    . htmlspecialchars($company_name) . '</text></svg>';
+$fallback_logo_data_uri = 'data:image/svg+xml,' . rawurlencode($fallback_logo_svg);
 ?>
 
 <style>
-    /* --- MODERN DESIGN SYSTEM --- */
+    /* ===== MODERN PREMIUM DESIGN SYSTEM ===== */
     :root {
-        --bg-color: #0a0a0a;
-        --card-bg: #111111;
-        --card-bg-hover: #1a1a1a;
-        --text-main: #ffffff;
-        --text-muted: #888888;
+        --bg-base: #000000;
+        --bg-surface: #0a0a0a;
+        --text-primary: #f5f5f7;
+        --text-secondary: #86868b;
         --accent: <?= $accent_color ?>;
-        --accent-glow: <?= $accent_color ?>33;
-        --font-display: 'Helvetica Neue', 'Arial Black', sans-serif;
-        --font-body: 'Helvetica', sans-serif;
-        --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-        --gradient-1: linear-gradient(135deg, var(--accent) 0%, #ffffff 100%);
-        --gradient-2: linear-gradient(135deg, #0a0a0a 0%, var(--accent) 100%);
-        --glow-shadow: 0 0 30px var(--accent-glow);
+        --accent-glow: <?= $accent_color ?>33; /* 20% opacity */
+        --accent-strong: <?= $accent_color ?>80;
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --glass-bg: rgba(20, 20, 20, 0.4);
+        --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* --- PAGE TRANSITIONS --- */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(40px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(5deg); }
-    }
-
-    @keyframes gradientFlow {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    @keyframes particleFloat {
-        0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-        10% { opacity: 1; }
-        90% { opacity: 1; }
-        100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
-    }
-
-    /* --- GLOBAL STYLES --- */
     html, body {
         width: 100%;
         overflow-x: hidden;
-        background: var(--bg-color);
-        color: var(--text-main);
-        font-family: var(--font-body);
+        background: var(--bg-base);
+        color: var(--text-primary);
+        font-family: var(--font-main);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
         scroll-behavior: smooth;
     }
 
-    .page-entrance {
-        animation: fadeInUp 1.2s var(--transition-smooth) forwards;
+    /* ===== UTILITIES & ANIMATIONS ===== */
+    .section-padding { padding: 120px 0; }
+    
+    .text-gradient {
+        background: linear-gradient(135deg, #ffffff 0%, var(--text-secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .text-accent-gradient {
+        background: linear-gradient(135deg, #ffffff 20%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Smooth Scroll Reveal */
+    .reveal {
         opacity: 0;
+        transform: translateY(40px) scale(0.98);
+        transition: all 1.2s var(--ease-out-expo);
+        will-change: opacity, transform;
+    }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+
+    /* ===== PREMIUM GLASS & 3D EFFECTS ===== */
+    .glass-panel {
+        background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--border-subtle);
+        border-radius: 32px;
+        box-shadow: 
+            0 30px 60px rgba(0,0,0,0.4),
+            inset 0 1px 0 rgba(255,255,255,0.1);
+        transition: transform 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo), border-color 0.6s ease;
+    }
+    .glass-panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 
+            0 40px 80px rgba(0,0,0,0.6),
+            0 0 40px var(--accent-glow),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.15);
     }
 
-    .section-padding {
-        padding: 120px 0;
-    }
-
-    /* --- HERO SECTION WITH PARTICLE BACKGROUND --- */
+    /* ===== HERO SECTION ===== */
     .hero-section {
         position: relative;
         min-height: 100vh;
         display: flex;
         align-items: center;
-        background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+        justify-content: center;
         overflow: hidden;
     }
 
-    .particles-container {
+    /* Ambient Background Orbs */
+    .ambient-orb {
         position: absolute;
-        width: 100%;
-        height: 100%;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.4;
+        animation: floatOrb 20s infinite ease-in-out alternate;
         pointer-events: none;
+        z-index: 0;
+    }
+    .orb-1 {
+        width: 60vw; height: 60vw;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+        top: -10%; left: -10%;
+    }
+    .orb-2 {
+        width: 50vw; height: 50vw;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        bottom: -20%; right: -10%;
+        animation-delay: -5s;
     }
 
-    .particle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: var(--accent);
-        border-radius: 50%;
-        animation: particleFloat linear infinite;
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(5%, 10%) scale(1.1); }
     }
 
     .hero-content {
         position: relative;
         z-index: 2;
+        text-align: center;
+        max-width: 1000px;
+        padding: 0 20px;
+    }
+
+    .hero-label {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-primary);
+        margin-bottom: 30px;
+        border: 1px solid var(--border-subtle);
+        padding: 8px 20px;
+        border-radius: 40px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .hero-title {
-        font-family: var(--font-display);
-        font-size: clamp(3rem, 8vw, 6rem);
-        font-weight: 900;
-        line-height: 1.1;
-        margin-bottom: 1.5rem;
-        background: var(--gradient-1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: gradientFlow 8s ease infinite;
-        background-size: 200% 200%;
+        font-size: clamp(3rem, 7vw, 6rem);
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        line-height: 1.05;
+        margin-bottom: 30px;
     }
 
     .hero-subtitle {
-        font-size: 1.5rem;
-        color: var(--text-muted);
-        margin-bottom: 2.5rem;
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        color: var(--text-secondary);
+        margin-bottom: 50px;
+        line-height: 1.6;
         max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 400;
     }
 
-    /* --- 3D REACTOR ENHANCEMENT --- */
-    .reactor-container-modern {
+    /* ===== BUTTONS ===== */
+    .btn-premium {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 40px;
+        background: var(--text-primary);
+        color: var(--bg-base);
+        border-radius: 40px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        overflow: hidden;
+        transition: all 0.4s var(--ease-out-expo);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .btn-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px var(--accent-glow);
+        background: var(--accent);
+        color: #fff;
+    }
+
+    .btn-outline-premium {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 40px;
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 40px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.4s var(--ease-out-expo);
+        backdrop-filter: blur(10px);
+    }
+    .btn-outline-premium:hover {
+        border-color: var(--accent);
+        background: rgba(255,255,255,0.03);
+    }
+
+    /* ===== STORY SECTION ===== */
+    .story-section { position: relative; z-index: 2; }
+    
+    .story-content-inner { padding: 60px 50px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+    
+    .eyebrow {
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .story-heading {
+        font-size: clamp(2rem, 3.5vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        margin-bottom: 30px;
+    }
+
+    .story-text {
+        color: var(--text-secondary);
+        font-size: 1.15rem;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    /* ===== REFINED 3D REACTOR ===== */
+    .visual-container {
         position: relative;
         width: 100%;
         min-height: 600px;
-        background: linear-gradient(45deg, #050505 0%, #111 100%);
-        border-radius: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transform-style: preserve-3d;
         perspective: 1000px;
     }
 
-    .holographic-grid {
-        position: absolute;
-        width: 300%;
-        height: 300%;
-        background: 
-            linear-gradient(90deg, 
-                transparent 49%, 
-                rgba(255, 255, 255, 0.03) 50%, 
-                transparent 51%
-            ),
-            linear-gradient(transparent 49%, 
-                rgba(255, 255, 255, 0.03) 50%, 
-                transparent 51%
-            );
-        background-size: 60px 60px;
-        animation: gridMove 20s linear infinite;
-        opacity: 0.3;
+    .reactor-core {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+        aspect-ratio: 1 / 1;
+        background: radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform-style: preserve-3d;
+        animation: floatCore 8s var(--ease-smooth) infinite;
     }
 
-    .energy-orb {
-        position: absolute;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-        border-radius: 50%;
-        filter: blur(40px);
-        opacity: 0.4;
-        animation: pulseOrb 4s ease-in-out infinite;
+    @keyframes floatCore {
+        0%, 100% { transform: translateY(0) rotateX(5deg) rotateY(-5deg); }
+        50% { transform: translateY(-15px) rotateX(10deg) rotateY(5deg); }
     }
 
     .orbital-ring {
         position: absolute;
         border-radius: 50%;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+        transform-style: preserve-3d;
+        border: 1px solid rgba(255,255,255,0.05);
     }
 
     .ring-1 {
-        width: 500px;
-        height: 500px;
-        animation: spin3D 15s linear infinite;
-        border-left: 3px solid var(--accent);
-        border-right: 3px solid transparent;
+        width: 100%; height: 100%;
+        border-left: 1px solid var(--accent);
+        box-shadow: inset 10px 0 30px -10px var(--accent-glow);
+        animation: spin1 20s linear infinite;
     }
-
     .ring-2 {
-        width: 350px;
-        height: 350px;
-        animation: spin3DReverse 20s linear infinite;
-        border-top: 2px dashed var(--accent);
+        width: 75%; height: 75%;
+        border-right: 1px solid var(--text-primary);
+        animation: spin2 15s linear infinite reverse;
     }
-
     .ring-3 {
-        width: 200px;
-        height: 200px;
-        animation: spin3D 10s linear infinite;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: inset 0 0 20px var(--accent-glow);
+        width: 50%; height: 50%;
+        border-top: 2px solid var(--accent);
+        filter: drop-shadow(0 0 10px var(--accent-strong));
+        animation: spin3 10s linear infinite;
     }
 
-    .floating-logo {
+    @keyframes spin1 { to { transform: rotateX(60deg) rotateY(20deg) rotateZ(360deg); } from { transform: rotateX(60deg) rotateY(20deg) rotateZ(0deg); } }
+    @keyframes spin2 { to { transform: rotateX(70deg) rotateY(-20deg) rotateZ(360deg); } from { transform: rotateX(70deg) rotateY(-20deg) rotateZ(0deg); } }
+    @keyframes spin3 { to { transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg); } from { transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg); } }
+
+    .logo-center {
         position: relative;
         z-index: 10;
-        width: 200px;
-        height: 200px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
+        background: var(--bg-base);
+        padding: 4px;
+        box-shadow: 
+            0 20px 40px rgba(0,0,0,0.8),
+            0 0 0 1px rgba(255,255,255,0.1),
+            inset 0 0 20px rgba(255,255,255,0.05);
+        transform: translateZ(50px);
+    }
+    
+    .logo-center img {
+        width: 100%; height: 100%;
         object-fit: cover;
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
-        animation: float 6s ease-in-out infinite;
-        border: 3px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
+        border-radius: 50%;
     }
 
-    /* --- STORY SECTION --- */
-    .story-section {
-        background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
-        position: relative;
-    }
-
-    .story-card {
-        background: rgba(17, 17, 17, 0.8);
-        backdrop-filter: blur(20px);
-        border-radius: 30px;
-        padding: 60px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.6s var(--transition-smooth);
-    }
-
-    .story-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        border-color: var(--accent);
-        box-shadow: var(--glow-shadow);
-    }
-
-    .story-text {
-        font-size: 1.2rem;
-        line-height: 1.8;
-        color: var(--text-muted);
-        margin-bottom: 2rem;
-    }
-
-    .highlight-text {
-        color: var(--text-main);
-        font-weight: 600;
-        background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
-        padding: 0.5rem 1rem;
-        border-radius: 10px;
-        display: inline-block;
-    }
-
-    /* --- VALUES GRID ENHANCED --- */
-    .values-grid-modern {
+    /* ===== PILLARS / VALUES ===== */
+    .values-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 30px;
         margin-top: 60px;
     }
-
-    .value-card-modern {
-        background: linear-gradient(145deg, var(--card-bg), #0f0f0f);
-        border-radius: 25px;
+    
+    .value-card {
         padding: 50px 40px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        transition: all 0.5s var(--transition-smooth);
-        position: relative;
-        overflow: hidden;
+        text-align: left;
     }
 
-    .value-card-modern::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
-        transition: left 0.7s var(--transition-smooth);
+    .value-icon-wrapper {
+        width: 56px; height: 56px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 24px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
     }
 
-    .value-card-modern:hover::before {
-        left: 100%;
+    .value-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--text-primary);
     }
 
-    .value-card-modern:hover {
-        transform: translateY(-15px) scale(1.03);
-        border-color: var(--accent);
-        box-shadow: var(--glow-shadow);
-    }
-
-    .value-icon {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 30px;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.05);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.5s ease;
-    }
-
-    .value-card-modern:hover .value-icon {
-        transform: rotateY(180deg) scale(1.2);
-        background: var(--accent);
-    }
-
-    .value-card-modern h4 {
-        color: var(--text-main);
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-        position: relative;
-        display: inline-block;
-    }
-
-    .value-card-modern h4::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 0;
-        width: 50px;
-        height: 3px;
-        background: var(--accent);
-        transition: width 0.5s ease;
-    }
-
-    .value-card-modern:hover h4::after {
-        width: 100%;
-    }
-
-    /* --- STATS SECTION --- */
+    /* ===== STATS SECTION ===== */
     .stats-section {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         position: relative;
-        overflow: hidden;
+        border-top: 1px solid var(--border-subtle);
+        border-bottom: 1px solid var(--border-subtle);
+        background: radial-gradient(ellipse at center, rgba(20,20,20,0.5) 0%, var(--bg-base) 100%);
     }
 
-    .stat-item-modern {
-        text-align: center;
-        padding: 40px;
-        position: relative;
-    }
-
+    .stat-item { padding: 40px 0; }
+    
     .stat-number {
-        font-family: var(--font-display);
         font-size: clamp(3rem, 5vw, 4.5rem);
-        font-weight: 900;
-        background: var(--gradient-1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: block;
-        line-height: 1;
-        margin-bottom: 15px;
-    }
-
-    .stat-glow {
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        background: var(--accent);
-        filter: blur(60px);
-        opacity: 0.3;
-        animation: float 6s ease-in-out infinite;
-    }
-
-    /* --- CTA SECTION --- */
-    .cta-section {
-        background: linear-gradient(135deg, #0a0a0a 0%, var(--accent) 200%);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .cta-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    /* --- BUTTONS --- */
-    .btn-modern {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        padding: 18px 45px;
-        background: linear-gradient(135deg, var(--accent) 0%, #ffffff 100%);
-        color: #000;
-        border: none;
-        border-radius: 50px;
         font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        transition: all 0.4s var(--transition-smooth);
+        letter-spacing: -0.04em;
+        line-height: 1;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
         position: relative;
+        text-align: center;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
     }
-
-    .btn-modern::before {
-        content: '';
+    .cta-bg-glow {
         position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        transition: left 0.7s ease;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80vw; height: 80vw;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+        filter: blur(80px);
+        opacity: 0.5;
+        z-index: 0;
+        pointer-events: none;
     }
 
-    .btn-modern:hover::before {
-        left: 100%;
-    }
-
-    .btn-modern:hover {
-        transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 20px 40px rgba(212, 175, 55, 0.5);
-    }
-
-    /* --- ANIMATION KEYFRAMES --- */
-    @keyframes gridMove {
-        0% { transform: translateX(0) translateY(0); }
-        100% { transform: translateX(-60px) translateY(-60px); }
-    }
-
-    @keyframes spin3D {
-        0% { transform: rotateY(0deg) rotateX(20deg); }
-        100% { transform: rotateY(360deg) rotateX(20deg); }
-    }
-
-    @keyframes spin3DReverse {
-        0% { transform: rotateY(360deg) rotateX(-20deg); }
-        100% { transform: rotateY(0deg) rotateX(-20deg); }
-    }
-
-    @keyframes pulseOrb {
-        0%, 100% { opacity: 0.3; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(1.1); }
-    }
-
-    @keyframes shimmer {
-        0% { background-position: -200% center; }
-        100% { background-position: 200% center; }
-    }
-
-    /* --- RESPONSIVE DESIGN --- */
-    @media (max-width: 1200px) {
-        .hero-title {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-        }
-        
-        .reactor-container-modern {
-            min-height: 500px;
-        }
-    }
-
-    @media (max-width: 992px) {
-        .section-padding {
-            padding: 80px 0;
-        }
-        
-        .story-card {
-            padding: 40px;
-        }
-        
-        .values-grid-modern {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .hero-section {
-            min-height: 80vh;
-        }
-        
-        .reactor-container-modern {
-            min-height: 400px;
-            border-radius: 25px;
-        }
-        
-        .floating-logo {
-            width: 150px;
-            height: 150px;
-        }
-        
-        .ring-1 {
-            width: 350px;
-            height: 350px;
-        }
-        
-        .ring-2 {
-            width: 250px;
-            height: 250px;
-        }
-        
-        .ring-3 {
-            width: 150px;
-            height: 150px;
-        }
-        
-        .values-grid-modern {
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
-        .value-card-modern {
-            padding: 40px 30px;
-        }
-        
-        .btn-modern {
-            padding: 15px 35px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .hero-title {
-            font-size: clamp(2rem, 5vw, 3rem);
-        }
-        
-        .hero-subtitle {
-            font-size: 1.2rem;
-        }
-        
-        .reactor-container-modern {
-            min-height: 300px;
-        }
-        
-        .story-card {
-            padding: 30px 20px;
-        }
-        
-        .story-text {
-            font-size: 1.1rem;
-        }
-        
-        .value-icon {
-            width: 60px;
-            height: 60px;
-        }
-        
-        .stat-item-modern {
-            padding: 30px 20px;
-        }
+    /* Responsive */
+    @media (max-width: 991px) {
+        .visual-container { min-height: 400px; }
+        .reactor-core { max-width: 320px; }
+        .story-content-inner { padding: 40px 30px; }
     }
 </style>
 
-<!-- Particle Background Generator -->
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Create particles
-        const particlesContainer = document.querySelector('.particles-container');
-        const particleCount = 50;
+    document.addEventListener('DOMContentLoaded', () => {
+        // High-performance Intersection Observer for smooth reveal animations
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
         
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            // Random properties
-            const size = Math.random() * 4 + 2;
-            const posX = Math.random() * 100;
-            const duration = Math.random() * 20 + 10;
-            const delay = Math.random() * 5;
-            const opacity = Math.random() * 0.5 + 0.2;
-            
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${posX}%`;
-            particle.style.opacity = opacity;
-            particle.style.animationDuration = `${duration}s`;
-            particle.style.animationDelay = `${delay}s`;
-            
-            particlesContainer.appendChild(particle);
-        }
-        
-        // Animate numbers on scroll
-        const statNumbers = document.querySelectorAll('.stat-number');
-        const observerOptions = {
-            threshold: 0.5
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const number = entry.target;
-                    const target = parseInt(number.textContent.replace(/%/, ''));
-                    const suffix = number.textContent.includes('%') ? '%' : '';
-                    const duration = 2000;
-                    const step = target / (duration / 16);
-                    let current = 0;
-                    
-                    const timer = setInterval(() => {
-                        current += step;
-                        if (current >= target) {
-                            current = target;
-                            clearInterval(timer);
-                        }
-                        number.textContent = Math.floor(current) + suffix;
-                    }, 16);
-                    
-                    observer.unobserve(number);
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Run once for better performance
                 }
             });
         }, observerOptions);
-        
-        statNumbers.forEach(number => observer.observe(number));
-        
-        // Add scroll reveal animation
-        const revealElements = document.querySelectorAll('.page-entrance');
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationDelay = (entries.indexOf(entry) * 0.2) + 's';
-                    entry.target.style.opacity = '1';
-                    entry.target.style.animation = 'fadeInUp 1s var(--transition-smooth) forwards';
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        revealElements.forEach(el => revealObserver.observe(el));
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     });
 </script>
 
-<!-- HERO SECTION -->
-<section class="hero-section section-padding">
-    <div class="particles-container"></div>
-    <div class="container hero-content">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-10">
-                <span class="section-label" style="color: var(--accent); letter-spacing: 3px; font-size: 0.9rem; margin-bottom: 20px; display: block;">
-                    ESTABLISHED TO INNOVATE
-                </span>
-                <h1 class="hero-title page-entrance">
-                    Redefining Excellence<br>Through Innovation
-                </h1>
-                <p class="hero-subtitle page-entrance" style="animation-delay: 0.2s">
-                    Where premium quality meets cutting-edge technology to deliver unparalleled experiences.
-                </p>
-                <a href="#story" class="btn-modern page-entrance" style="animation-delay: 0.4s">
-                    Discover Our Story
-                    <lord-icon
-                        src="https://cdn.lordicon.com/msoeawqm.json"
-                        trigger="loop"
-                        colors="primary:#000000"
-                        style="width:24px;height:24px">
-                    </lord-icon>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- STORY SECTION -->
-<section id="story" class="story-section section-padding">
-    <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-6 page-entrance">
-                <div class="story-card">
-                    <span class="section-label" style="color: var(--accent); margin-bottom: 20px;">OUR LEGACY</span>
-                    <h2 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 30px;">
-                        Crafting Tomorrow's<br>Standards Today
-                    </h2>
-                    <p class="story-text">
-                        <?= nl2br(htmlspecialchars($company_desc)) ?>
+<section class="hero-section">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="hero-content">
+                    <div class="reveal">
+                        <span class="hero-label">Engineered for Perfection</span>
+                    </div>
+                    <h1 class="hero-title reveal delay-1">
+                        Redefining <span class="text-accent-gradient">Excellence</span>
+                    </h1>
+                    <p class="hero-subtitle reveal delay-2">
+                        Where premium quality meets cutting-edge technology. Experience the future of our products today, crafted meticulously for your lifestyle.
                     </p>
-                    <p class="story-text">
-                        At <span class="highlight-text"><?= htmlspecialchars($company_name) ?></span>, we believe that exceptional products should be paired with transformative experiences. Our commitment extends beyond transactions to building lasting relationships.
-                    </p>
-                    <div class="mt-4">
-                        <a href="?supplier_id=<?= $supplier_id ?>&page=contact" class="btn-modern" style="background: transparent; border: 2px solid var(--accent); color: var(--accent);">
-                            Connect With Us
+                    <div class="d-flex justify-content-center gap-3 reveal delay-3 flex-wrap">
+                        <a href="#story" class="btn-premium">
+                            Discover Our Story
+                        </a>
+                        <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="btn-outline-premium">
+                            View Collection
                         </a>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-lg-6 page-entrance" style="animation-delay: 0.3s">
-                <div class="reactor-container-modern">
-                    <div class="holographic-grid"></div>
-                    <div class="energy-orb"></div>
-                    <div class="orbital-ring ring-1"></div>
-                    <div class="orbital-ring ring-2"></div>
-                    <div class="orbital-ring ring-3"></div>
-                    <img 
-                        src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
-                        alt="<?= htmlspecialchars($company_name) ?>"
-                        class="floating-logo"
-                        onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI4MCIgZmlsbD0iIzMzMyIgc3Ryb2tlPSIjREFGQUYzNyIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHRleHQgeD0iMTAwIiB5PSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNEREFGMzciIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCI+PD90aXBwIHN1cHBsaWVyWydjb21wYW55X25hbWUnXT8+PC90ZXh0Pjwvc3ZnPg=='"
-                    >
-                </div>
-            </div>
         </div>
     </div>
 </section>
 
-<!-- VALUES SECTION -->
+<section id="story" class="story-section section-padding">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            
+            <div class="col-lg-6">
+                <div class="glass-panel story-content-inner reveal">
+                    <span class="eyebrow">Who We Are</span>
+                    <h2 class="story-heading">Crafting Tomorrow's <br><span class="text-gradient">Standards Today.</span></h2>
+                    
+                    <p class="story-text">
+                        <?= nl2br(htmlspecialchars($company_desc)) ?>
+                    </p>
+                    <p class="story-text">
+                        At <strong style="color: var(--text-primary); font-weight: 600;"><?= htmlspecialchars($company_name) ?></strong>, we curate experiences. Our commitment to innovation is matched only by our dedication to your complete satisfaction.
+                    </p>
+                    
+                    <div class="mt-4">
+                        <a href="?supplier_id=<?= $supplier_id ?>&page=contact" class="btn-outline-premium" style="padding: 12px 24px; border-radius: 20px;">
+                            Connect With Us
+                            <lord-icon src="https://cdn.lordicon.com/zmkotitn.json" trigger="hover" colors="primary:#fff" style="width:20px;height:20px"></lord-icon>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="visual-container reveal delay-2">
+                    <div class="reactor-core">
+                        <div class="orbital-ring ring-1"></div>
+                        <div class="orbital-ring ring-2"></div>
+                        <div class="orbital-ring ring-3"></div>
+                        <div class="logo-center">
+                            <img src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>" 
+                                 alt="Brand Logo" 
+                                 onerror="this.src='<?= $fallback_logo_data_uri ?>'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
 <section class="section-padding">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
-            <div class="col-lg-8 page-entrance">
-                <span class="section-label" style="color: var(--accent);">OUR PILLARS</span>
-                <h2 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.5rem);">
-                    Built on Excellence,<br>Powered by Innovation
-                </h2>
+            <div class="col-lg-8 reveal">
+                <span class="eyebrow">Our Pillars</span>
+                <h2 class="story-heading" style="margin-bottom: 0;">Built on Excellence</h2>
             </div>
         </div>
-        
-        <div class="values-grid-modern">
-            <div class="value-card-modern page-entrance">
-                <div class="value-icon">
-                    <lord-icon
-                        src="https://cdn.lordicon.com/hjeefwhm.json"
-                        trigger="hover"
-                        colors="primary:#ffffff"
-                        style="width:40px;height:40px">
-                    </lord-icon>
+
+        <div class="values-grid">
+            <div class="glass-panel value-card reveal">
+                <div class="value-icon-wrapper">
+                    <lord-icon src="https://cdn.lordicon.com/hjeefwhm.json" trigger="hover" colors="primary:#ffffff" style="width:28px;height:28px"></lord-icon>
                 </div>
-                <h4>Uncompromising Quality</h4>
-                <p class="story-text">Every product undergoes rigorous testing and quality assurance to ensure it meets our premium standards.</p>
+                <h4 class="value-title">Uncompromising Quality</h4>
+                <p class="story-text" style="font-size: 1rem; margin:0;">Rigorous testing and premium materials ensure every product exceeds industry standards.</p>
             </div>
-            
-            <div class="value-card-modern page-entrance" style="animation-delay: 0.2s">
-                <div class="value-icon">
-                    <lord-icon
-                        src="https://cdn.lordicon.com/cllunfud.json"
-                        trigger="hover"
-                        colors="primary:#ffffff"
-                        style="width:40px;height:40px">
-                    </lord-icon>
+            <div class="glass-panel value-card reveal delay-1">
+                <div class="value-icon-wrapper">
+                    <lord-icon src="https://cdn.lordicon.com/cllunfud.json" trigger="hover" colors="primary:#ffffff" style="width:28px;height:28px"></lord-icon>
                 </div>
-                <h4>Advanced Security</h4>
-                <p class="story-text">Military-grade encryption and real-time monitoring protect your data and transactions.</p>
+                <h4 class="value-title">Absolute Security</h4>
+                <p class="story-text" style="font-size: 1rem; margin:0;">Enterprise-grade architecture protects your data and guarantees peace of mind.</p>
             </div>
-            
-            <div class="value-card-modern page-entrance" style="animation-delay: 0.4s">
-                <div class="value-icon">
-                    <lord-icon
-                        src="https://cdn.lordicon.com/zpxybbhl.json"
-                        trigger="hover"
-                        colors="primary:#ffffff"
-                        style="width:40px;height:40px">
-                    </lord-icon>
+            <div class="glass-panel value-card reveal delay-2">
+                <div class="value-icon-wrapper">
+                    <lord-icon src="https://cdn.lordicon.com/zpxybbhl.json" trigger="hover" colors="primary:#ffffff" style="width:28px;height:28px"></lord-icon>
                 </div>
-                <h4>24/7 Excellence</h4>
-                <p class="story-text">Round-the-clock support ensuring your experience remains flawless at all times.</p>
+                <h4 class="value-title">24/7 Priority Support</h4>
+                <p class="story-text" style="font-size: 1rem; margin:0;">Round-the-clock expert assistance ensuring a flawless and seamless experience.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- STATS SECTION -->
-<section class="stats-section section-padding">
+<section class="stats-section">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 stat-item-modern page-entrance">
-                <div class="stat-glow" style="top: 20%; left: 30%;"></div>
-                <span class="stat-number">100%</span>
-                <span class="section-label" style="color: var(--accent); font-size: 1rem;">Client Satisfaction</span>
+        <div class="row text-center">
+            <div class="col-md-4 stat-item reveal">
+                <span class="stat-number text-gradient">100<span style="color: var(--accent);">%</span></span>
+                <span style="color: var(--text-secondary); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;">Client Satisfaction</span>
             </div>
-            
-            <div class="col-md-4 stat-item-modern page-entrance" style="animation-delay: 0.2s">
-                <div class="stat-glow" style="top: 40%; right: 20%;"></div>
-                <span class="stat-number">10K+</span>
-                <span class="section-label" style="color: var(--accent); font-size: 1rem;">Products Delivered</span>
+            <div class="col-md-4 stat-item reveal delay-1">
+                <span class="stat-number text-gradient">10<span style="color: var(--accent);">k+</span></span>
+                <span style="color: var(--text-secondary); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;">Products Delivered</span>
             </div>
-            
-            <div class="col-md-4 stat-item-modern page-entrance" style="animation-delay: 0.4s">
-                <div class="stat-glow" style="bottom: 20%; left: 40%;"></div>
-                <span class="stat-number">24/7</span>
-                <span class="section-label" style="color: var(--accent); font-size: 1rem;">Support Available</span>
+            <div class="col-md-4 stat-item reveal delay-2">
+                <span class="stat-number text-gradient">24<span style="color: var(--accent);">/</span>7</span>
+                <span style="color: var(--text-secondary); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;">Support Available</span>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA SECTION -->
 <section class="cta-section section-padding">
-    <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-8 page-entrance">
-                <span class="section-label" style="color: #fff; font-size: 1rem; margin-bottom: 20px;">
-                    READY TO EXPERIENCE THE FUTURE
-                </span>
-                <h2 class="hero-title" style="font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 30px;">
-                    Join the Revolution
-                </h2>
-                <p class="hero-subtitle" style="color: rgba(255,255,255,0.8); margin-bottom: 40px;">
-                    Discover products that redefine excellence and service that sets new standards.
-                </p>
-                <div class="d-flex flex-wrap gap-3 justify-content-center">
-                    <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="btn-modern">
-                        Explore Collection
-                        <lord-icon
-                            src="https://cdn.lordicon.com/udbbfuld.json"
-                            trigger="loop"
-                            colors="primary:#000000"
-                            style="width:24px;height:24px">
-                        </lord-icon>
-                    </a>
-                    <a href="?supplier_id=<?= $supplier_id ?>&page=contact" class="btn-modern" style="background: transparent; border: 2px solid #fff; color: #fff;">
-                        Contact Us
-                    </a>
+    <div class="cta-bg-glow"></div>
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 reveal">
+                <h2 class="story-heading">Ready to Experience the Best?</h2>
+                <p class="story-text" style="margin-bottom: 40px;">Join thousands of satisfied customers and discover products that redefine excellence.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="btn-premium">Explore Catalog</a>
+                    <a href="?supplier_id=<?= $supplier_id ?>&page=contact" class="btn-outline-premium">Contact Us</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<!-- LordIcon Script -->
-<script src="https://cdn.lordicon.com/lordicon.js"></script>

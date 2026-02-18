@@ -21,7 +21,7 @@ if (!$email || !$password) {
 }
 
 // 1. Fetch Customer (Removed "and status = 'active'" and added status to SELECT)
-$sql = "SELECT customer_id, password, status FROM customers WHERE email = ? LIMIT 1";
+$sql = "SELECT customer_id, password, status FROM customers WHERE email = ? and status != 'inactive' LIMIT 1";
 $stmt = $conn->prepare($sql);
 
 if (!$stmt) {
