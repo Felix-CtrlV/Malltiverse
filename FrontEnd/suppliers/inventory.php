@@ -1390,7 +1390,7 @@ ob_end_flush();
                                 </td>
 
                                 <td style="font-weight: 700; color: #334155;">
-                                    $<?= number_format($price ?? 0, 2); ?>
+                                    $<?= number_format((float) ($p['price'] ?? 0), 2); ?>
                                 </td>
 
                                 <td>
