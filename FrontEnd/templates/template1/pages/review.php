@@ -71,7 +71,7 @@ if ($company_id_review <= 0 && $supplier_id > 0) {
 
 // Fetch reviews with customer profile images (reviews table uses company_id)
 $review_stmt = mysqli_prepare($conn, "
-    SELECT r.rating, r.review, r.created_at, c.image 
+    SELECT r.rating, r.review, r.created_at, c.image, c.name
     FROM reviews r 
     LEFT JOIN customers c ON r.customer_id = c.customer_id 
     WHERE r.company_id = ?
@@ -228,7 +228,7 @@ if (isset($_POST['submit_review'])) {
               style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #eee;">
 
             <div>
-              <strong>Customer</strong><br>
+              <strong><?= $feedback['name'] ?></strong><br>
               <?= str_repeat('★', $feedback['rating']) . str_repeat('☆', 5 - $feedback['rating']) ?><br>
               <p><?= htmlspecialchars($feedback['review']) ?></p>
             </div>
