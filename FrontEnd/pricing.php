@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Plan - Supplier Registration</title>
-    <link rel="stylesheet" href="assets/Css/supplierregister.css">
+    <link rel="stylesheet" href="assets/Css/supplierregister.css?v=2">
     <style>
         :root {
             --primary: #7d6de3;

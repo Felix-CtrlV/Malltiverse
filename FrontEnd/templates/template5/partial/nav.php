@@ -129,9 +129,11 @@ if ($isLoggedIn) {
             </div>
         </a>
 
-        <a href="../customer?state=hallway" class="shopping-back ms-3 d-none d-md-flex">
-            <i class="fas fa-arrow-left me-2"></i> Back to the Mall
-        </a>
+
+       <a href="../customer?state=hallway" class="shopping-back ms-2 ms-md-3">
+    <i class="fas fa-arrow-left"></i>
+    <span class="ms-2 d-none d-sm-inline">Back to the Mall</span>
+</a>
 
         <div class="nav-cart ms-auto me-3 d-lg-none">
             <a href="javascript:void(0)" onclick="handleCartClick(<?= $isLoggedIn ? 'true' : 'false' ?>)" class="position-relative text-dark">
@@ -305,4 +307,22 @@ document.addEventListener('DOMContentLoaded', refreshBag);
 }
 .google-avatar-circle {
     object-fit: cover; 
+}
+@media (max-width: 576px) {
+    .shopping-back {
+        padding: 6px 12px !important;
+        font-size: 11px !important;
+        height: 32px;
+        width: 32px;
+        justify-content: center;
+        border-radius: 50% !important; /* ဖုန်းမှာ အဝိုင်းလေးပဲ ပြမယ် */
+    }
+    .shopping-back i {
+        margin: 0 !important;
+    }
+    
+    /* Logo နဲ့ စာသား အရွယ်အစားကို ဖုန်းမှာ နည်းနည်းသေးပေးခြင်း */
+    .navbar-brand h1 {
+        font-size: 0.85rem !important;
+    }
 }</style>

@@ -43,7 +43,6 @@ $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 $company_id = $user['company_id']; // Needed for fetching messages
-
 $banner_string = $user["banner"];
 $banners = explode(",", $banner_string);
 $banner_count = count($banners);

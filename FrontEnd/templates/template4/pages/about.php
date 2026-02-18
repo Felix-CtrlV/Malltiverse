@@ -15,25 +15,27 @@ $accent_color = $shop_assets['primary_color'] ?? '#D4AF37';
 
 // Generate a fallback logo data URI
 $fallback_logo_svg = '<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">'
-    . '<circle cx="100" cy="100" r="80" fill="#333" stroke="' . htmlspecialchars($accent_color) . '" stroke-width="4"/>'
-    . '<text x="100" y="120" text-anchor="middle" fill="' . htmlspecialchars($accent_color) . '" font-family="Arial, sans-serif" font-size="24" font-weight="bold">'
+    . '<circle cx="100" cy="100" r="80" fill="#111" stroke="' . htmlspecialchars($accent_color) . '" stroke-width="2"/>'
+    . '<text x="100" y="108" text-anchor="middle" fill="' . htmlspecialchars($accent_color) . '" font-family="-apple-system, sans-serif" font-size="24" font-weight="600" letter-spacing="1">'
     . htmlspecialchars($company_name) . '</text></svg>';
 $fallback_logo_data_uri = 'data:image/svg+xml,' . rawurlencode($fallback_logo_svg);
 ?>
 
 <style>
-    /* ===== MODERN DESIGN SYSTEM ===== */
+    /* ===== MODERN PREMIUM DESIGN SYSTEM ===== */
     :root {
-        --bg-color: #050505;
-        --card-bg: rgba(20, 20, 20, 0.6);
-        --text-main: #ffffff;
-        --text-muted: #a0a0a0;
+        --bg-base: #000000;
+        --bg-surface: #0a0a0a;
+        --text-primary: #f5f5f7;
+        --text-secondary: #86868b;
         --accent: <?= $accent_color ?>;
-        --accent-glow: <?= $accent_color ?>40;
-        --font-display: 'Helvetica Neue', 'Arial Black', sans-serif;
-        --font-body: 'Helvetica', sans-serif;
-        --transition-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
-        --gradient-text: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+        --accent-glow: <?= $accent_color ?>33; /* 20% opacity */
+        --accent-strong: <?= $accent_color ?>80;
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --glass-bg: rgba(20, 20, 20, 0.4);
+        --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,456 +43,424 @@ $fallback_logo_data_uri = 'data:image/svg+xml,' . rawurlencode($fallback_logo_sv
     html, body {
         width: 100%;
         overflow-x: hidden;
-        background: var(--bg-color);
-        color: var(--text-main);
-        font-family: var(--font-body);
+        background: var(--bg-base);
+        color: var(--text-primary);
+        font-family: var(--font-main);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
         scroll-behavior: smooth;
     }
 
-    /* ===== UTILITIES ===== */
-    .section-padding { padding: 100px 0; }
+    /* ===== UTILITIES & ANIMATIONS ===== */
+    .section-padding { padding: 120px 0; }
     
     .text-gradient {
-        background: var(--gradient-text);
+        background: linear-gradient(135deg, #ffffff 0%, var(--text-secondary) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
-    .page-entrance {
+    .text-accent-gradient {
+        background: linear-gradient(135deg, #ffffff 20%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Smooth Scroll Reveal */
+    .reveal {
         opacity: 0;
-        animation: fadeInUp 1s var(--transition-smooth) forwards;
+        transform: translateY(40px) scale(0.98);
+        transition: all 1.2s var(--ease-out-expo);
+        will-change: opacity, transform;
     }
-
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to   { opacity: 1; transform: translateY(0); }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
 
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50%      { transform: translateY(-15px); }
+    /* ===== PREMIUM GLASS & 3D EFFECTS ===== */
+    .glass-panel {
+        background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--border-subtle);
+        border-radius: 32px;
+        box-shadow: 
+            0 30px 60px rgba(0,0,0,0.4),
+            inset 0 1px 0 rgba(255,255,255,0.1);
+        transition: transform 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo), border-color 0.6s ease;
+    }
+    .glass-panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 
+            0 40px 80px rgba(0,0,0,0.6),
+            0 0 40px var(--accent-glow),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.15);
     }
 
     /* ===== HERO SECTION ===== */
     .hero-section {
         position: relative;
-        min-height: 90vh;
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: radial-gradient(circle at 50% 30%, #151515 0%, #000000 70%);
         overflow: hidden;
     }
 
-    .hero-glow {
+    /* Ambient Background Orbs */
+    .ambient-orb {
         position: absolute;
-        width: 60vw;
-        height: 60vw;
-        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-        filter: blur(80px);
-        opacity: 0.4;
-        top: -20%;
-        left: 50%;
-        transform: translateX(-50%);
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    .particles-container {
-        position: absolute;
-        inset: 0;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .particle {
-        position: absolute;
-        background: var(--accent);
         border-radius: 50%;
-        opacity: 0.3;
+        filter: blur(100px);
+        opacity: 0.4;
+        animation: floatOrb 20s infinite ease-in-out alternate;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .orb-1 {
+        width: 60vw; height: 60vw;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+        top: -10%; left: -10%;
+    }
+    .orb-2 {
+        width: 50vw; height: 50vw;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        bottom: -20%; right: -10%;
+        animation-delay: -5s;
+    }
+
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(5%, 10%) scale(1.1); }
     }
 
     .hero-content {
         position: relative;
-        z-index: 5;
+        z-index: 2;
         text-align: center;
-        max-width: 900px;
+        max-width: 1000px;
         padding: 0 20px;
     }
 
     .hero-label {
-        display: inline-block;
-        font-size: 0.85rem;
-        letter-spacing: 4px;
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 20px;
-        border: 1px solid var(--accent-glow);
-        padding: 8px 16px;
-        border-radius: 30px;
-        background: rgba(0,0,0,0.3);
-        backdrop-filter: blur(5px);
+        color: var(--text-primary);
+        margin-bottom: 30px;
+        border: 1px solid var(--border-subtle);
+        padding: 8px 20px;
+        border-radius: 40px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .hero-title {
-        font-family: var(--font-display);
-        font-size: clamp(3.5rem, 8vw, 6.5rem);
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 25px;
-        letter-spacing: -1px;
+        font-size: clamp(3rem, 7vw, 6rem);
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        line-height: 1.05;
+        margin-bottom: 30px;
     }
 
     .hero-subtitle {
-        font-size: clamp(1.1rem, 2vw, 1.4rem);
-        color: var(--text-muted);
-        margin-bottom: 40px;
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        color: var(--text-secondary);
+        margin-bottom: 50px;
         line-height: 1.6;
-        max-width: 700px;
+        max-width: 600px;
         margin-left: auto;
         margin-right: auto;
+        font-weight: 400;
     }
 
-    /* Fixed Scroll Indicator */
-    .scroll-indicator {
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        opacity: 0.6;
-        animation: float 2s infinite ease-in-out;
-        z-index: 5;
-        pointer-events: none; /* Prevents overlay blocking clicks */
-    }
-
-    /* Hide scroll indicator on short screens to avoid overlap */
-    @media (max-height: 700px) {
-        .scroll-indicator { display: none; }
-    }
-
-    .mouse-icon {
-        width: 26px;
-        height: 40px;
-        border: 2px solid var(--text-muted);
-        border-radius: 20px;
+    /* ===== BUTTONS ===== */
+    .btn-premium {
         position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 40px;
+        background: var(--text-primary);
+        color: var(--bg-base);
+        border-radius: 40px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        overflow: hidden;
+        transition: all 0.4s var(--ease-out-expo);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
-
-    .mouse-icon::before {
-        content: '';
-        position: absolute;
-        top: 6px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 4px;
-        height: 4px;
+    .btn-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px var(--accent-glow);
         background: var(--accent);
-        border-radius: 50%;
-        animation: scrollWheel 2s infinite;
+        color: #fff;
     }
 
-    @keyframes scrollWheel {
-        0% { top: 6px; opacity: 1; }
-        100% { top: 20px; opacity: 0; }
+    .btn-outline-premium {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 40px;
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 40px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.4s var(--ease-out-expo);
+        backdrop-filter: blur(10px);
+    }
+    .btn-outline-premium:hover {
+        border-color: var(--accent);
+        background: rgba(255,255,255,0.03);
     }
 
     /* ===== STORY SECTION ===== */
-    .story-section {
-        position: relative;
-        background: #080808;
-        overflow: hidden;
-    }
-
-    /* Modern Glass Card */
-    .story-card-glass {
-        background: var(--card-bg);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        padding: 50px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    .story-section { position: relative; z-index: 2; }
+    
+    .story-content-inner { padding: 60px 50px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+    
+    .eyebrow {
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: block;
     }
 
     .story-heading {
-        font-size: clamp(2rem, 3vw, 3rem);
+        font-size: clamp(2rem, 3.5vw, 3rem);
         font-weight: 700;
-        margin-bottom: 25px;
+        letter-spacing: -0.02em;
         line-height: 1.2;
+        margin-bottom: 30px;
     }
 
     .story-text {
-        color: var(--text-muted);
-        font-size: 1.1rem;
-        line-height: 1.8;
-        margin-bottom: 20px;
+        color: var(--text-secondary);
+        font-size: 1.15rem;
+        line-height: 1.7;
+        margin-bottom: 25px;
     }
 
-    .highlight {
-        color: #fff;
-        border-bottom: 1px solid var(--accent);
-    }
-
-    /* ===== RESTORED PREMIUM REACTOR ANIMATION ===== */
-    @keyframes spinRing1 {
-        0% { transform: rotateX(65deg) rotateY(10deg) rotateZ(0deg); }
-        100% { transform: rotateX(65deg) rotateY(10deg) rotateZ(360deg); }
-    }
-    @keyframes spinRing2 {
-        0% { transform: rotateX(50deg) rotateY(-20deg) rotateZ(0deg); }
-        100% { transform: rotateX(50deg) rotateY(-20deg) rotateZ(360deg); }
-    }
-    @keyframes spinRing3 {
-        0% { transform: rotateX(75deg) rotateY(15deg) rotateZ(0deg); }
-        100% { transform: rotateX(75deg) rotateY(15deg) rotateZ(360deg); }
-    }
-    @keyframes premiumFloat {
-        0%, 100% { transform: translateY(0px) scale(1); }
-        50% { transform: translateY(-12px) scale(1.02); }
-    }
-    @keyframes spinAmbient {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Reactor Wrapper (Alignment) */
+    /* ===== REFINED 3D REACTOR ===== */
     .visual-container {
         position: relative;
         width: 100%;
-        min-height: 500px;
+        min-height: 600px;
         display: flex;
         align-items: center;
         justify-content: center;
-        perspective: 1200px;
+        perspective: 1000px;
     }
 
-    /* Original Reactor Styles */
-    .reactor-container-modern {
+    .reactor-core {
         position: relative;
         width: 100%;
-        max-width: 450px;
+        max-width: 480px;
         aspect-ratio: 1 / 1;
-        background: radial-gradient(circle at 30% 30%, rgba(26, 26, 26, 0.8) 0%, #050505 100%);
-        border-radius: 40px;
-        box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.8), 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        background: radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
         transform-style: preserve-3d;
-        transition: transform 0.6s var(--transition-smooth);
+        animation: floatCore 8s var(--ease-smooth) infinite;
     }
 
-    .reactor-container-modern:hover {
-        transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
-        box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.8), 0 35px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
-    }
-
-    .ambient-glow {
-        position: absolute;
-        width: 150%;
-        height: 150%;
-        background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, var(--accent-glow) 180deg, transparent 360deg);
-        animation: spinAmbient 15s linear infinite;
-        opacity: 0.15;
+    @keyframes floatCore {
+        0%, 100% { transform: translateY(0) rotateX(5deg) rotateY(-5deg); }
+        50% { transform: translateY(-15px) rotateX(10deg) rotateY(5deg); }
     }
 
     .orbital-ring {
         position: absolute;
         border-radius: 50%;
         transform-style: preserve-3d;
+        border: 1px solid rgba(255,255,255,0.05);
     }
 
     .ring-1 {
-        width: 320px;
-        height: 320px;
-        border: 1px solid rgba(255, 255, 255, 0.03);
-        border-left: 2px solid var(--accent);
-        box-shadow: 0 0 20px var(--accent-glow);
-        animation: spinRing1 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        width: 100%; height: 100%;
+        border-left: 1px solid var(--accent);
+        box-shadow: inset 10px 0 30px -10px var(--accent-glow);
+        animation: spin1 20s linear infinite;
     }
-
     .ring-2 {
-        width: 240px;
-        height: 240px;
-        border: 1px dashed rgba(255, 255, 255, 0.15);
-        border-right: 2px solid #ffffff;
-        animation: spinRing2 16s cubic-bezier(0.4, 0, 0.6, 1) infinite reverse;
-        opacity: 0.6;
+        width: 75%; height: 75%;
+        border-right: 1px solid var(--text-primary);
+        animation: spin2 15s linear infinite reverse;
     }
-
     .ring-3 {
-        width: 160px;
-        height: 160px;
-        border: 2px solid rgba(255, 255, 255, 0.08);
+        width: 50%; height: 50%;
         border-top: 2px solid var(--accent);
-        animation: spinRing3 8s linear infinite;
+        filter: drop-shadow(0 0 10px var(--accent-strong));
+        animation: spin3 10s linear infinite;
     }
 
-    .logo-wrapper {
+    @keyframes spin1 { to { transform: rotateX(60deg) rotateY(20deg) rotateZ(360deg); } from { transform: rotateX(60deg) rotateY(20deg) rotateZ(0deg); } }
+    @keyframes spin2 { to { transform: rotateX(70deg) rotateY(-20deg) rotateZ(360deg); } from { transform: rotateX(70deg) rotateY(-20deg) rotateZ(0deg); } }
+    @keyframes spin3 { to { transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg); } from { transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg); } }
+
+    .logo-center {
         position: relative;
         z-index: 10;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: premiumFloat 6s ease-in-out infinite;
-        transform-style: preserve-3d;
-    }
-
-    .floating-logo {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
+        background: var(--bg-base);
+        padding: 4px;
+        box-shadow: 
+            0 20px 40px rgba(0,0,0,0.8),
+            0 0 0 1px rgba(255,255,255,0.1),
+            inset 0 0 20px rgba(255,255,255,0.05);
+        transform: translateZ(50px);
+    }
+    
+    .logo-center img {
+        width: 100%; height: 100%;
         object-fit: cover;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-        background: #000;
+        border-radius: 50%;
     }
 
-    /* ===== BUTTONS ===== */
-    .btn-glow {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 16px 40px;
-        background: var(--text-main);
-        color: #000;
-        border-radius: 50px;
-        font-weight: 700;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    .btn-glow:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px var(--accent-glow);
-        background: var(--accent);
-    }
-
-    .btn-outline {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 16px 40px;
-        background: transparent;
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 50px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-    }
-
-    /* ===== OTHER SECTIONS ===== */
-    .values-grid-modern {
+    /* ===== PILLARS / VALUES ===== */
+    .values-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 30px;
         margin-top: 60px;
     }
-    .value-card-modern {
-        background: linear-gradient(145deg, #111, #0f0f0f);
-        border-radius: 25px;
+    
+    .value-card {
         padding: 50px 40px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        transition: all 0.5s var(--transition-smooth);
+        text-align: left;
     }
-    .value-card-modern:hover { transform: translateY(-10px); border-color: var(--accent); }
-    .value-icon { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 15px; display:flex; align-items:center; justify-content:center; margin-bottom:25px; }
-    
-    .stats-section { background: linear-gradient(to bottom, #050505, #111); }
-    .stat-number { font-size: 3.5rem; font-weight: 900; color: #fff; display: block; }
-    
-    .cta-section { background: linear-gradient(135deg, #0a0a0a 0%, var(--accent) 300%); }
 
-    /* Responsive Adjustments */
+    .value-icon-wrapper {
+        width: 56px; height: 56px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 24px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    .value-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+    }
+
+    /* ===== STATS SECTION ===== */
+    .stats-section {
+        position: relative;
+        border-top: 1px solid var(--border-subtle);
+        border-bottom: 1px solid var(--border-subtle);
+        background: radial-gradient(ellipse at center, rgba(20,20,20,0.5) 0%, var(--bg-base) 100%);
+    }
+
+    .stat-item { padding: 40px 0; }
+    
+    .stat-number {
+        font-size: clamp(3rem, 5vw, 4.5rem);
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+    }
+    .cta-bg-glow {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80vw; height: 80vw;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+        filter: blur(80px);
+        opacity: 0.5;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /* Responsive */
     @media (max-width: 991px) {
-        .visual-container { min-height: 400px; margin-top: 40px; }
-        .hero-section { min-height: 80vh; }
-        .story-card-glass { text-align: center; padding: 40px 20px; }
-        .reactor-container-modern { max-width: 350px; }
-        .ring-1 { width: 280px; height: 280px; }
-        .ring-2 { width: 200px; height: 200px; }
-        .ring-3 { width: 140px; height: 140px; }
+        .visual-container { min-height: 400px; }
+        .reactor-core { max-width: 320px; }
+        .story-content-inner { padding: 40px 30px; }
     }
 </style>
 
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.querySelector('.particles-container');
-        if(container) {
-            for(let i=0; i<40; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                const size = Math.random() * 3 + 1;
-                p.style.width = size + 'px';
-                p.style.height = size + 'px';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.top = Math.random() * 100 + '%';
-                p.style.animation = `float ${Math.random() * 10 + 10}s infinite linear`;
-                container.appendChild(p);
-            }
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+        // High-performance Intersection Observer for smooth reveal animations
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
         
-        const observer = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Run once for better performance
                 }
             });
-        });
-        document.querySelectorAll('.page-entrance').forEach(el => observer.observe(el));
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     });
 </script>
 
 <section class="hero-section">
-    <div class="particles-container"></div>
-    <div class="hero-glow"></div>
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
     
-    <div class="container">
-        <div class="hero-content page-entrance">
-            <span class="hero-label">Established to Innovate</span>
-            <h1 class="hero-title">
-                Redefining <span class="text-gradient">Excellence</span>
-            </h1>
-            <p class="hero-subtitle">
-                Where premium quality meets cutting-edge technology. Experience the future of our products today.
-            </p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="#story" class="btn-glow">
-                    Our Story
-                    <lord-icon
-                        src="https://cdn.lordicon.com/msoeawqm.json"
-                        trigger="loop"
-                        colors="primary:#000"
-                        style="width:20px;height:20px">
-                    </lord-icon>
-                </a>
-                <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="btn-outline">
-                    View Products
-                </a>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="hero-content">
+                    <div class="reveal">
+                        <span class="hero-label">Engineered for Perfection</span>
+                    </div>
+                    <h1 class="hero-title reveal delay-1">
+                        Redefining <span class="text-accent-gradient">Excellence</span>
+                    </h1>
+                    <p class="hero-subtitle reveal delay-2">
+                        Where premium quality meets cutting-edge technology. Experience the future of our products today, crafted meticulously for your lifestyle.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 reveal delay-3 flex-wrap">
+                        <a href="#story" class="btn-premium">
+                            Discover Our Story
+                        </a>
+                        <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="btn-outline-premium">
+                            View Collection
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="scroll-indicator">
-        <div class="mouse-icon"></div>
-        <span style="font-size: 12px; letter-spacing: 2px;">SCROLL</span>
     </div>
 </section>
 
@@ -498,45 +468,37 @@ $fallback_logo_data_uri = 'data:image/svg+xml,' . rawurlencode($fallback_logo_sv
     <div class="container">
         <div class="row align-items-center g-5">
             
-            <div class="col-lg-6 page-entrance">
-                <div class="story-card-glass">
-                    <span style="color: var(--accent); letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 15px; display:block;">WHO WE ARE</span>
-                    <h2 class="story-heading">Crafting Tomorrow's <br><span class="text-gradient">Standards Today</span></h2>
+            <div class="col-lg-6">
+                <div class="glass-panel story-content-inner reveal">
+                    <span class="eyebrow">Who We Are</span>
+                    <h2 class="story-heading">Crafting Tomorrow's <br><span class="text-gradient">Standards Today.</span></h2>
                     
                     <p class="story-text">
                         <?= nl2br(htmlspecialchars($company_desc)) ?>
                     </p>
                     <p class="story-text">
-                        At <span class="highlight"><?= htmlspecialchars($company_name) ?></span>, we don't just sell products; we curate experiences. Our commitment to innovation is matched only by our dedication to your satisfaction.
+                        At <strong style="color: var(--text-primary); font-weight: 600;"><?= htmlspecialchars($company_name) ?></strong>, we curate experiences. Our commitment to innovation is matched only by our dedication to your complete satisfaction.
                     </p>
                     
                     <div class="mt-4">
-                        <a href="?supplier_id=<?= $supplier_id ?>&page=contact" style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                        <a href="?supplier_id=<?= $supplier_id ?>&page=contact" class="btn-outline-premium" style="padding: 12px 24px; border-radius: 20px;">
                             Connect With Us
-                            <lord-icon
-                                src="https://cdn.lordicon.com/zmkotitn.json"
-                                trigger="hover"
-                                colors="primary:<?= $accent_color ?>"
-                                style="width:20px;height:20px">
-                            </lord-icon>
+                            <lord-icon src="https://cdn.lordicon.com/zmkotitn.json" trigger="hover" colors="primary:#fff" style="width:20px;height:20px"></lord-icon>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-6 page-entrance" style="animation-delay: 0.2s">
-                <div class="visual-container">
-                    <div class="reactor-container-modern">
-                        <div class="ambient-glow"></div>
+            <div class="col-lg-6">
+                <div class="visual-container reveal delay-2">
+                    <div class="reactor-core">
                         <div class="orbital-ring ring-1"></div>
                         <div class="orbital-ring ring-2"></div>
                         <div class="orbital-ring ring-3"></div>
-                        <div class="logo-wrapper">
-                            <img
-                                src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>"
-                                alt="Logo"
-                                class="floating-logo"
-                                onerror="this.src='<?= $fallback_logo_data_uri ?>'">
+                        <div class="logo-center">
+                            <img src="../uploads/shops/<?= $supplier_id ?>/<?= htmlspecialchars($shop_assets['logo']) ?>" 
+                                 alt="Brand Logo" 
+                                 onerror="this.src='<?= $fallback_logo_data_uri ?>'">
                         </div>
                     </div>
                 </div>
@@ -549,70 +511,69 @@ $fallback_logo_data_uri = 'data:image/svg+xml,' . rawurlencode($fallback_logo_sv
 <section class="section-padding">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
-            <div class="col-lg-8 page-entrance">
-                <span style="color: var(--accent); letter-spacing: 2px; font-size: 0.9rem;">OUR PILLARS</span>
-                <h2 style="font-size: 2.5rem; font-weight: 700; margin-top: 10px;">Built on Excellence</h2>
+            <div class="col-lg-8 reveal">
+                <span class="eyebrow">Our Pillars</span>
+                <h2 class="story-heading" style="margin-bottom: 0;">Built on Excellence</h2>
             </div>
         </div>
 
-        <div class="values-grid-modern">
-            <div class="value-card-modern page-entrance">
-                <div class="value-icon">
-                    <lord-icon src="https://cdn.lordicon.com/hjeefwhm.json" trigger="hover" colors="primary:#ffffff" style="width:35px;height:35px"></lord-icon>
+        <div class="values-grid">
+            <div class="glass-panel value-card reveal">
+                <div class="value-icon-wrapper">
+                    <lord-icon src="https://cdn.lordicon.com/hjeefwhm.json" trigger="hover" colors="primary:#ffffff" style="width:28px;height:28px"></lord-icon>
                 </div>
-                <h4 style="color:#fff; margin-bottom:15px;">Quality First</h4>
-                <p style="color: var(--text-muted);">Rigorous testing ensures every product meets our premium standards.</p>
+                <h4 class="value-title">Uncompromising Quality</h4>
+                <p class="story-text" style="font-size: 1rem; margin:0;">Rigorous testing and premium materials ensure every product exceeds industry standards.</p>
             </div>
-            <div class="value-card-modern page-entrance" style="animation-delay: 0.2s">
-                <div class="value-icon">
-                    <lord-icon src="https://cdn.lordicon.com/cllunfud.json" trigger="hover" colors="primary:#ffffff" style="width:35px;height:35px"></lord-icon>
+            <div class="glass-panel value-card reveal delay-1">
+                <div class="value-icon-wrapper">
+                    <lord-icon src="https://cdn.lordicon.com/cllunfud.json" trigger="hover" colors="primary:#ffffff" style="width:28px;height:28px"></lord-icon>
                 </div>
-                <h4 style="color:#fff; margin-bottom:15px;">Secure</h4>
-                <p style="color: var(--text-muted);">Military-grade encryption protects your data and peace of mind.</p>
+                <h4 class="value-title">Absolute Security</h4>
+                <p class="story-text" style="font-size: 1rem; margin:0;">Enterprise-grade architecture protects your data and guarantees peace of mind.</p>
             </div>
-            <div class="value-card-modern page-entrance" style="animation-delay: 0.4s">
-                <div class="value-icon">
-                    <lord-icon src="https://cdn.lordicon.com/zpxybbhl.json" trigger="hover" colors="primary:#ffffff" style="width:35px;height:35px"></lord-icon>
+            <div class="glass-panel value-card reveal delay-2">
+                <div class="value-icon-wrapper">
+                    <lord-icon src="https://cdn.lordicon.com/zpxybbhl.json" trigger="hover" colors="primary:#ffffff" style="width:28px;height:28px"></lord-icon>
                 </div>
-                <h4 style="color:#fff; margin-bottom:15px;">24/7 Support</h4>
-                <p style="color: var(--text-muted);">Round-the-clock assistance ensuring a flawless experience.</p>
+                <h4 class="value-title">24/7 Priority Support</h4>
+                <p class="story-text" style="font-size: 1rem; margin:0;">Round-the-clock expert assistance ensuring a flawless and seamless experience.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="stats-section section-padding">
+<section class="stats-section">
     <div class="container">
         <div class="row text-center">
-            <div class="col-md-4 page-entrance">
-                <span class="stat-number">100%</span>
-                <span style="color: var(--accent);">Client Satisfaction</span>
+            <div class="col-md-4 stat-item reveal">
+                <span class="stat-number text-gradient">100<span style="color: var(--accent);">%</span></span>
+                <span style="color: var(--text-secondary); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;">Client Satisfaction</span>
             </div>
-            <div class="col-md-4 page-entrance" style="animation-delay: 0.2s">
-                <span class="stat-number">10K+</span>
-                <span style="color: var(--accent);">Products Delivered</span>
+            <div class="col-md-4 stat-item reveal delay-1">
+                <span class="stat-number text-gradient">10<span style="color: var(--accent);">k+</span></span>
+                <span style="color: var(--text-secondary); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;">Products Delivered</span>
             </div>
-            <div class="col-md-4 page-entrance" style="animation-delay: 0.4s">
-                <span class="stat-number">24/7</span>
-                <span style="color: var(--accent);">Support Available</span>
+            <div class="col-md-4 stat-item reveal delay-2">
+                <span class="stat-number text-gradient">24<span style="color: var(--accent);">/</span>7</span>
+                <span style="color: var(--text-secondary); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;">Support Available</span>
             </div>
         </div>
     </div>
 </section>
 
 <section class="cta-section section-padding">
-    <div class="container text-center">
+    <div class="cta-bg-glow"></div>
+    <div class="container position-relative" style="z-index: 2;">
         <div class="row justify-content-center">
-            <div class="col-lg-8 page-entrance">
-                <h2 style="font-size: 3rem; margin-bottom: 20px;">Join the Revolution</h2>
-                <p style="margin-bottom: 40px; color: rgba(255,255,255,0.8);">Discover products that redefine excellence.</p>
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="btn-glow">Explore</a>
-                    <a href="?supplier_id=<?= $supplier_id ?>&page=contact" class="btn-outline">Contact Us</a>
+            <div class="col-lg-8 reveal">
+                <h2 class="story-heading">Ready to Experience the Best?</h2>
+                <p class="story-text" style="margin-bottom: 40px;">Join thousands of satisfied customers and discover products that redefine excellence.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="?supplier_id=<?= $supplier_id ?>&page=products" class="btn-premium">Explore Catalog</a>
+                    <a href="?supplier_id=<?= $supplier_id ?>&page=contact" class="btn-outline-premium">Contact Us</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<script src="https://cdn.lordicon.com/lordicon.js"></script>

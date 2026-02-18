@@ -15,7 +15,7 @@ LEFT JOIN companies c ON c.supplier_id = s.supplier_id
 LEFT JOIN shop_assets sa ON sa.company_id = c.company_id 
 LEFT JOIN products p ON p.company_id = c.company_id 
 LEFT JOIN product_variant pv ON pv.product_id = p.product_id 
-WHERE s.supplier_id = ? AND c.status = 'active' limit 1;");
+WHERE s.supplier_id = ? AND (c.status = 'active' OR c.status = 'banned') limit 1;");
 
 $stmt->bind_param("i", $supplierid);
 $stmt->execute();
@@ -25,7 +25,64 @@ $stmt->close();
 
 // --- [START] FIX: CHECK IF ACCOUNT IS ACTIVE ---
 if (!$row) {
-    // If $row is null, it means no 'active' company was found for this supplier.
+    $pending_company_name = '';
+    $company_status = '';
+    $company_id_fallback = 0;
+    $status_stmt = $conn->prepare("SELECT company_id, company_name, status FROM companies WHERE supplier_id = ? ORDER BY company_id DESC LIMIT 1");
+    if ($status_stmt) {
+        $status_stmt->bind_param("i", $supplierid);
+        $status_stmt->execute();
+        $status_res = $status_stmt->get_result();
+        $status_row = $status_res ? $status_res->fetch_assoc() : null;
+        $status_stmt->close();
+        if ($status_row) {
+            $pending_company_name = $status_row['company_name'] ?? '';
+            $company_status = $status_row['status'] ?? '';
+            $company_id_fallback = (int)($status_row['company_id'] ?? 0);
+        }
+    }
+
+    $ban_reason = '';
+    $ban_until = '';
+    $ban_username = '';
+    if ($company_status === 'banned' && $company_id_fallback > 0) {
+        $ban_stmt = $conn->prepare("SELECT b.reason, b.banned_until, a.username FROM banned_list b LEFT JOIN admins a ON b.banned_by = a.adminid WHERE b.entity_type = 'company' AND b.entity_id = ? ORDER BY b.banned_at DESC LIMIT 1");
+        if ($ban_stmt) {
+            $ban_stmt->bind_param("i", $company_id_fallback);
+            $ban_stmt->execute();
+            $ban_res = $ban_stmt->get_result();
+            $ban_row = $ban_res ? $ban_res->fetch_assoc() : null;
+            $ban_stmt->close();
+            if ($ban_row) {
+                $ban_reason = $ban_row['reason'] ?? '';
+                $ban_until = $ban_row['banned_until'] ?? '';
+                $ban_username = $ban_row['username'] ?? '';
+            }
+        }
+    }
+
+    $ban_remaining_text = '';
+    if (!empty($ban_until)) {
+        try {
+            $end_date = new DateTime($ban_until);
+            $now = new DateTime();
+            if ($end_date > $now) {
+                $interval = $now->diff($end_date);
+                $parts = [];
+                if ($interval->y > 0) $parts[] = $interval->y . ' yr';
+                if ($interval->m > 0) $parts[] = $interval->m . ' mo';
+                if ($interval->d > 0) $parts[] = $interval->d . ' days';
+                if ($interval->h > 0) $parts[] = $interval->h . ' hrs';
+                $ban_remaining_text = implode(', ', array_slice($parts, 0, 2));
+            } else {
+                $ban_remaining_text = 'Expired';
+            }
+        } catch (Exception $e) {
+            $ban_remaining_text = '';
+        }
+    }
+
+    // If $row is null, it means no active/banned company was found for this supplier.
     // We display the waiting screen and exit the script immediately.
     ?>
     <!DOCTYPE html>
@@ -94,7 +151,7 @@ if (!$row) {
             </lord-icon>
 
             <h2>Waiting for Approval</h2>
-            <p>Your shop setup is currently under review or incomplete. Please wait for the administrator to approve your
+            <p>Your shop setup is currently under review or inactive. Please wait for the administrator to approve your
                 company details.</p>
 
             <a href="../utils/signout.php" class="btn-logout">Logout</a>
@@ -952,7 +1009,7 @@ $pendingOrderList = [
     <nav class="main-nav">
         <div class="brand"><?= htmlspecialchars($row['company_name']) ?></div>
         <div class="nav-right">
-            <a href="dashboard.php" class="nav-link <?= $active === "dashboard" ? 'active' : '' ?>">Dashboard</a>
+            <a href="dashboard.php" class="nav-link <?= $active === "dashboard" ? 'active' : '' ?>">Overview</a>
             <a href="inventory.php" class="nav-link <?= $active === "inventory" ? 'active' : '' ?>">Inventory</a>
             <a href="orders.php" class="nav-link <?= $active === "orders" ? 'active' : '' ?>">Orders</a>
             <a href="rentpayment.php" class="nav-link <?= $active === "rentpayment" ? 'active' : '' ?>">Rent Payment</a>

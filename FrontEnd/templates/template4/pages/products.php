@@ -543,7 +543,6 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
             if (isFetching || !hasMore) return;
             isFetching = true;
             
-            // Create a better loading indicator
             if (loader) loader.style.display = 'block';
             
             try {
@@ -554,8 +553,6 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
                 if (cId !== 'all') formData.append('category_id', cId);
                 if (search) formData.append('search', search);
 
-                // FIXED: Use the current window URL. 
-                // Since this PHP file handles the AJAX request at the top, we just post to the same page.
                 const scriptPath = window.location.href;
                 
                 const response = await fetch(scriptPath, {
@@ -573,13 +570,9 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
                 if (html.trim() === 'NO_MORE' || !html.trim()) {
                     hasMore = false;
                     
-                    // Remove the trigger
                     if (trigger) trigger.remove();
-                    
-                    // Remove the loading indicator
                     if (loader) loader.remove();
                     
-                    // Add nice end message
                     const endMessage = document.createElement('div');
                     endMessage.className = 'end-message';
                     endMessage.innerHTML = `
@@ -592,29 +585,26 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
                         </div>
                     `;
                     
-                    // Insert after the grid
                     grid.parentNode.insertBefore(endMessage, grid.nextSibling);
                     
                 } else {
-                    // Create a temporary container to parse HTML
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
                     
-                    // Get only the product cards
                     const productCards = tempDiv.querySelectorAll('.product-card-wrapper');
                     
                     if (productCards.length > 0) {
                         productCards.forEach(card => {
                             grid.appendChild(card);
+                            
+                            // FIX: Re-attach tilt effect ONLY to newly appended cards to prevent memory crash
+                            if(window.attachTiltToElement) {
+                                const tiltEl = card.querySelector('.tilt-element');
+                                if (tiltEl) window.attachTiltToElement(tiltEl);
+                            }
                         });
                         offset += 9;
                         
-                        // Re-attach tilt effect to new cards
-                        if(window.attachTiltToElement) {
-                            grid.querySelectorAll('.tilt-element').forEach(window.attachTiltToElement);
-                        }
-                        
-                        // Hide loading indicator
                         if (loader) loader.style.display = 'none';
                     } else {
                         hasMore = false;
@@ -622,6 +612,10 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
                         if (loader) loader.remove();
                     }
                 }
+                
+                // FIX: Only reset fetching flag once the load has successfully completed
+                isFetching = false; 
+                
             } catch (err) {
                 console.error('Error loading products:', err);
                 if (loader) {
@@ -635,11 +629,11 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
                         loader.innerHTML = 'Loading more...';
                         loader.style.display = 'none';
                     }
-                    isFetching = false;
+                    // FIX: Reset flag here to enforce the 3-second cooldown and prevent an infinite error loop
+                    isFetching = false; 
                 }, 3000);
-            } finally {
-                isFetching = false;
             }
+            // Removed the finally { isFetching = false } block
         };
 
         if (trigger) {
@@ -654,9 +648,10 @@ if (isset($_POST['ajax_load']) && $_POST['ajax_load'] == 'true') {
             observer.observe(trigger);
         }
         
-        // Also add a manual scroll listener as backup
+        // Manual scroll fallback
         window.addEventListener('scroll', function() {
-            if (!trigger || !hasMore || isFetching) return;
+            // FIX: Added !document.body.contains(trigger) to stop ghost triggers when element is removed
+            if (!trigger || !hasMore || isFetching || !document.body.contains(trigger)) return;
             
             const triggerRect = trigger.getBoundingClientRect();
             if (triggerRect.top <= window.innerHeight + 100) {
