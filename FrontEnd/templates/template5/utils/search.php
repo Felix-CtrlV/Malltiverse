@@ -113,8 +113,8 @@ if ($products_result && mysqli_num_rows($products_result) > 0) {
 
 <style>
     .pagination-link {
-        padding: 15px 20px; /* Box size ko hane tar */
-        font-size: 15px;    /* Sar lone size ko kyee tar */
+        padding: 15px 20px; 
+        font-size: 15px;   
     }
     
 </style>

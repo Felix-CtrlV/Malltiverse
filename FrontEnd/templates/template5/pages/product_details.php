@@ -498,7 +498,7 @@ $colors = array_values(array_unique($colors));
 
     .premium-swal {
         width: 90% !important;
-        /* Mobile မှာ screen ရဲ့ ၉၀ ရာခိုင်နှုန်းပဲ ယူမယ် */
+        
         max-width: 400px !important;
         border-radius: 15px !important;
     }
