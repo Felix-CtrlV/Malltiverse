@@ -84,9 +84,14 @@ function splitHeroTitle(string $title): array
 <!-- =============================
      FEATURED CATEGORIES
 ============================= -->
+<!-- =============================
+     FEATURED CATEGORIES
+============================= -->
 <section class="featured-section">
   <div class="section-header">
-    <h2 class="text-center mb-5 h1" style="color: var(--primary); margin-top: 30px;">Our Featured Products</h2>
+    <h2 class="text-center mb-5 h1" style="color: var(--primary); margin-top: 30px;">
+      Our Featured Products
+    </h2>
     <span class="section-line"></span>
   </div>
 
@@ -104,13 +109,48 @@ function splitHeroTitle(string $title): array
     mysqli_stmt_execute($category_stmt);
     $category_result = mysqli_stmt_get_result($category_stmt);
 
-    if ($category_result && mysqli_num_rows($category_result) > 0):
-        $i = 1;
-        while ($row = mysqli_fetch_assoc($category_result)):
-            $imagePath = "../uploads/shops/{$supplier_id}/category_{$i}.jpg";
+    if ($category_result && mysqli_num_rows($category_result) > 0): $i = 1; 
+    while ($row = mysqli_fetch_assoc($category_result)): 
+      $imagePath = "../uploads/shops/{$supplier_id}/category_{$i}.jpg";
+
+            // 2️⃣ If category image doesn't exist → get first product image
+            if (!file_exists($imagePath)) {
+
+                $product_stmt = mysqli_prepare(
+                    $conn,
+                    "SELECT product_id, image
+                     FROM products
+                     WHERE company_id = ?
+                     AND category_id = ?
+                     AND image IS NOT NULL
+                     AND image != ''
+                     LIMIT 1"
+                );
+
+                mysqli_stmt_bind_param(
+                    $product_stmt,
+                    "ii",
+                    $company_id,
+                    $row['category_id']
+                );
+
+                mysqli_stmt_execute($product_stmt);
+                $product_result = mysqli_stmt_get_result($product_stmt);
+
+                if ($product = mysqli_fetch_assoc($product_result)) {
+                    $imagePath = "../uploads/products/{$product['product_id']}_{$product['image']}";
+                } else {
+                    // 3️⃣ Final fallback
+                    $imagePath = "../assets/images/no-image.png";
+                }
+
+                mysqli_stmt_close($product_stmt);
+            }
     ?>
         <div class="category-card">
-          <img src="<?= $imagePath ?>" alt="<?= htmlspecialchars($row['category_name']) ?>">
+          <img src="<?= htmlspecialchars($imagePath) ?>"
+               alt="<?= htmlspecialchars($row['category_name']) ?>">
+
           <div class="category-overlay">
             <h3><?= htmlspecialchars($row['category_name']) ?></h3>
             <a href="?supplier_id=<?= $supplier_id ?>&category_id=<?= $row['category_id'] ?>&page=products"
@@ -118,7 +158,6 @@ function splitHeroTitle(string $title): array
           </div>
         </div>
     <?php
-            $i++;
         endwhile;
     endif;
 
@@ -126,3 +165,4 @@ function splitHeroTitle(string $title): array
     ?>
   </div>
 </section>
+

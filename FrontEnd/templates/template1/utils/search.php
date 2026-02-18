@@ -41,7 +41,7 @@ if ($search !== "") {
     $types .= "ss";
 }
 
-$sql .= " ORDER BY p.created_at DESC LIMIT ? OFFSET ?";
+$sql .= " ORDER BY p.created_at ASC LIMIT ? OFFSET ?";
 $params[] = $limit;
 $params[] = $offset;
 $types .= "ii";

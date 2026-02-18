@@ -40,11 +40,11 @@ mysqli_stmt_close($count_stmt);
       <?php
       // --- 3. FETCH PRODUCTS WITH LIMIT & OFFSET ---
       if (!isset($_GET['category_id'])) {
-        $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE company_id = ? AND status != 'unavailable' ORDER BY created_at DESC LIMIT ? OFFSET ?");
+        $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE company_id = ? AND status != 'unavailable' ORDER BY created_at ASC LIMIT ? OFFSET ?");
         mysqli_stmt_bind_param($products_stmt, "iii", $company_id, $limit, $offset);
       } else {
         // ADD THE STATUS CHECK HERE TOO:
-        $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE company_id = ? AND category_id = ? AND status != 'unavailable' ORDER BY created_at DESC LIMIT ? OFFSET ?");
+        $products_stmt = mysqli_prepare($conn, "SELECT * FROM products WHERE company_id = ? AND category_id = ? AND status != 'unavailable' ORDER BY created_at ASC LIMIT ? OFFSET ?");
         mysqli_stmt_bind_param($products_stmt, "iiii", $company_id, $_GET['category_id'], $limit, $offset);
       }
       if ($products_stmt) {
